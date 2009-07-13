@@ -30,12 +30,20 @@ notesGrid = function(){
 		columns: columns,
 		sm: new Ext.grid.RowSelectionModel({singleSelect: true}),
         viewConfig:{forceFit:true},
-        height:250,
+        height:200,
         renderTo: document.body,
+        listeners:{
+			'celldblclick': function(grid, rowIdx, columnIdx, evt){
+				var dsr = notesDataStore.getAt(rowIdx).get('URL');	
+				//console.dir(dsr);
+				window.location = dsr;
+			}
+		},
         tbar:[{
             text:'Add URL',
             tooltip:'Add a new URL to list',
             iconCls:'x-icon-newlink',
+			
             handler: function(){
 
 		        if(!win){
@@ -46,7 +54,6 @@ notesGrid = function(){
 		                closeAction:'hide',
 		                plain: true,
 		                title: 'Share new link...',
-		
 		                items: new Ext.FormPanel({
 					        labelWidth: 120,
 					        id: 'urlSaver',

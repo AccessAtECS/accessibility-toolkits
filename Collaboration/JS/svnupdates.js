@@ -21,7 +21,32 @@ svnUpdates = function(){
 		viewConfig:{forceFit:true},
         height:250,
         width:600,
-        renderTo: document.body        
+        renderTo: document.body,
+        tbar:[{
+            text:'Browse',
+            tooltip:'Browse Repository',
+            iconCls:'x-icon-svndetails',
+            handler: function(){
+            	window.location = 'http://code.google.com/p/accessibility-toolkits/source/browse/';
+            }
+        },
+        {
+        	text: 'Issues',
+        	tooltip: 'Browse Issues',
+        	iconCls: 'x-icon-exclamation',
+        	handler: function(){
+            	window.location = 'http://code.google.com/p/accessibility-toolkits/issues/list';
+            }
+        },
+        {
+        	text: 'Wiki',
+        	tooltip: 'Browse Wiki',
+        	iconCls: 'x-icon-wiki',
+        	handler: function(){
+        		window.location = 'http://code.google.com/p/accessibility-toolkits/w/list';
+        	}
+        }],
+   
    });
 
 }
