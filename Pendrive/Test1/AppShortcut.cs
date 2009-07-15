@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Test1
 {
-    class AppShortcut
+    public class AppShortcut
     {
         private String appName;
         private String appPath;
