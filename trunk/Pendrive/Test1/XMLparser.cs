@@ -11,10 +11,12 @@ namespace Test1
         XmlTextReader reader;
         Menu appMenu;
         Settings settings;
+        MenuUpdater mu;
 
-        public XMLparser(Menu appMenu)
+        public XMLparser(Menu appMenu, MenuUpdater updater)
         {
             this.appMenu = appMenu;
+            this.mu = updater;
             reader = new XmlTextReader("menu.xml");
             try
             {
@@ -89,7 +91,6 @@ namespace Test1
         public bool readXmlFile()
         {
             int oldcount = 0;
-            int count = 0;
             String current = "";
             String category = "";
             String tempAppName = "";
@@ -132,7 +133,7 @@ namespace Test1
                             {
                                 category = reader.Value.ToString();
                                 appMenu.addCategory(category);
-                                appMenu.addItem(new AppShortcut(tempAppName, reader.Value.ToString(), category));
+                                appMenu.addItem(new AppShortcut(tempAppName, tempAppPath, category));
                             }
                         }
                         break;
@@ -140,8 +141,8 @@ namespace Test1
             }
             appMenu.sortCategories();
             reader.Close();
-            MenuUpdater mu = new MenuUpdater(oldcount, appMenu);
-            if (mu.update() == true)
+            //MenuUpdater mu = new MenuUpdater(oldcount, appMenu);
+            if (mu.update(oldcount, appMenu) == true)
                 return true;
             else return false;
             

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Forms;
+using System.Threading;
 
 namespace Test1
 {
@@ -11,10 +12,18 @@ namespace Test1
         {
            
             Menu appMenu = new Menu();
-            XMLparser x = new XMLparser(appMenu);
+            MenuUpdater updater = new MenuUpdater();
+            XMLparser x = new XMLparser(appMenu, updater);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MenuForm(appMenu.getTable(), appMenu.getCategories(), x.readSettingsFile()));
+            Application.Run(new MenuForm(x.readSettingsFile(), appMenu, updater));
+            
         }
+
+
+        
     }
+
+
+
 }

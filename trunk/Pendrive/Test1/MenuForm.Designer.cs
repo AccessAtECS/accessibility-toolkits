@@ -46,11 +46,11 @@
             // launchButton
             // 
             this.launchButton.AccessibleDescription = "Launch the selected application";
-            this.launchButton.AccessibleName = "Launch Button";
+            this.launchButton.AccessibleName = "Launch";
             this.launchButton.Location = new System.Drawing.Point(33, 13);
             this.launchButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.launchButton.Name = "launchButton";
-            this.launchButton.Size = new System.Drawing.Size(269, 31);
+            this.launchButton.Size = new System.Drawing.Size(290, 31);
             this.launchButton.TabIndex = 0;
             this.launchButton.Text = "Launch";
             this.launchButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -60,10 +60,11 @@
             // 
             // exitButton
             // 
+            this.exitButton.AccessibleName = "Exit";
             this.exitButton.Location = new System.Drawing.Point(33, 208);
             this.exitButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(269, 33);
+            this.exitButton.Size = new System.Drawing.Size(290, 33);
             this.exitButton.TabIndex = 1;
             this.exitButton.Text = "Exit";
             this.exitButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -79,17 +80,17 @@
             this.appTree.Location = new System.Drawing.Point(0, 0);
             this.appTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(332, 259);
+            this.appTree.Size = new System.Drawing.Size(359, 259);
             this.appTree.TabIndex = 4;
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);
             // 
             // colourButton
             // 
             this.colourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu background";
-            this.colourButton.AccessibleName = "Change Background Colour button";
+            this.colourButton.AccessibleName = "Change Background Colour";
             this.colourButton.Location = new System.Drawing.Point(33, 89);
             this.colourButton.Name = "colourButton";
-            this.colourButton.Size = new System.Drawing.Size(269, 33);
+            this.colourButton.Size = new System.Drawing.Size(290, 33);
             this.colourButton.TabIndex = 5;
             this.colourButton.Text = "Change Background Colour";
             this.colourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -100,10 +101,10 @@
             // fontButton
             // 
             this.fontButton.AccessibleDescription = "Button to open a dialog box to choose the font used on the menu";
-            this.fontButton.AccessibleName = "Change Font Button";
+            this.fontButton.AccessibleName = "Change Font";
             this.fontButton.Location = new System.Drawing.Point(33, 167);
             this.fontButton.Name = "fontButton";
-            this.fontButton.Size = new System.Drawing.Size(269, 33);
+            this.fontButton.Size = new System.Drawing.Size(290, 33);
             this.fontButton.TabIndex = 6;
             this.fontButton.Text = "Change Font";
             this.fontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -114,10 +115,10 @@
             // textColourButton
             // 
             this.textColourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu text";
-            this.textColourButton.AccessibleName = "Change Text Colour button";
+            this.textColourButton.AccessibleName = "Change Text Colour";
             this.textColourButton.Location = new System.Drawing.Point(33, 128);
             this.textColourButton.Name = "textColourButton";
-            this.textColourButton.Size = new System.Drawing.Size(269, 33);
+            this.textColourButton.Size = new System.Drawing.Size(290, 33);
             this.textColourButton.TabIndex = 7;
             this.textColourButton.Text = "Change Text Colour";
             this.textColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -128,7 +129,7 @@
             // colourComboBox
             // 
             this.colourComboBox.AccessibleDescription = "Select a combination of colours";
-            this.colourComboBox.AccessibleName = "Colour Combo Box";
+            this.colourComboBox.AccessibleName = "Colour Change";
             this.colourComboBox.BackColor = System.Drawing.SystemColors.ControlLight;
             this.colourComboBox.FormattingEnabled = true;
             this.colourComboBox.ImeMode = System.Windows.Forms.ImeMode.NoControl;
@@ -143,7 +144,7 @@
             this.colourComboBox.Location = new System.Drawing.Point(33, 52);
             this.colourComboBox.Name = "colourComboBox";
             this.colourComboBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.colourComboBox.Size = new System.Drawing.Size(269, 28);
+            this.colourComboBox.Size = new System.Drawing.Size(290, 28);
             this.colourComboBox.TabIndex = 8;
             this.colourComboBox.Text = "Quick Colour Change";
             this.colourComboBox.SelectedIndexChanged += new System.EventHandler(this.colourComboBox_SelectedIndexChanged);
@@ -159,7 +160,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 259);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(332, 244);
+            this.panel1.Size = new System.Drawing.Size(359, 244);
             this.panel1.TabIndex = 9;
             // 
             // MenuForm
@@ -170,7 +171,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(332, 515);
+            this.ClientSize = new System.Drawing.Size(359, 515);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.appTree);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

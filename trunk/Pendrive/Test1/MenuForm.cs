@@ -12,16 +12,20 @@ namespace Test1
 {
     public partial class MenuForm : Form
     {
+        private Menu appMenu;
         private Hashtable menu;
-        private Hashtable categories;  
+        private Hashtable categories;
+        private MenuUpdater mu;
 
         /**
          * Create a new MenuForm, and try to load saved settings.
          */
-        public MenuForm(Hashtable menu, Hashtable categories, Settings settings)
+        public MenuForm(Settings settings, Menu appMenu, MenuUpdater updater)
         {
-            this.menu = menu;
-            this.categories = categories;
+            this.appMenu = appMenu;
+            this.menu = appMenu.getTable();
+            this.categories = appMenu.getCategories();
+            this.mu = updater;
             InitializeComponent();
             foreach (String cat in categories.Keys)
             {
@@ -30,8 +34,9 @@ namespace Test1
                 foreach (String app in ((ArrayList)categories[cat]))
                 {  
                     tempN.Nodes.Add(app);                     
-                }                    
+                }                  
             }
+            appTree.Sort();
             appTree.TabIndex = 0;
             launchButton.TabIndex = 1;
             colourComboBox.TabIndex = 2;
@@ -63,6 +68,11 @@ namespace Test1
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
                 this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+                if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                }
+                else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height) / 10;
             }
             catch(Exception ex)
             {
@@ -79,7 +89,8 @@ namespace Test1
         {
             try
             {
-                SettingsUpdater updater = new SettingsUpdater(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                //SettingsUpdater updater = new SettingsUpdater(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
             }
             catch (FileNotFoundException ex)
             {
@@ -109,6 +120,7 @@ namespace Test1
             }
         }
 
+        
         /**
          * Executes the selected application
          */
@@ -123,10 +135,11 @@ namespace Test1
                     try
                     {
                         System.Diagnostics.Process.Start(@inputPath);
-                    }
-                    catch (FileNotFoundException ex)
+                    }                    
+                    catch (Exception e)
                     {
-                        MessageBox.Show("Application not found!", "Error!");
+                        MessageBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded"  , "Error!");
+                        mu.remove(selected);
                     }
                 }
             }
@@ -184,7 +197,7 @@ namespace Test1
             {
                 this.WindowState = FormWindowState.Maximized;
             }
-            else this.Height = appTree.Height + panel1.Height;
+            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/10;
         }
 
         /**
@@ -252,7 +265,9 @@ namespace Test1
 
         private void MenuForm_Load(object sender, EventArgs e)
         {
-
+            
         }
+
+        
     }
 }

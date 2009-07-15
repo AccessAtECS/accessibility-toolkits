@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Test1
 {
-    class Menu
+    public class Menu
     {
         private Hashtable shortcutTable;
         private Hashtable categories;
@@ -28,6 +28,7 @@ namespace Test1
             {
                 String tempCat = ((AppShortcut)shortcutTable[key]).getCategory();
                 ((ArrayList)categories[tempCat]).Add(key);
+               
             }
         }
 
