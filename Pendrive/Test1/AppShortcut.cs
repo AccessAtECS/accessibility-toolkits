@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Test1
 {
+    /**
+     * Class to store all details about the link to particular app
+     */ 
     public class AppShortcut
     {
         private String appName;

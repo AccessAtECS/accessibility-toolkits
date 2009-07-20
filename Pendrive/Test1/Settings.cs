@@ -12,11 +12,11 @@ namespace Test1
         private String font;
         private String fontsize;
 
-        public Settings(Hashtable values)
+        public Settings(ArrayList values)
         {
-            foreach (int key in values.Keys)
+            foreach (String[] items in values)
             {
-                String[] items = (String[])values[key];
+                //String[] items = (String[])values[key];
                 bgcolour = items[0];
                 textcolour = items[1];
                 font = items[2];
