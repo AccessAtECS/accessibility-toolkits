@@ -287,10 +287,14 @@ namespace Test1
                     tempN.Nodes.Add(app);
                 }
             }*/
+
             MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
-            System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
+            //System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
         }
 
+        /**
+         * General key commands that are also called whenever the KeyDown occurs on the other Form components
+         */ 
         private void MenuForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyData == Keys.F)
@@ -352,11 +356,17 @@ namespace Test1
             exitButton_Click(sender, e);
         }
 
+        /**
+         * Handler for the "About" option in the Menu bar
+         */ 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Menu \nVersion \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
+            MessageBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
         }
 
+        /**
+         * Handler for the "Keyboard Shortcuts" option in the Menu bar
+         */ 
         private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
         {
             MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                

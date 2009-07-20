@@ -141,6 +141,7 @@ namespace Test1
                     list = menuDoc.GetElementsByTagName("menu");
                     list[0].Attributes[0].Value = ((int.Parse(list[0].Attributes[0].Value) - 1).ToString()); //updates count
                     break;
+                    
                 }
             }
             menuDoc.Save("menu.xml");
