@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Text;
 
 namespace Test1
@@ -11,12 +12,16 @@ namespace Test1
         private String font;
         private String fontsize;
 
-        public Settings(String bg, String txt, String font, String size)
+        public Settings(Hashtable values)
         {
-            bgcolour = bg;
-            textcolour = txt;
-            this.font = font;
-            fontsize = size;
+            foreach (int key in values.Keys)
+            {
+                String[] items = (String[])values[key];
+                bgcolour = items[0];
+                textcolour = items[1];
+                font = items[2];
+                fontsize = items[3];
+            }
         }
 
         public String getBgColour()

@@ -74,5 +74,20 @@ namespace Test1
         {
             return shortcutTable;
         }
+
+        public void populateMenu(Hashtable values)
+        {
+            foreach (int key in values.Keys)
+            {
+                String[] items = (String[])values[key];
+                String name = items[0];
+                String path = items[1];
+                String category = items[2];
+                addCategory(category);
+                addItem(new AppShortcut(name, path, category));
+                
+            }
+            sortCategories();
+        }
     }
 }
