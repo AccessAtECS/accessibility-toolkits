@@ -33,17 +33,18 @@ namespace Test1
                 appTree.Nodes.Add(tempN);                    
                 foreach (String app in ((ArrayList)categories[cat]))
                 {  
-                    tempN.Nodes.Add(app);                     
+                    tempN.Nodes.Add(app);
                 }                  
             }
             appTree.Sort();
             appTree.TabIndex = 0;
             launchButton.TabIndex = 1;
             colourComboBox.TabIndex = 2;
-            colourButton.TabIndex = 3;
-            textColourButton.TabIndex = 4;
-            fontButton.TabIndex = 5;
-            exitButton.TabIndex = 6;                  
+            fontButton.TabIndex = 3;
+            colourButton.TabIndex = 4;
+            textColourButton.TabIndex = 5;
+            downloadButton.TabIndex = 6;
+            exitButton.TabIndex = 7;                  
             appTree.ExpandAll();
             try
             {
@@ -61,9 +62,10 @@ namespace Test1
                 textColourButton.ForeColor = fgColour;
                 fontButton.BackColor = bgColour;
                 fontButton.ForeColor = fgColour;
+                downloadButton.BackColor = bgColour;
+                downloadButton.ForeColor = fgColour;
                 exitButton.BackColor = bgColour;
                 exitButton.ForeColor = fgColour;
-
 
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
@@ -72,14 +74,13 @@ namespace Test1
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
-                else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height) / 10;
+                else this.Height = appTree.Height + panel1.Height + ((appTree.Height + panel1.Height) /5);
             }
             catch(Exception ex)
             {
                 MessageBox.Show("There was a problem restoring your settings. The default settings will be used.", "Error!");
             }
-            colorOptions.AllowFullOpen = true;
-            
+            colorOptions.AllowFullOpen = false;
         }
 
         /**
@@ -97,7 +98,6 @@ namespace Test1
                 MessageBox.Show("Your settings could not be saved.", "Error!");
             }
             Application.Exit();
-           
         }
         
         /**
@@ -118,9 +118,10 @@ namespace Test1
             {
                 launchApp();
             }
+            else MenuForm_KeyDown(sender, e);
         }
 
-        
+               
         /**
          * Executes the selected application
          */
@@ -160,6 +161,7 @@ namespace Test1
                 fontButton.BackColor = colorOptions.Color;
                 exitButton.BackColor = colorOptions.Color;                   
                 colourComboBox.BackColor = colorOptions.Color;
+                downloadButton.BackColor = colorOptions.Color;
             }                       
         }
 
@@ -177,6 +179,7 @@ namespace Test1
                 fontButton.ForeColor = colorOptions.Color;
                 exitButton.ForeColor = colorOptions.Color;
                 colourComboBox.ForeColor = colorOptions.Color;
+                downloadButton.ForeColor = colorOptions.Color;
             }
         }
         
@@ -197,7 +200,7 @@ namespace Test1
             {
                 this.WindowState = FormWindowState.Maximized;
             }
-            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/10;
+            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/5;
         }
 
         /**
@@ -243,29 +246,120 @@ namespace Test1
                 fg = Color.Black;
                 bg = Color.MistyRose;
             }
-            
             appTree.ForeColor = fg;
             launchButton.ForeColor = fg;
             colourButton.ForeColor = fg;
             textColourButton.ForeColor = fg;
             fontButton.ForeColor = fg;
             exitButton.ForeColor = fg;
-
+            downloadButton.ForeColor = fg;
             colourComboBox.ForeColor = fg;
             colourComboBox.BackColor = bg;
-           
             appTree.BackColor = bg;
             launchButton.BackColor = bg;
             colourButton.BackColor = bg;
             textColourButton.BackColor = bg;
             fontButton.BackColor = bg;
             exitButton.BackColor = bg;
-
+            downloadButton.BackColor = bg;
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
         {
             
+        }
+
+        private void downloadButton_Click(object sender, EventArgs e)
+        {
+            /*System.Net.WebClient dlClient = new System.Net.WebClient();
+            //dlClient.DownloadFile("", "appList.xml");
+            Menu dlList = new Menu();
+            XMLparser dlParser = new XMLparser(dlList, "appList.xml");
+            dlParser.readXmlFile();
+            MessageBox.Show("downloaded list parsed");
+
+            foreach (string category in dlList.getCategories().Keys)
+            {
+                TreeNode tempN = new TreeNode(category);
+                //appTree.Nodes.Add(tempN);  not appTree, should be treeView on download form
+                foreach (String app in ((ArrayList)categories[category]))
+                {
+                    tempN.Nodes.Add(app);
+                }
+            }*/
+            MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
+            System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
+        }
+
+        private void MenuForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyData == Keys.F)
+                fontButton.PerformClick();
+            if (e.KeyData == Keys.B)
+                colourButton.PerformClick();
+            if (e.KeyData == Keys.T)
+                textColourButton.PerformClick();
+            if (e.KeyData == Keys.D)
+                downloadButton.PerformClick();
+            if (e.KeyData == Keys.D1)
+                colourComboBox.SelectedIndex = 0;
+            if (e.KeyData == Keys.D2)
+                colourComboBox.SelectedIndex = 1;
+            if (e.KeyData == Keys.D3)
+                colourComboBox.SelectedIndex = 2;
+            if (e.KeyData == Keys.D4)
+                colourComboBox.SelectedIndex = 3;
+            if (e.KeyData == Keys.D5)
+                colourComboBox.SelectedIndex = 4;
+            if (e.KeyData == Keys.D6)
+                colourComboBox.SelectedIndex = 5;
+            if (e.KeyData == Keys.D7)
+                colourComboBox.SelectedIndex = 6;
+        }
+
+        private void launchButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void fontButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void colourButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void textColourButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void downloadButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void exitButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            exitButton_Click(sender, e);
+        }
+
+        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Menu \nVersion \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
+        }
+
+        private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
         }
 
         

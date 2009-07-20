@@ -10,13 +10,20 @@ namespace Test1
     {
         Menu appMenu;
         int oldCount;
-        Char[] anyOf;
+        Char[] lastSlash;
 
         public MenuUpdater()
         {
             
         }
-
+        
+        /**
+         * Takes in the old count of how many apps there were, and compares this with the number of directories local to the menu
+         * If there are now more, then the menu is updated to include these new folders.
+         * Methods are called to attempt to locate the true path of an app, rather than just its folder, as well as attempting 
+         * to determine the application's category.
+         * Returns a bool, telling the XMLparser whether or not it needs to re-parse the menu.xml file.
+         */ 
         public bool update(int oldCount, Menu appMenu)
         {
             this.appMenu = appMenu;
@@ -27,49 +34,35 @@ namespace Test1
             {
                 if (Directory.Exists(subdirectory))
                 {
-                    count++;  
-                    Console.WriteLine("Found directory: " + subdirectory);
+                    count++;
                 }
             }
-            Console.WriteLine("Found " + count + " directories");
             if (count > oldCount)
             {
                 //then a new app has been downloaded - set up xml entry and add to xml file under "Downloaded category"
-                Console.WriteLine("MENU OUT OF DATE - ATTEMPTING TO UPDATE");
                 XmlDocument menuDoc = new XmlDocument();
                 menuDoc.Load("menu.xml");
                 XmlNodeList list = menuDoc.GetElementsByTagName("menu");
                 list[0].Attributes[0].Value = count.ToString(); //updates count
-
                 String slash = "\\";
-                anyOf = slash.ToCharArray();
+                lastSlash = slash.ToCharArray();
                 foreach (string subdirectory in directories)
                 {
-                    Console.WriteLine("substring: " + subdirectory.Substring(3));
-
-                    if (!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(anyOf) + 1)))
+                    if (!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
                     {
                         //found new app
-                        Console.WriteLine("FOUND APP TO ADD: " + subdirectory);      
-                        Console.WriteLine("Got Here 1");
                         XmlElement newNode = menuDoc.CreateElement("app");
-                        Console.WriteLine("Got Here 2");
                         XmlElement newName = menuDoc.CreateElement("name");
-                        //newName.InnerText = subdirectory.Substring(3);
-                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(anyOf)+1);
-                        Console.WriteLine("Got Here 3");
+                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash)+1);
                         XmlElement newPath = menuDoc.CreateElement("path");
                         string path = findPath(subdirectory);
                         newPath.InnerText = path;
-                        Console.WriteLine("Got Here 4");
                         XmlElement newCategory = menuDoc.CreateElement("category");
                         newCategory.InnerText = checkCategory(path);
                         newNode.AppendChild(newName);
                         newNode.AppendChild(newPath);
                         newNode.AppendChild(newCategory);
-                        list[0].AppendChild(newNode);
-                        Console.WriteLine("Got Here 5");                
-                                                                  
+                        list[0].AppendChild(newNode);                              
                     }
                 }
                 try
@@ -82,30 +75,41 @@ namespace Test1
                     Console.WriteLine("Error " + e.ToString());
                     return false;
                 }
-                
             }
             return false;
         }
 
+        /**
+         * Takes in a path to a directory and attempts to locate the actual path wanted.
+         * If there is only one file, and no other folder in the directory, then that file can be set as the path.
+         * Otherwise, find the .exe files and check if there is one with the same name as the application.
+         * If neither of these, return the path to the directory so that the menu opens that folder.
+         */ 
         public string findPath(string subdirectory)
         {
             String[] files = Directory.GetFiles(subdirectory);
             String[] directories = Directory.GetDirectories(subdirectory);
             if (files.Length == 1 && directories.Length == 0) //if only one file in directory then set this as the path
-                return files[0];
+                return files[0].Substring(2);
             foreach (string file in files)
             {
                 if (file.EndsWith(".exe"))
                 {
-                    String filename = file.Substring(file.LastIndexOfAny(anyOf) + 1);
-                    String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(anyOf) + 1) + ".exe";
+                    String filename = file.Substring(file.LastIndexOfAny(lastSlash) + 1);
+                    String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1) + ".exe";
                     if (filename.Equals(pathname) || filename.Equals(pathname.ToLower()))
-                        return file;
+                        return file.Substring(2);
                 }
             }
-            return subdirectory;
+            return subdirectory.Substring(2);
         }
 
+        /**
+         * Takes in a path and attempts to determine the category of the application.
+         * If it is a .doc file, then it is a guide.
+         * If it is a .exe file, it could either be an application, or an accessibility tool.
+         * Categorises folders.
+         */ 
         public string checkCategory(string directory)
         {
             if (File.Exists(directory)) //if a path to the actual file/exe was found, rather than the folder
@@ -120,25 +124,31 @@ namespace Test1
             return ("Downloads");
         }
 
+        /**
+         * Removes the given application from the xml file, so that it is not displayed in the menu again.
+         * Updates the count in the xml file so that the menu can update correctly.
+         */ 
         public void remove(string app)
         {
             XmlDocument menuDoc = new XmlDocument();
             menuDoc.Load("menu.xml");
-            XmlNodeList list = menuDoc.GetElementsByTagName("menu");
-            list[0].Attributes[0].Value = ((int.Parse(list[0].Attributes[0].Value) - 1).ToString()); //updates count
-
-            list = menuDoc.GetElementsByTagName("app"); //gets all apps
+            XmlNodeList list = menuDoc.GetElementsByTagName("app"); //gets all apps
             foreach (XmlElement application in list)
             {
                 if (application.FirstChild.InnerText.Equals(app))
                 {
                     application.ParentNode.RemoveChild(application);
+                    list = menuDoc.GetElementsByTagName("menu");
+                    list[0].Attributes[0].Value = ((int.Parse(list[0].Attributes[0].Value) - 1).ToString()); //updates count
                     break;
                 }
             }
             menuDoc.Save("menu.xml");
         }
 
+        /**
+         * Saves the users settings in an xml file so that they can be restored when the user next loads the menu.
+         */ 
         public void saveSettings(String bgcolour, String txtcolour, String font, String fontsize)
         {
             XmlDocument settingsDoc = new XmlDocument();
