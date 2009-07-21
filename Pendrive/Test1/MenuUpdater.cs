@@ -164,28 +164,55 @@ namespace Test1
             settingsDoc.Save("settings.xml");
         }
 
+        /**
+         * Creates menu.xml if the file is not in the local directory when the menu is run
+         */ 
         public void createMenuFile()
         {
             XmlDocument newMenu = new XmlDocument();
-            /*XmlElement newWrapper = newMenu.CreateElement("menu");
-            XmlAttribute newCount = newMenu.CreateAttribute("count");
-            newCount.Value = "0";
-            newWrapper.Attributes.Append(newCount);
-            newMenu.Save("menu.xml");*/
-
             XmlTextWriter newMenuWriter = new XmlTextWriter("menu.xml", System.Text.Encoding.UTF8);
             newMenuWriter.Formatting = Formatting.Indented;
+            
+            //Create Starting Element
             newMenuWriter.WriteStartElement("menu");
             newMenuWriter.WriteEndElement();
             newMenuWriter.Close();
+            
+            //Load the newly created file and insert count attribute
             newMenu.Load("menu.xml");
             XmlNodeList list = newMenu.GetElementsByTagName("menu");
             XmlAttribute count = newMenu.CreateAttribute("count");
+            
+            //Set the initial count value to 0
             count.Value = "0";
             list[0].Attributes.Append(count);
             newMenu.Save("menu.xml");
         }
-          
+
+        public void createSettingsFile()
+        {
+            XmlDocument newSettings = new XmlDocument();
+            XmlTextWriter newSettingsWriter = new XmlTextWriter("settings.xml", System.Text.Encoding.UTF8);
+            newSettingsWriter.Formatting = Formatting.Indented;
+
+            //Create Starting Element
+            newSettingsWriter.WriteStartElement("settings");
+            newSettingsWriter.WriteEndElement();
+            newSettingsWriter.Close();
+
+            //Load file and insert elements
+            newSettings.Load("settings.xml");
+            XmlNodeList list = newSettings.GetElementsByTagName("settings");
+            XmlElement settingsBgColour = newSettings.CreateElement("bgcolour");
+            list[0].AppendChild(settingsBgColour);
+            XmlElement settingsTextColour = newSettings.CreateElement("textcolour");
+            list[0].AppendChild(settingsTextColour);
+            XmlElement settingsFont = newSettings.CreateElement("font");
+            list[0].AppendChild(settingsFont);
+            XmlElement settingsFontSize = newSettings.CreateElement("fontsize");
+            list[0].AppendChild(settingsFontSize);
+            newSettings.Save("settings.xml");
+        }          
     }
 
 }
