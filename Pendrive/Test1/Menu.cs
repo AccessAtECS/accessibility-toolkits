@@ -9,6 +9,7 @@ namespace Test1
     {
         private Hashtable shortcutTable;
         private Hashtable categories;
+        private int oldCount;
 
         /**
          * Creates a new menu object and initialises two Hashtables
@@ -39,7 +40,6 @@ namespace Test1
             {
                 String tempCat = ((AppShortcut)shortcutTable[key]).getCategory();
                 ((ArrayList)categories[tempCat]).Add(key);
-               
             }
         }
 
@@ -68,21 +68,40 @@ namespace Test1
         }
 
         /**
-         * Receives a hashtable 
+         * Receives an ArrayList containing arrays of the app link details.
+         * Calls addCategory to attempt to add the category if it is new.
+         * Adds the new app to the the table.
+         * Sorts the application table so that they will be displayed in categories.
          */ 
         public void populateMenu(ArrayList values)
         {
             foreach (String[] items in values)
             {
-                //String[] items = (String[])values[key];
                 String name = items[0];
                 String path = items[1];
                 String category = items[2];
                 addCategory(category);
                 addItem(new AppShortcut(name, path, category));
-                
             }
             sortCategories();
+        }
+
+        /**
+         * Sets the previous count of applications in the menu
+         */ 
+        public void setOldCount(int oc)
+        {
+            this.oldCount = oc;
+        }
+
+        /**
+         * Returns the previous count of applications that is stored as the first attribute in the menu.xml file.
+         * This is used to compare with the number of directories local to the menu, to determine whether a new
+         * application has been added to the pendrive.
+         */ 
+        public int getCount()
+        {
+            return oldCount;
         }
     }
 }

@@ -141,7 +141,6 @@ namespace Test1
                     list = menuDoc.GetElementsByTagName("menu");
                     list[0].Attributes[0].Value = ((int.Parse(list[0].Attributes[0].Value) - 1).ToString()); //updates count
                     break;
-                    
                 }
             }
             menuDoc.Save("menu.xml");
@@ -163,7 +162,30 @@ namespace Test1
             settings = settingsDoc.GetElementsByTagName("fontsize");
             settings[0].InnerText = fontsize;
             settingsDoc.Save("settings.xml");
-        }   
+        }
+
+        public void createMenuFile()
+        {
+            XmlDocument newMenu = new XmlDocument();
+            /*XmlElement newWrapper = newMenu.CreateElement("menu");
+            XmlAttribute newCount = newMenu.CreateAttribute("count");
+            newCount.Value = "0";
+            newWrapper.Attributes.Append(newCount);
+            newMenu.Save("menu.xml");*/
+
+            XmlTextWriter newMenuWriter = new XmlTextWriter("menu.xml", System.Text.Encoding.UTF8);
+            newMenuWriter.Formatting = Formatting.Indented;
+            newMenuWriter.WriteStartElement("menu");
+            newMenuWriter.WriteEndElement();
+            newMenuWriter.Close();
+            newMenu.Load("menu.xml");
+            XmlNodeList list = newMenu.GetElementsByTagName("menu");
+            XmlAttribute count = newMenu.CreateAttribute("count");
+            count.Value = "0";
+            list[0].Attributes.Append(count);
+            newMenu.Save("menu.xml");
+        }
+          
     }
 
 }

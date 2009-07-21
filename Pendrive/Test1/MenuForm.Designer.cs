@@ -41,6 +41,7 @@
             this.downloadButton = new System.Windows.Forms.Button();
             this.colourComboBox = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.flipColourButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -175,13 +176,14 @@
             this.colourComboBox.Location = new System.Drawing.Point(1, 45);
             this.colourComboBox.Name = "colourComboBox";
             this.colourComboBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.colourComboBox.Size = new System.Drawing.Size(359, 28);
+            this.colourComboBox.Size = new System.Drawing.Size(286, 28);
             this.colourComboBox.TabIndex = 8;
             this.colourComboBox.Text = "Quick Colour Change";
             this.colourComboBox.SelectedIndexChanged += new System.EventHandler(this.colourComboBox_SelectedIndexChanged);
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.flipColourButton);
             this.panel1.Controls.Add(this.downloadButton);
             this.panel1.Controls.Add(this.launchButton);
             this.panel1.Controls.Add(this.colourComboBox);
@@ -194,6 +196,19 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(360, 239);
             this.panel1.TabIndex = 9;
+            // 
+            // flipColourButton
+            // 
+            this.flipColourButton.AccessibleDescription = "Button to reverse the colour scheme";
+            this.flipColourButton.AccessibleName = "Flip colours";
+            this.flipColourButton.Location = new System.Drawing.Point(293, 45);
+            this.flipColourButton.Name = "flipColourButton";
+            this.flipColourButton.Size = new System.Drawing.Size(62, 28);
+            this.flipColourButton.TabIndex = 10;
+            this.flipColourButton.Text = "Flip";
+            this.flipColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.flipColourButton.UseVisualStyleBackColor = true;
+            this.flipColourButton.Click += new System.EventHandler(this.flipColourButton_Click);
             // 
             // panel2
             // 
@@ -324,5 +339,6 @@
         private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem2;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.Button flipColourButton;
     }
 }
