@@ -81,7 +81,7 @@ namespace Test1
             }
             catch(Exception ex)
             {
-                MessageBox.Show("There was a problem restoring your settings. The default settings will be used.", "Error!");
+                MessageBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!");
             }
             colorOptions.AllowFullOpen = false;
         }
@@ -99,7 +99,9 @@ namespace Test1
             }
             catch (FileNotFoundException ex)
             {
-                MessageBox.Show("Your settings could not be saved.", "Error!");
+                mu.createSettingsFile();
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                //MessageBox.Show("Your settings could not be saved.", "!");
             }
             Application.Exit();
         }
