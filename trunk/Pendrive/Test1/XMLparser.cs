@@ -25,7 +25,7 @@ namespace Test1
 
         /**
          * Reads the given xml file, storing information based on the array of tags that is passed.
-         * The values of these tags are arranged into String arrays, and collectively stored in a hashmap, which is returned
+         * The values of these tags are arranged into String arrays, and collectively stored in an ArrayList, which is returned
          */ 
         public ArrayList readXmlFile(String file, String[] tags)
         {
@@ -79,9 +79,10 @@ namespace Test1
             }
             catch (FileNotFoundException e)
             {
-                System.Windows.Forms.MessageBox.Show("Could not create menu - menu.xml not found!", "Error!");
+                System.Windows.Forms.MessageBox.Show(file + " not found!", "Error!");
                 return values;
-            }
+            }            
+           
         }
 
         /**
@@ -93,5 +94,6 @@ namespace Test1
         {
             return oldAppCount;
         }
+          
     }
 }

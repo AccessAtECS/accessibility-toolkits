@@ -40,6 +40,7 @@ namespace Test1
             appTree.TabIndex = 0;
             launchButton.TabIndex = 1;
             colourComboBox.TabIndex = 2;
+            flipColourButton.TabIndex = 3;
             fontButton.TabIndex = 3;
             colourButton.TabIndex = 4;
             textColourButton.TabIndex = 5;
@@ -66,6 +67,8 @@ namespace Test1
                 downloadButton.ForeColor = fgColour;
                 exitButton.BackColor = bgColour;
                 exitButton.ForeColor = fgColour;
+                flipColourButton.BackColor = bgColour;
+                flipColourButton.ForeColor = fgColour;
 
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
@@ -92,6 +95,7 @@ namespace Test1
             {
                 //SettingsUpdater updater = new SettingsUpdater(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
                 mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                
             }
             catch (FileNotFoundException ex)
             {
@@ -162,6 +166,7 @@ namespace Test1
                 exitButton.BackColor = colorOptions.Color;                   
                 colourComboBox.BackColor = colorOptions.Color;
                 downloadButton.BackColor = colorOptions.Color;
+                flipColourButton.BackColor = colorOptions.Color;
             }                       
         }
 
@@ -180,6 +185,7 @@ namespace Test1
                 exitButton.ForeColor = colorOptions.Color;
                 colourComboBox.ForeColor = colorOptions.Color;
                 downloadButton.ForeColor = colorOptions.Color;
+                flipColourButton.ForeColor = colorOptions.Color;
             }
         }
         
@@ -254,6 +260,8 @@ namespace Test1
             exitButton.ForeColor = fg;
             downloadButton.ForeColor = fg;
             colourComboBox.ForeColor = fg;
+            flipColourButton.ForeColor = fg;
+            flipColourButton.BackColor = bg;
             colourComboBox.BackColor = bg;
             appTree.BackColor = bg;
             launchButton.BackColor = bg;
@@ -305,6 +313,8 @@ namespace Test1
                 textColourButton.PerformClick();
             if (e.KeyData == Keys.D)
                 downloadButton.PerformClick();
+            if (e.KeyData == Keys.S)
+                flipColourButton.PerformClick();
             if (e.KeyData == Keys.D1)
                 colourComboBox.SelectedIndex = 0;
             if (e.KeyData == Keys.D2)
@@ -369,7 +379,31 @@ namespace Test1
          */ 
         private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
+            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nS: Flip Colours. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
+        }
+
+        private void flipColourButton_Click(object sender, EventArgs e)
+        {
+            Color tempB = appTree.BackColor;
+            Color tempF = appTree.ForeColor;
+            appTree.ForeColor = tempB;
+            launchButton.ForeColor = tempB;
+            colourButton.ForeColor = tempB;
+            textColourButton.ForeColor = tempB;
+            fontButton.ForeColor = tempB;
+            exitButton.ForeColor = tempB;
+            downloadButton.ForeColor = tempB;
+            colourComboBox.ForeColor = tempB;
+            flipColourButton.ForeColor = tempB;
+            flipColourButton.BackColor = tempF;
+            colourComboBox.BackColor = tempF;
+            appTree.BackColor = tempF;
+            launchButton.BackColor = tempF;
+            colourButton.BackColor = tempF;
+            textColourButton.BackColor = tempF;
+            fontButton.BackColor = tempF;
+            exitButton.BackColor = tempF;
+            downloadButton.BackColor = tempF;
         }
 
         
