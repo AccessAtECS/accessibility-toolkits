@@ -47,6 +47,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.miniToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.helpToolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
@@ -92,10 +93,11 @@
             // 
             this.appTree.AccessibleDescription = "A list of available applications, displayed as a tree format";
             this.appTree.AccessibleName = "Application Tree";
-            this.appTree.Location = new System.Drawing.Point(4, 56);
+            this.appTree.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.appTree.Location = new System.Drawing.Point(0, 41);
             this.appTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(383, 227);
+            this.appTree.Size = new System.Drawing.Size(387, 239);
             this.appTree.TabIndex = 4;
             this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);
@@ -210,9 +212,9 @@
             this.panel1.Controls.Add(this.colourButton);
             this.panel1.Controls.Add(this.textColourButton);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel1.Location = new System.Drawing.Point(0, 291);
+            this.panel1.Location = new System.Drawing.Point(0, 304);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(387, 239);
+            this.panel1.Size = new System.Drawing.Size(387, 253);
             this.panel1.TabIndex = 9;
             // 
             // defaultFontButton
@@ -225,6 +227,7 @@
             this.defaultFontButton.TabIndex = 11;
             this.defaultFontButton.Text = "Default";
             this.defaultFontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip1.SetToolTip(this.defaultFontButton, "Revert back to the original font style and size");
             this.defaultFontButton.UseVisualStyleBackColor = true;
             this.defaultFontButton.Click += new System.EventHandler(this.defaultFontButton_Click);
             this.defaultFontButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.defaultFontButton_KeyDown);
@@ -233,17 +236,17 @@
             // 
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.appTree);
-            this.panel2.Controls.Add(this.menuStrip1);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(387, 291);
+            this.panel2.Size = new System.Drawing.Size(387, 280);
             this.panel2.TabIndex = 10;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 30);
+            this.label1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(122, 20);
             this.label1.TabIndex = 6;
@@ -251,6 +254,7 @@
             // 
             // menuStrip1
             // 
+            this.menuStrip1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.helpToolStripMenuItem1});
@@ -263,15 +267,23 @@
             // fileToolStripMenuItem
             // 
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.miniToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
             this.fileToolStripMenuItem.Text = "File";
+            // 
+            // miniToolStripMenuItem
+            // 
+            this.miniToolStripMenuItem.Name = "miniToolStripMenuItem";
+            this.miniToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.miniToolStripMenuItem.Text = "Mini View";
+            this.miniToolStripMenuItem.Click += new System.EventHandler(this.miniToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -282,25 +294,25 @@
             this.toolStripSeparator1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(54, 24);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
             // helpToolStripMenuItem2
             // 
             this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
-            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(177, 22);
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(218, 24);
             this.helpToolStripMenuItem2.Text = "Keyboard Shortcuts";
             this.helpToolStripMenuItem2.Click += new System.EventHandler(this.helpToolStripMenuItem2_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(174, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(215, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(218, 24);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 
@@ -314,9 +326,10 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(387, 536);
+            this.ClientSize = new System.Drawing.Size(387, 563);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MainMenuStrip = this.menuStrip1;
@@ -325,6 +338,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Application Menu";
             this.Load += new System.EventHandler(this.MenuForm_Load);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MenuForm_FormClosing);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MenuForm_KeyDown);
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
@@ -332,6 +346,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -360,5 +375,6 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Button flipColourButton;
         private System.Windows.Forms.Button defaultFontButton;
+        private System.Windows.Forms.ToolStripMenuItem miniToolStripMenuItem;
     }
 }

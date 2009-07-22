@@ -16,6 +16,7 @@ namespace Test1
         private Hashtable menu;
         private Hashtable categories;
         private MenuUpdater mu;
+        private bool mini = false;
 
         /**
          * Create a new MenuForm, and try to load saved settings.
@@ -62,7 +63,7 @@ namespace Test1
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
-                else this.Height = appTree.Height + panel1.Height + ((appTree.Height + panel1.Height) /5);
+                else this.Height = panel2.Height + panel1.Height + (3* menuStrip1.Height) ;
             }
             catch(Exception ex)
             {
@@ -76,19 +77,7 @@ namespace Test1
          */
         private void exitButton_Click(object sender, EventArgs e)
         {
-            try
-            {
-                //SettingsUpdater updater = new SettingsUpdater(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
-                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
-                
-            }
-            catch (FileNotFoundException ex)
-            {
-                mu.createSettingsFile();
-                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
-                //MessageBox.Show("Your settings could not be saved.", "!");
-            }
-            Application.Exit();
+            saveAndClose();
         }
         
         /**
@@ -142,17 +131,27 @@ namespace Test1
          * Manually change the background colour of the menu components.
          */
         private void colourButton_Click(object sender, EventArgs e)
-        {    
+        {
+            backgroundChange();             
+        }
+
+        private void backgroundChange()
+        {
             if (colorOptions.ShowDialog() == DialogResult.OK)
             {
                 changeBackColour(colorOptions.Color);
-            }                       
+            }       
         }
 
         /**
          * Manually change the text colour of the menu components.
          */
         private void textColourButton_Click(object sender, EventArgs e)
+        {
+            foregroundChange();
+        }
+
+        private void foregroundChange()
         {
             if (colorOptions.ShowDialog() == DialogResult.OK)
             {
@@ -166,6 +165,11 @@ namespace Test1
          */
         private void fontButton_Click(object sender, EventArgs e)
         {
+            fontChange();          
+        }
+
+        private void fontChange()
+        {
             this.ResizeRedraw = true;
             if (fontOptions.ShowDialog() == DialogResult.OK)
             {
@@ -177,7 +181,7 @@ namespace Test1
             {
                 this.WindowState = FormWindowState.Maximized;
             }
-            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/5;            
+            else this.Height = panel2.Height + panel1.Height + (2 * menuStrip1.Height); 
         }
 
         /**
@@ -185,49 +189,50 @@ namespace Test1
          */
         private void colourComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
+            colourComboChanged(colourComboBox.SelectedIndex);
+        }
+
+        private void colourComboChanged(int i)
+        {
             Color bg = Color.Black;
             Color fg = Color.Black;
-
-            if (colourComboBox.SelectedIndex == 0)
+            if (i == 0)
             {
                 fg = Color.Black;
                 bg = Color.White;
             }
-            if (colourComboBox.SelectedIndex == 1)
+            if (i == 1)
             {
                 fg = Color.White;
                 bg = Color.Black;
             }
-            if (colourComboBox.SelectedIndex == 2)
+            if (i == 2)
             {
                 fg = Color.Yellow;
                 bg = Color.Navy;
             }
-            if (colourComboBox.SelectedIndex == 3)
+            if (i == 3)
             {
                 fg = Color.Black;
                 bg = Color.Yellow;
             }
-            if (colourComboBox.SelectedIndex == 4)
+            if (i == 4)
             {
                 fg = Color.Black;
                 bg = Color.AliceBlue;
             }
-            if (colourComboBox.SelectedIndex == 5)
+            if (i == 5)
             {
                 fg = Color.Black;
                 bg = Color.Cornsilk;
             }
-            if (colourComboBox.SelectedIndex == 6)
+            if (i == 6)
             {
                 fg = Color.Black;
                 bg = Color.MistyRose;
             }
-
             changeForeColour(fg);
-            changeBackColour(bg);
-            
-           
+            changeBackColour(bg);        
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
@@ -246,30 +251,34 @@ namespace Test1
          */ 
         private void MenuForm_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyData == Keys.F)
-                fontButton.PerformClick();
-            if (e.KeyData == Keys.B)
-                colourButton.PerformClick();
-            if (e.KeyData == Keys.T)
-                textColourButton.PerformClick();
-            if (e.KeyData == Keys.D)
+            if (e.KeyCode == Keys.F && e.Control)
+                fontChange();
+            if (e.KeyCode == Keys.B && e.Control)
+                backgroundChange();
+            if (e.KeyCode == Keys.T && e.Control)
+                foregroundChange();
+            if (e.KeyCode == Keys.D && e.Control)
                 downloadButton.PerformClick();
-            if (e.KeyData == Keys.S)
-                flipColourButton.PerformClick();
-            if (e.KeyData == Keys.D1)
-                colourComboBox.SelectedIndex = 0;
-            if (e.KeyData == Keys.D2)
-                colourComboBox.SelectedIndex = 1;
-            if (e.KeyData == Keys.D3)
-                colourComboBox.SelectedIndex = 2;
-            if (e.KeyData == Keys.D4)
-                colourComboBox.SelectedIndex = 3;
-            if (e.KeyData == Keys.D5)
-                colourComboBox.SelectedIndex = 4;
-            if (e.KeyData == Keys.D6)
-                colourComboBox.SelectedIndex = 5;
-            if (e.KeyData == Keys.D7)
-                colourComboBox.SelectedIndex = 6;
+            if (e.KeyCode == Keys.R && e.Control)
+                colourSchemeOrderChanged();
+            if (e.KeyCode == Keys.O && e.Control)
+                fontReset();
+            if (e.KeyCode == Keys.M && e.Control)
+                toggleMini();
+            if (e.KeyCode == Keys.D1 && e.Control)
+                colourComboChanged(0);
+            if (e.KeyCode == Keys.D2 && e.Control)
+                colourComboChanged(1);
+            if (e.KeyCode == Keys.D3 && e.Control)
+                colourComboChanged(2);
+            if (e.KeyCode == Keys.D4 && e.Control)
+                colourComboChanged(3);
+            if (e.KeyCode == Keys.D5 && e.Control)
+                colourComboChanged(4);
+            if (e.KeyCode == Keys.D6 && e.Control)
+                colourComboChanged(5);
+            if (e.KeyCode == Keys.D7 && e.Control)
+                colourComboChanged(6);
         }
 
         private void launchButton_KeyDown(object sender, KeyEventArgs e)
@@ -314,7 +323,7 @@ namespace Test1
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            exitButton_Click(sender, e);
+            saveAndClose();
         }              
 
         /**
@@ -330,10 +339,29 @@ namespace Test1
          */ 
         private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nS:  Flip Colours. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
+            Hashtable keys = new Hashtable();
+            keys.Add("CTRL + F", "Change Font");
+            keys.Add("CTRL + B", "Change Background Colour");
+            keys.Add("CTRL + T", "Change Text Colour");
+            keys.Add("CTRL + R", "Reverse Colours");
+            keys.Add("CTRL + O", "Default Font");
+            keys.Add("CTRL + D", "Downloads");
+            keys.Add("CTRL + [numbers]", "Preset Colour Combinations");
+            keys.Add("CTRL + M", "Toggle Mini View");
+            String shortcuts = "";
+            foreach (String key in keys.Keys)
+            {
+                shortcuts += key + ":  " + keys[key] + ". \n";
+            }
+            MessageBox.Show(shortcuts, "Keyboard Shortcuts");
         }
 
         private void flipColourButton_Click(object sender, EventArgs e)
+        {
+            colourSchemeOrderChanged();
+        }
+
+        private void colourSchemeOrderChanged()
         {
             Color tempB = appTree.BackColor;
             Color tempF = appTree.ForeColor;
@@ -348,6 +376,11 @@ namespace Test1
 
         private void defaultFontButton_Click(object sender, EventArgs e)
         {
+            fontReset();
+        }
+
+        private void fontReset()
+        {
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
             Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
             this.Font = new Font(newFont.FontFamily, float.Parse("12.0"), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
@@ -356,8 +389,8 @@ namespace Test1
             if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
             {
                 this.WindowState = FormWindowState.Maximized;
-            }            
-            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height) / 5;
+            }
+            else this.Height = panel2.Height + panel1.Height + (3 * menuStrip1.Height);
         }
 
 
@@ -387,6 +420,57 @@ namespace Test1
             fontButton.BackColor = bg;
             exitButton.BackColor = bg;
             downloadButton.BackColor = bg;
+        }
+
+        private void miniToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            toggleMini();
+        }
+
+        private void toggleMini()
+        {
+            if (!mini)
+            {
+                panel1.Visible = false;
+                panel1.Enabled = false;
+                this.Height = this.Height - panel1.Height;
+                miniToolStripMenuItem.Text = "Full View";
+                mini = !mini;
+            }
+            else
+            {
+                panel1.Visible = true;
+                panel1.Enabled = true;
+                this.Height = this.Height + panel1.Height;
+                if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                }
+                miniToolStripMenuItem.Text = "Mini View";
+                mini = !mini;
+            }
+        }
+
+        private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            saveAndClose();
+        }
+
+        private void saveAndClose()
+        {
+            try
+            {
+                //SettingsUpdater updater = new SettingsUpdater(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+
+            }
+            catch (FileNotFoundException ex)
+            {
+                mu.createSettingsFile();
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
+                //MessageBox.Show("Your settings could not be saved.", "!");
+            }
+            Application.Exit();
         }
     }
 }
