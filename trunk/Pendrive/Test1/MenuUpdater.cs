@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using Microsoft.Win32;
 
 namespace Test1
 {
@@ -89,6 +90,11 @@ namespace Test1
         {
             String[] files = Directory.GetFiles(subdirectory);
             String[] directories = Directory.GetDirectories(subdirectory);
+            if (directories.Length == 1 && files.Length == 0) //if only one subdirectory then search through this
+            {
+                subdirectory = directories[0];
+                return findPath(subdirectory);
+            }
             if (files.Length == 1 && directories.Length == 0) //if only one file in directory then set this as the path
                 return files[0].Substring(2);
             foreach (string file in files)
@@ -103,7 +109,7 @@ namespace Test1
             }
             return subdirectory.Substring(2);
         }
-
+        
         /**
          * Takes in a path and attempts to determine the category of the application.
          * If it is a .doc file, then it is a guide.
@@ -189,6 +195,9 @@ namespace Test1
             newMenu.Save("menu.xml");
         }
 
+        /**
+         * Creates settings.xml if the file is not in the local directory when the menu closes
+         */ 
         public void createSettingsFile()
         {
             XmlDocument newSettings = new XmlDocument();

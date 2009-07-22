@@ -39,9 +39,10 @@
             this.textColourButton = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.downloadButton = new System.Windows.Forms.Button();
+            this.flipColourButton = new System.Windows.Forms.Button();
             this.colourComboBox = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.flipColourButton = new System.Windows.Forms.Button();
+            this.defaultFontButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -63,7 +64,7 @@
             this.launchButton.Location = new System.Drawing.Point(1, 6);
             this.launchButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.launchButton.Name = "launchButton";
-            this.launchButton.Size = new System.Drawing.Size(359, 31);
+            this.launchButton.Size = new System.Drawing.Size(386, 31);
             this.launchButton.TabIndex = 0;
             this.launchButton.Text = "Launch Selected Application";
             this.launchButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -78,7 +79,7 @@
             this.exitButton.Location = new System.Drawing.Point(1, 207);
             this.exitButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(359, 29);
+            this.exitButton.Size = new System.Drawing.Size(386, 29);
             this.exitButton.TabIndex = 1;
             this.exitButton.Text = "Exit";
             this.exitButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -94,17 +95,18 @@
             this.appTree.Location = new System.Drawing.Point(4, 56);
             this.appTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(351, 227);
+            this.appTree.Size = new System.Drawing.Size(383, 227);
             this.appTree.TabIndex = 4;
+            this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);
             // 
             // colourButton
             // 
             this.colourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu background";
             this.colourButton.AccessibleName = "Change Background Colour";
-            this.colourButton.Location = new System.Drawing.Point(1, 114);
+            this.colourButton.Location = new System.Drawing.Point(0, 114);
             this.colourButton.Name = "colourButton";
-            this.colourButton.Size = new System.Drawing.Size(176, 50);
+            this.colourButton.Size = new System.Drawing.Size(186, 50);
             this.colourButton.TabIndex = 5;
             this.colourButton.Text = "Change Background Colour";
             this.colourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -119,7 +121,7 @@
             this.fontButton.AccessibleName = "Change Font";
             this.fontButton.Location = new System.Drawing.Point(1, 79);
             this.fontButton.Name = "fontButton";
-            this.fontButton.Size = new System.Drawing.Size(359, 29);
+            this.fontButton.Size = new System.Drawing.Size(286, 29);
             this.fontButton.TabIndex = 6;
             this.fontButton.Text = "Change Font";
             this.fontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -132,9 +134,9 @@
             // 
             this.textColourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu text";
             this.textColourButton.AccessibleName = "Change Text Colour";
-            this.textColourButton.Location = new System.Drawing.Point(183, 114);
+            this.textColourButton.Location = new System.Drawing.Point(201, 114);
             this.textColourButton.Name = "textColourButton";
-            this.textColourButton.Size = new System.Drawing.Size(177, 50);
+            this.textColourButton.Size = new System.Drawing.Size(186, 50);
             this.textColourButton.TabIndex = 7;
             this.textColourButton.Text = "Change Text Colour";
             this.textColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -147,7 +149,7 @@
             // 
             this.downloadButton.Location = new System.Drawing.Point(1, 170);
             this.downloadButton.Name = "downloadButton";
-            this.downloadButton.Size = new System.Drawing.Size(359, 29);
+            this.downloadButton.Size = new System.Drawing.Size(386, 29);
             this.downloadButton.TabIndex = 9;
             this.downloadButton.Text = "Download New Applications";
             this.downloadButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -156,6 +158,21 @@
             this.downloadButton.UseVisualStyleBackColor = true;
             this.downloadButton.Click += new System.EventHandler(this.downloadButton_Click);
             this.downloadButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.downloadButton_KeyDown);
+            // 
+            // flipColourButton
+            // 
+            this.flipColourButton.AccessibleDescription = "Button to reverse the colour scheme";
+            this.flipColourButton.AccessibleName = "Flip colours";
+            this.flipColourButton.Location = new System.Drawing.Point(293, 45);
+            this.flipColourButton.Name = "flipColourButton";
+            this.flipColourButton.Size = new System.Drawing.Size(94, 28);
+            this.flipColourButton.TabIndex = 10;
+            this.flipColourButton.Text = "Reverse";
+            this.flipColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip1.SetToolTip(this.flipColourButton, "Reverse the current colour scheme");
+            this.flipColourButton.UseVisualStyleBackColor = true;
+            this.flipColourButton.Click += new System.EventHandler(this.flipColourButton_Click);
+            this.flipColourButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.flipColourButton_KeyDown);
             // 
             // colourComboBox
             // 
@@ -183,6 +200,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.defaultFontButton);
             this.panel1.Controls.Add(this.flipColourButton);
             this.panel1.Controls.Add(this.downloadButton);
             this.panel1.Controls.Add(this.launchButton);
@@ -194,21 +212,22 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 291);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(360, 239);
+            this.panel1.Size = new System.Drawing.Size(387, 239);
             this.panel1.TabIndex = 9;
             // 
-            // flipColourButton
+            // defaultFontButton
             // 
-            this.flipColourButton.AccessibleDescription = "Button to reverse the colour scheme";
-            this.flipColourButton.AccessibleName = "Flip colours";
-            this.flipColourButton.Location = new System.Drawing.Point(293, 45);
-            this.flipColourButton.Name = "flipColourButton";
-            this.flipColourButton.Size = new System.Drawing.Size(62, 28);
-            this.flipColourButton.TabIndex = 10;
-            this.flipColourButton.Text = "Flip";
-            this.flipColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.flipColourButton.UseVisualStyleBackColor = true;
-            this.flipColourButton.Click += new System.EventHandler(this.flipColourButton_Click);
+            this.defaultFontButton.AccessibleDescription = "Button to revert to the default font";
+            this.defaultFontButton.AccessibleName = "Default Font";
+            this.defaultFontButton.Location = new System.Drawing.Point(293, 79);
+            this.defaultFontButton.Name = "defaultFontButton";
+            this.defaultFontButton.Size = new System.Drawing.Size(94, 29);
+            this.defaultFontButton.TabIndex = 11;
+            this.defaultFontButton.Text = "Default";
+            this.defaultFontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.defaultFontButton.UseVisualStyleBackColor = true;
+            this.defaultFontButton.Click += new System.EventHandler(this.defaultFontButton_Click);
+            this.defaultFontButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.defaultFontButton_KeyDown);
             // 
             // panel2
             // 
@@ -218,7 +237,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(360, 291);
+            this.panel2.Size = new System.Drawing.Size(387, 291);
             this.panel2.TabIndex = 10;
             // 
             // label1
@@ -237,7 +256,7 @@
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(360, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(387, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -295,7 +314,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(360, 536);
+            this.ClientSize = new System.Drawing.Size(387, 536);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -340,5 +359,6 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.Button flipColourButton;
+        private System.Windows.Forms.Button defaultFontButton;
     }
 }
