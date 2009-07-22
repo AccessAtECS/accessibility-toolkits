@@ -42,6 +42,7 @@ namespace Test1
             colourComboBox.TabIndex = 2;
             flipColourButton.TabIndex = 3;
             fontButton.TabIndex = 3;
+            defaultFontButton.TabIndex = 4;
             colourButton.TabIndex = 4;
             textColourButton.TabIndex = 5;
             downloadButton.TabIndex = 6;
@@ -51,24 +52,8 @@ namespace Test1
             {
                 Color bgColour = ColorTranslator.FromHtml(settings.getBgColour());
                 Color fgColour = ColorTranslator.FromHtml(settings.getTxtColour());
-                appTree.BackColor = bgColour;
-                appTree.ForeColor = fgColour;
-                launchButton.BackColor = bgColour;
-                launchButton.ForeColor = fgColour;
-                colourComboBox.BackColor = bgColour;
-                colourComboBox.ForeColor = fgColour;
-                colourButton.BackColor = bgColour;
-                colourButton.ForeColor = fgColour;
-                textColourButton.BackColor = bgColour;
-                textColourButton.ForeColor = fgColour;
-                fontButton.BackColor = bgColour;
-                fontButton.ForeColor = fgColour;
-                downloadButton.BackColor = bgColour;
-                downloadButton.ForeColor = fgColour;
-                exitButton.BackColor = bgColour;
-                exitButton.ForeColor = fgColour;
-                flipColourButton.BackColor = bgColour;
-                flipColourButton.ForeColor = fgColour;
+                changeBackColour(bgColour);
+                changeForeColour(fgColour);
 
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
@@ -160,15 +145,7 @@ namespace Test1
         {    
             if (colorOptions.ShowDialog() == DialogResult.OK)
             {
-                appTree.BackColor = colorOptions.Color;
-                launchButton.BackColor = colorOptions.Color;
-                colourButton.BackColor = colorOptions.Color;
-                textColourButton.BackColor = colorOptions.Color;
-                fontButton.BackColor = colorOptions.Color;
-                exitButton.BackColor = colorOptions.Color;                   
-                colourComboBox.BackColor = colorOptions.Color;
-                downloadButton.BackColor = colorOptions.Color;
-                flipColourButton.BackColor = colorOptions.Color;
+                changeBackColour(colorOptions.Color);
             }                       
         }
 
@@ -179,15 +156,7 @@ namespace Test1
         {
             if (colorOptions.ShowDialog() == DialogResult.OK)
             {
-                appTree.ForeColor = colorOptions.Color;
-                launchButton.ForeColor = colorOptions.Color;
-                colourButton.ForeColor = colorOptions.Color;
-                textColourButton.ForeColor = colorOptions.Color;
-                fontButton.ForeColor = colorOptions.Color;
-                exitButton.ForeColor = colorOptions.Color;
-                colourComboBox.ForeColor = colorOptions.Color;
-                downloadButton.ForeColor = colorOptions.Color;
-                flipColourButton.ForeColor = colorOptions.Color;
+                changeForeColour(colorOptions.Color);
             }
         }
         
@@ -208,7 +177,7 @@ namespace Test1
             {
                 this.WindowState = FormWindowState.Maximized;
             }
-            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/5;
+            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height)/5;            
         }
 
         /**
@@ -254,24 +223,11 @@ namespace Test1
                 fg = Color.Black;
                 bg = Color.MistyRose;
             }
-            appTree.ForeColor = fg;
-            launchButton.ForeColor = fg;
-            colourButton.ForeColor = fg;
-            textColourButton.ForeColor = fg;
-            fontButton.ForeColor = fg;
-            exitButton.ForeColor = fg;
-            downloadButton.ForeColor = fg;
-            colourComboBox.ForeColor = fg;
-            flipColourButton.ForeColor = fg;
-            flipColourButton.BackColor = bg;
-            colourComboBox.BackColor = bg;
-            appTree.BackColor = bg;
-            launchButton.BackColor = bg;
-            colourButton.BackColor = bg;
-            textColourButton.BackColor = bg;
-            fontButton.BackColor = bg;
-            exitButton.BackColor = bg;
-            downloadButton.BackColor = bg;
+
+            changeForeColour(fg);
+            changeBackColour(bg);
+            
+           
         }
 
         private void MenuForm_Load(object sender, EventArgs e)
@@ -281,23 +237,6 @@ namespace Test1
 
         private void downloadButton_Click(object sender, EventArgs e)
         {
-            /*System.Net.WebClient dlClient = new System.Net.WebClient();
-            //dlClient.DownloadFile("", "appList.xml");
-            Menu dlList = new Menu();
-            XMLparser dlParser = new XMLparser(dlList, "appList.xml");
-            dlParser.readXmlFile();
-            MessageBox.Show("downloaded list parsed");
-
-            foreach (string category in dlList.getCategories().Keys)
-            {
-                TreeNode tempN = new TreeNode(category);
-                //appTree.Nodes.Add(tempN);  not appTree, should be treeView on download form
-                foreach (String app in ((ArrayList)categories[category]))
-                {
-                    tempN.Nodes.Add(app);
-                }
-            }*/
-
             MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
             //System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
         }
@@ -363,10 +302,20 @@ namespace Test1
             MenuForm_KeyDown(sender, e);
         }
 
+        private void flipColourButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void defaultFontButton_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             exitButton_Click(sender, e);
-        }
+        }              
 
         /**
          * Handler for the "About" option in the Menu bar
@@ -381,33 +330,63 @@ namespace Test1
          */ 
         private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nS: Flip Colours. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
+            MessageBox.Show("F:  Change Font. \nB:  Change Background Colour. \nT:  Change Text Colour. \nD:  Downloads. \nS:  Flip Colours. \nNumbers:  Preset Colour Combinations.", "Keyboard Shortcuts ");                
         }
 
         private void flipColourButton_Click(object sender, EventArgs e)
         {
             Color tempB = appTree.BackColor;
             Color tempF = appTree.ForeColor;
-            appTree.ForeColor = tempB;
-            launchButton.ForeColor = tempB;
-            colourButton.ForeColor = tempB;
-            textColourButton.ForeColor = tempB;
-            fontButton.ForeColor = tempB;
-            exitButton.ForeColor = tempB;
-            downloadButton.ForeColor = tempB;
-            colourComboBox.ForeColor = tempB;
-            flipColourButton.ForeColor = tempB;
-            flipColourButton.BackColor = tempF;
-            colourComboBox.BackColor = tempF;
-            appTree.BackColor = tempF;
-            launchButton.BackColor = tempF;
-            colourButton.BackColor = tempF;
-            textColourButton.BackColor = tempF;
-            fontButton.BackColor = tempF;
-            exitButton.BackColor = tempF;
-            downloadButton.BackColor = tempF;
+            changeBackColour(tempF);
+            changeForeColour(tempB);
         }
 
-        
+        private void appTree_DoubleClick(object sender, EventArgs e)
+        {
+            launchApp();
+        }
+
+        private void defaultFontButton_Click(object sender, EventArgs e)
+        {
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+            this.Font = new Font(newFont.FontFamily, float.Parse("12.0"), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            this.WindowState = FormWindowState.Normal;
+            this.Refresh();
+            if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            {
+                this.WindowState = FormWindowState.Maximized;
+            }            
+            else this.Height = appTree.Height + panel1.Height + (appTree.Height + panel1.Height) / 5;
+        }
+
+
+        private void changeForeColour(Color fg)
+        {
+            appTree.ForeColor = fg;
+            launchButton.ForeColor = fg;
+            colourButton.ForeColor = fg;
+            textColourButton.ForeColor = fg;
+            fontButton.ForeColor = fg;
+            exitButton.ForeColor = fg;
+            downloadButton.ForeColor = fg;
+            colourComboBox.ForeColor = fg;
+            flipColourButton.ForeColor = fg;
+            defaultFontButton.ForeColor = fg;
+        }
+
+        private void changeBackColour(Color bg)
+        {
+            defaultFontButton.BackColor = bg;
+            flipColourButton.BackColor = bg;
+            colourComboBox.BackColor = bg;
+            appTree.BackColor = bg;
+            launchButton.BackColor = bg;
+            colourButton.BackColor = bg;
+            textColourButton.BackColor = bg;
+            fontButton.BackColor = bg;
+            exitButton.BackColor = bg;
+            downloadButton.BackColor = bg;
+        }
     }
 }
