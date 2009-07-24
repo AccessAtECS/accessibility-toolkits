@@ -167,16 +167,17 @@ namespace Test1
          */
         private void fontButton_Click(object sender, EventArgs e)
         {
-            fontChange();          
-        }
+            fontChange();
+        }    
 
         private void fontChange()
         {
             this.ResizeRedraw = true;
-            if (fontOptions.ShowDialog() == DialogResult.OK)
+            /*if (fontOptions.ShowDialog() == DialogResult.OK)
             {
                 this.Font = fontOptions.Font;
-            }
+            }*/
+            this.Font = CustomFontBox.show(this.Font, appTree.BackColor, appTree.ForeColor);
             this.WindowState = FormWindowState.Normal;
             this.Refresh();
             if (!mini)
