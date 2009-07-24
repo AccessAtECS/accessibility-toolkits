@@ -79,7 +79,7 @@ namespace Test1
             }
             catch (FileNotFoundException e)
             {
-                System.Windows.Forms.MessageBox.Show(file + " not found!", "Error!");
+                //System.Windows.Forms.MessageBox.Show(file + " not found!", "Error!");
                 return values;
             }            
            

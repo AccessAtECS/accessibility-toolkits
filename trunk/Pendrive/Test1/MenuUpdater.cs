@@ -73,7 +73,7 @@ namespace Test1
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("Error " + e.ToString());
+                    //Console.WriteLine("Error " + e.ToString());
                     return false;
                 }
             }
