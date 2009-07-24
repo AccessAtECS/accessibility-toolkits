@@ -40,9 +40,9 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.downloadButton = new System.Windows.Forms.Button();
             this.flipColourButton = new System.Windows.Forms.Button();
+            this.defaultFontButton = new System.Windows.Forms.Button();
             this.colourComboBox = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.defaultFontButton = new System.Windows.Forms.Button();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label1 = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -132,6 +132,11 @@
             this.fontButton.Click += new System.EventHandler(this.fontButton_Click);
             this.fontButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fontButton_KeyDown);
             // 
+            // fontOptions
+            // 
+            this.fontOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fontOptions.MinSize = 10;
+            // 
             // textColourButton
             // 
             this.textColourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu text";
@@ -176,6 +181,21 @@
             this.flipColourButton.Click += new System.EventHandler(this.flipColourButton_Click);
             this.flipColourButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.flipColourButton_KeyDown);
             // 
+            // defaultFontButton
+            // 
+            this.defaultFontButton.AccessibleDescription = "Button to revert to the default font";
+            this.defaultFontButton.AccessibleName = "Default Font";
+            this.defaultFontButton.Location = new System.Drawing.Point(293, 79);
+            this.defaultFontButton.Name = "defaultFontButton";
+            this.defaultFontButton.Size = new System.Drawing.Size(94, 29);
+            this.defaultFontButton.TabIndex = 11;
+            this.defaultFontButton.Text = "Default";
+            this.defaultFontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.toolTip1.SetToolTip(this.defaultFontButton, "Revert back to the original font style and size");
+            this.defaultFontButton.UseVisualStyleBackColor = true;
+            this.defaultFontButton.Click += new System.EventHandler(this.defaultFontButton_Click);
+            this.defaultFontButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.defaultFontButton_KeyDown);
+            // 
             // colourComboBox
             // 
             this.colourComboBox.AccessibleDescription = "Select a combination of colours";
@@ -217,21 +237,6 @@
             this.panel1.Size = new System.Drawing.Size(387, 253);
             this.panel1.TabIndex = 9;
             // 
-            // defaultFontButton
-            // 
-            this.defaultFontButton.AccessibleDescription = "Button to revert to the default font";
-            this.defaultFontButton.AccessibleName = "Default Font";
-            this.defaultFontButton.Location = new System.Drawing.Point(293, 79);
-            this.defaultFontButton.Name = "defaultFontButton";
-            this.defaultFontButton.Size = new System.Drawing.Size(94, 29);
-            this.defaultFontButton.TabIndex = 11;
-            this.defaultFontButton.Text = "Default";
-            this.defaultFontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.toolTip1.SetToolTip(this.defaultFontButton, "Revert back to the original font style and size");
-            this.defaultFontButton.UseVisualStyleBackColor = true;
-            this.defaultFontButton.Click += new System.EventHandler(this.defaultFontButton_Click);
-            this.defaultFontButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.defaultFontButton_KeyDown);
-            // 
             // panel2
             // 
             this.panel2.Controls.Add(this.label1);
@@ -270,20 +275,20 @@
             this.miniToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(46, 24);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(42, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // miniToolStripMenuItem
             // 
             this.miniToolStripMenuItem.Name = "miniToolStripMenuItem";
-            this.miniToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.miniToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.miniToolStripMenuItem.Text = "Mini View";
             this.miniToolStripMenuItem.Click += new System.EventHandler(this.miniToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 24);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -294,25 +299,25 @@
             this.toolStripSeparator1,
             this.aboutToolStripMenuItem});
             this.helpToolStripMenuItem1.Name = "helpToolStripMenuItem1";
-            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(54, 24);
+            this.helpToolStripMenuItem1.Size = new System.Drawing.Size(49, 20);
             this.helpToolStripMenuItem1.Text = "Help";
             // 
             // helpToolStripMenuItem2
             // 
             this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
-            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(218, 24);
+            this.helpToolStripMenuItem2.Size = new System.Drawing.Size(193, 22);
             this.helpToolStripMenuItem2.Text = "Keyboard Shortcuts";
             this.helpToolStripMenuItem2.Click += new System.EventHandler(this.helpToolStripMenuItem2_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(215, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(190, 6);
             // 
             // aboutToolStripMenuItem
             // 
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(218, 24);
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.aboutToolStripMenuItem.Text = "About";
             this.aboutToolStripMenuItem.Click += new System.EventHandler(this.aboutToolStripMenuItem_Click);
             // 

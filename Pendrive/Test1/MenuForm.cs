@@ -67,7 +67,8 @@ namespace Test1
             }
             catch(Exception ex)
             {
-                MessageBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!");
+                //MessageBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!");
+                CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
             }
             colorOptions.AllowFullOpen = false;
         }
@@ -119,7 +120,8 @@ namespace Test1
                     }                    
                     catch (Exception e)
                     {
-                        MessageBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded"  , "Error!");
+                        //MessageBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded"  , "Error!");
+                        CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                         mu.remove(selected);
                     }
                 }
@@ -177,11 +179,14 @@ namespace Test1
             }
             this.WindowState = FormWindowState.Normal;
             this.Refresh();
-            if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            if (!mini)
             {
-                this.WindowState = FormWindowState.Maximized;
+                if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                }
+                else this.Height = panel2.Height + panel1.Height + (2 * menuStrip1.Height);
             }
-            else this.Height = panel2.Height + panel1.Height + (2 * menuStrip1.Height); 
         }
 
         /**
@@ -242,8 +247,9 @@ namespace Test1
 
         private void downloadButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
+            //MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
             //System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
+            CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
         }
 
         /**
@@ -331,7 +337,8 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
+            //MessageBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
+            CustomBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
         }
 
         /**
@@ -353,7 +360,8 @@ namespace Test1
             {
                 shortcuts += key + ":  " + keys[key] + ". \n";
             }
-            MessageBox.Show(shortcuts, "Keyboard Shortcuts");
+            //MessageBox.Show(shortcuts, "Keyboard Shortcuts");
+            CustomBox.Show(shortcuts, "Keyboard Shortcuts", this.Font, appTree.BackColor, appTree.ForeColor);
         }
 
         private void flipColourButton_Click(object sender, EventArgs e)
@@ -386,11 +394,14 @@ namespace Test1
             this.Font = new Font(newFont.FontFamily, float.Parse("12.0"), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             this.WindowState = FormWindowState.Normal;
             this.Refresh();
-            if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+            if (!mini)
             {
-                this.WindowState = FormWindowState.Maximized;
+                if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
+                {
+                    this.WindowState = FormWindowState.Maximized;
+                }
+                else this.Height = panel2.Height + panel1.Height + (3 * menuStrip1.Height);
             }
-            else this.Height = panel2.Height + panel1.Height + (3 * menuStrip1.Height);
         }
 
 
@@ -464,7 +475,7 @@ namespace Test1
                 mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
 
             }
-            catch (FileNotFoundException ex)
+            catch (Exception ex)
             {
                 mu.createSettingsFile();
                 mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
