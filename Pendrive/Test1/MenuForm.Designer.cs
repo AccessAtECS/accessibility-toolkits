@@ -65,7 +65,7 @@
             this.launchButton.Location = new System.Drawing.Point(1, 6);
             this.launchButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.launchButton.Name = "launchButton";
-            this.launchButton.Size = new System.Drawing.Size(386, 31);
+            this.launchButton.Size = new System.Drawing.Size(396, 31);
             this.launchButton.TabIndex = 0;
             this.launchButton.Text = "Launch Selected Application";
             this.launchButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -80,7 +80,7 @@
             this.exitButton.Location = new System.Drawing.Point(1, 207);
             this.exitButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.exitButton.Name = "exitButton";
-            this.exitButton.Size = new System.Drawing.Size(386, 29);
+            this.exitButton.Size = new System.Drawing.Size(396, 29);
             this.exitButton.TabIndex = 1;
             this.exitButton.Text = "Exit";
             this.exitButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -97,7 +97,7 @@
             this.appTree.Location = new System.Drawing.Point(0, 41);
             this.appTree.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(387, 239);
+            this.appTree.Size = new System.Drawing.Size(397, 239);
             this.appTree.TabIndex = 4;
             this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);
@@ -108,7 +108,7 @@
             this.colourButton.AccessibleName = "Change Background Colour";
             this.colourButton.Location = new System.Drawing.Point(0, 114);
             this.colourButton.Name = "colourButton";
-            this.colourButton.Size = new System.Drawing.Size(186, 50);
+            this.colourButton.Size = new System.Drawing.Size(194, 50);
             this.colourButton.TabIndex = 5;
             this.colourButton.Text = "Change Background Colour";
             this.colourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -141,9 +141,9 @@
             // 
             this.textColourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu text";
             this.textColourButton.AccessibleName = "Change Text Colour";
-            this.textColourButton.Location = new System.Drawing.Point(201, 114);
+            this.textColourButton.Location = new System.Drawing.Point(204, 114);
             this.textColourButton.Name = "textColourButton";
-            this.textColourButton.Size = new System.Drawing.Size(186, 50);
+            this.textColourButton.Size = new System.Drawing.Size(193, 50);
             this.textColourButton.TabIndex = 7;
             this.textColourButton.Text = "Change Text Colour";
             this.textColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -156,7 +156,7 @@
             // 
             this.downloadButton.Location = new System.Drawing.Point(1, 170);
             this.downloadButton.Name = "downloadButton";
-            this.downloadButton.Size = new System.Drawing.Size(386, 29);
+            this.downloadButton.Size = new System.Drawing.Size(396, 29);
             this.downloadButton.TabIndex = 9;
             this.downloadButton.Text = "Download New Applications";
             this.downloadButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -172,7 +172,7 @@
             this.flipColourButton.AccessibleName = "Flip colours";
             this.flipColourButton.Location = new System.Drawing.Point(293, 45);
             this.flipColourButton.Name = "flipColourButton";
-            this.flipColourButton.Size = new System.Drawing.Size(94, 28);
+            this.flipColourButton.Size = new System.Drawing.Size(104, 28);
             this.flipColourButton.TabIndex = 10;
             this.flipColourButton.Text = "Reverse";
             this.flipColourButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -187,7 +187,7 @@
             this.defaultFontButton.AccessibleName = "Default Font";
             this.defaultFontButton.Location = new System.Drawing.Point(293, 79);
             this.defaultFontButton.Name = "defaultFontButton";
-            this.defaultFontButton.Size = new System.Drawing.Size(94, 29);
+            this.defaultFontButton.Size = new System.Drawing.Size(104, 29);
             this.defaultFontButton.TabIndex = 11;
             this.defaultFontButton.Text = "Default";
             this.defaultFontButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -234,7 +234,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel1.Location = new System.Drawing.Point(0, 304);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(387, 253);
+            this.panel1.Size = new System.Drawing.Size(397, 253);
             this.panel1.TabIndex = 9;
             // 
             // panel2
@@ -244,7 +244,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 24);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(387, 280);
+            this.panel2.Size = new System.Drawing.Size(397, 280);
             this.panel2.TabIndex = 10;
             // 
             // label1
@@ -265,7 +265,7 @@
             this.helpToolStripMenuItem1});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(387, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(397, 24);
             this.menuStrip1.TabIndex = 7;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -331,7 +331,7 @@
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(387, 563);
+            this.ClientSize = new System.Drawing.Size(397, 563);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.menuStrip1);

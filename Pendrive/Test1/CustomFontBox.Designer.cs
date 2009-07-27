@@ -37,6 +37,7 @@
             // 
             // comboBox1
             // 
+            this.comboBox1.AccessibleName = "Choose Font Combo Box";
             this.comboBox1.FormattingEnabled = true;
             this.comboBox1.Location = new System.Drawing.Point(15, 25);
             this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -48,6 +49,7 @@
             // 
             // numericUpDown1
             // 
+            this.numericUpDown1.AccessibleName = "Choose Font Size";
             this.numericUpDown1.Increment = new decimal(new int[] {
             2,
             0,
@@ -88,6 +90,7 @@
             // 
             // button1
             // 
+            this.button1.AccessibleName = "Ok";
             this.button1.Location = new System.Drawing.Point(144, 93);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 33);
