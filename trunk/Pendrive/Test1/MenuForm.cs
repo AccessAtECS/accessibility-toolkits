@@ -69,6 +69,8 @@ namespace Test1
             {
                 //MessageBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!");
                 CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                this.BringToFront();
+                this.Focus();
             }
             colorOptions.AllowFullOpen = false;
         }
@@ -123,6 +125,8 @@ namespace Test1
                         //MessageBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded"  , "Error!");
                         CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                         mu.remove(selected);
+                        this.BringToFront();
+                        this.Focus();
                     }
                 }
             }
@@ -139,10 +143,13 @@ namespace Test1
 
         private void backgroundChange()
         {
-            if (colorOptions.ShowDialog() == DialogResult.OK)
+            /*if (colorOptions.ShowDialog() == DialogResult.OK)
             {
                 changeBackColour(colorOptions.Color);
-            }       
+            }*/
+            changeBackColour(CustomColourBox.show(appTree.BackColor, appTree.ForeColor, appTree.BackColor, this.Font));
+            this.BringToFront();
+            this.Focus();
         }
 
         /**
@@ -150,15 +157,18 @@ namespace Test1
          */
         private void textColourButton_Click(object sender, EventArgs e)
         {
-            foregroundChange();
+            foregroundChange();           
         }
 
         private void foregroundChange()
         {
-            if (colorOptions.ShowDialog() == DialogResult.OK)
+            /*if (colorOptions.ShowDialog() == DialogResult.OK)
             {
                 changeForeColour(colorOptions.Color);
-            }
+            }*/
+            changeForeColour(CustomColourBox.show(appTree.ForeColor, appTree.ForeColor, appTree.BackColor, this.Font));
+            this.BringToFront();
+            this.Focus();
         }
         
         /**
@@ -179,7 +189,7 @@ namespace Test1
             }*/
             this.Font = CustomFontBox.show(this.Font, appTree.BackColor, appTree.ForeColor);
             this.WindowState = FormWindowState.Normal;
-            this.Refresh();
+            //this.Refresh();
             if (!mini)
             {
                 if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
@@ -188,6 +198,8 @@ namespace Test1
                 }
                 else this.Height = panel2.Height + panel1.Height + (2 * menuStrip1.Height);
             }
+            this.BringToFront();
+            this.Focus();
         }
 
         /**
@@ -251,6 +263,8 @@ namespace Test1
             //MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
             //System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
             CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
+            this.BringToFront();
+            this.Focus();       
         }
 
         /**
@@ -340,6 +354,8 @@ namespace Test1
         {
             //MessageBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
             CustomBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
+            this.BringToFront();
+            this.Focus();
         }
 
         /**
@@ -363,6 +379,8 @@ namespace Test1
             }
             //MessageBox.Show(shortcuts, "Keyboard Shortcuts");
             CustomBox.Show(shortcuts, "Keyboard Shortcuts", this.Font, appTree.BackColor, appTree.ForeColor);
+            this.BringToFront();
+            this.Focus();
         }
 
         private void flipColourButton_Click(object sender, EventArgs e)
