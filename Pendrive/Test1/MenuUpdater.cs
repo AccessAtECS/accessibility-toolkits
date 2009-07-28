@@ -12,20 +12,16 @@ namespace Test1
         Menu appMenu;
         int oldCount;
         Char[] lastSlash;
+        XmlDocument menuDoc;
+        XmlNodeList list;
 
         public MenuUpdater()
         {
             
         }
         
-        /**
-         * Takes in the old count of how many apps there were, and compares this with the number of directories local to the menu
-         * If there are now more, then the menu is updated to include these new folders.
-         * Methods are called to attempt to locate the true path of an app, rather than just its folder, as well as attempting 
-         * to determine the application's category.
-         * Returns a bool, telling the XMLparser whether or not it needs to re-parse the menu.xml file.
-         */ 
-        public bool update(int oldCount, Menu appMenu)
+        
+        /*public bool update(int oldCount, Menu appMenu)
         {
             this.appMenu = appMenu;
             this.oldCount = oldCount;
@@ -33,6 +29,7 @@ namespace Test1
             String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory()); 
             foreach (string subdirectory in directories)
             {
+                
                 if (Directory.Exists(subdirectory))
                 {
                     count++;
@@ -79,24 +76,194 @@ namespace Test1
             }
             return false;
         }
+        */
 
+        /*
+        public bool update(int oldCount, Menu appMenu)
+        {
+            this.appMenu = appMenu;
+            this.oldCount = oldCount;
+            int count = 0;
+            String slash = "\\";
+            lastSlash = slash.ToCharArray();
+            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            foreach (string subdirectory in directories)
+            {
+                if (Directory.Exists(subdirectory))
+                {                    
+                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                    Console.WriteLine(subdir + " found");
+                    if (subdir.Equals("Guides") || subdir.Equals("Applications") || subdir.Equals("Accessibility"))
+                    {
+                        count++;
+                        String[] futherSubs = Directory.GetDirectories(subdirectory);
+                        foreach (string furtherSub in futherSubs)
+                        {
+                            if (Directory.Exists(furtherSub))
+                                count++;
+                        }
+                    }
+                    else count++;
+                }
+            }
+            if (count > oldCount)
+            {
+                menuDoc = new XmlDocument();
+                menuDoc.Load("menu.xml");
+                list = menuDoc.GetElementsByTagName("menu");
+                list[0].Attributes[0].Value = count.ToString(); //updates count
+               
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Guides");
+                checkTable(directories, true, "Guides");
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Applications");
+                checkTable(directories, true, "Applications");
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Accessibility");
+                checkTable(directories, true, "Accessibility");
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+                checkTable(directories, false, "");
+                try
+                {
+                    menuDoc.Save("menu.xml");
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
+            return false;
+
+        }
+        */
+
+        /**
+        * Takes in the old count of how many apps there were, and compares this with the number of directories local to the menu
+        * If there are now more, then the menu is updated to include these new folders.
+        * Methods are called to attempt to locate the true path of an app, rather than just its folder, as well as attempting 
+        * to determine the application's category.
+        * Returns a bool, telling the XMLparser whether or not it needs to re-parse the menu.xml file.
+        */
+        public bool update(int oldCount, Menu appMenu)
+        {
+            this.appMenu = appMenu;
+            this.oldCount = oldCount;
+            int count = 0;
+            String slash = "\\";
+            lastSlash = slash.ToCharArray();
+            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            System.Collections.ArrayList cats = new System.Collections.ArrayList();
+            foreach (string subdirectory in directories)
+            {
+                if (Directory.Exists(subdirectory))
+                {
+                    count++;
+                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                    if (subdir.Equals("Categories"))
+                    {
+                        String[] catFolders = Directory.GetDirectories(subdirectory);
+                        foreach (string catFolder in catFolders)
+                        {
+                            cats.Add(catFolder);
+                            count++;
+                            String[] futherSubs = Directory.GetDirectories(subdirectory);
+                            foreach (string furtherSub in futherSubs)
+                            {
+                                if (Directory.Exists(furtherSub))
+                                    count++;
+                            }
+                        }
+                    }
+                }
+            }
+            if (count > oldCount)
+            {
+                menuDoc = new XmlDocument();
+                menuDoc.Load("menu.xml");
+                list = menuDoc.GetElementsByTagName("menu");
+                list[0].Attributes[0].Value = count.ToString(); //updates count
+                foreach (string catFolder in cats)
+                {
+                    directories = Directory.GetDirectories(catFolder);
+                    checkTable(directories, true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
+                }
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+                checkTable(directories, false, "");
+                try
+                {
+                    menuDoc.Save("menu.xml");
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
+            return false;
+        }
+
+
+        public void checkTable(String[] directories, bool catFolder, String cat)
+        {
+         
+            foreach (string subdirectory in directories)
+            {
+                if (!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
+                {
+                    if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
+                    {
+                        //found new app
+                        XmlElement newNode = menuDoc.CreateElement("app");
+                        XmlElement newName = menuDoc.CreateElement("name");
+                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                        XmlElement newPath = menuDoc.CreateElement("path");
+                        string path = findPath(subdirectory, catFolder);
+                        newPath.InnerText = path;
+                        XmlElement newCategory = menuDoc.CreateElement("category");
+                        if (catFolder)
+                        {
+                            newCategory.InnerText = cat;
+                        }
+                        else
+                            newCategory.InnerText = checkCategory(path);
+                        newNode.AppendChild(newName);
+                        newNode.AppendChild(newPath);
+                        newNode.AppendChild(newCategory);
+                        list[0].AppendChild(newNode);
+                    }
+                }
+            }
+        }
+
+        public bool isNotCat(String title)
+        {
+            if (!title.Equals("Categories"))
+                return true;
+            else return false;
+        }
+
+
+  
         /**
          * Takes in a path to a directory and attempts to locate the actual path wanted.
          * If there is only one file, and no other folder in the directory, then that file can be set as the path.
          * Otherwise, find the .exe files and check if there is one with the same name as the application.
          * If neither of these, return the path to the directory so that the menu opens that folder.
          */ 
-        public string findPath(string subdirectory)
+        public string findPath(string subdirectory, bool cat)
         {
+            int sub;
+            if (cat)
+                sub = 3;
+            else sub = 2;
             String[] files = Directory.GetFiles(subdirectory);
             String[] directories = Directory.GetDirectories(subdirectory);
             if (directories.Length == 1 && files.Length == 0) //if only one subdirectory then search through this
             {
                 subdirectory = directories[0];
-                return findPath(subdirectory);
+                return findPath(subdirectory, cat);
             }
             if (files.Length == 1 && directories.Length == 0) //if only one file in directory then set this as the path
-                return files[0].Substring(2);
+                return files[0].Substring(sub);
             foreach (string file in files)
             {
                 if (file.EndsWith(".exe"))
@@ -104,10 +271,10 @@ namespace Test1
                     String filename = file.Substring(file.LastIndexOfAny(lastSlash) + 1);
                     String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1) + ".exe";
                     if (filename.Equals(pathname) || filename.Equals(pathname.ToLower()))
-                        return file.Substring(2);
+                        return file.Substring(sub);
                 }
             }
-            return subdirectory.Substring(2);
+            return subdirectory.Substring(sub);
         }
         
         /**
