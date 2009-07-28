@@ -24,8 +24,8 @@ namespace Test1
         {
             customFontBox = new CustomFontBox();
             customFontBox.Font = font;
-            customFontBox.BackColor = bg;
-            customFontBox.ForeColor = fg;
+            customFontBox.button1.BackColor = bg;
+            customFontBox.button1.ForeColor = fg;
             customFontBox.comboBox1.BackColor = bg;
             customFontBox.comboBox1.ForeColor = fg;
             customFontBox.numericUpDown1.BackColor = bg;
@@ -36,7 +36,10 @@ namespace Test1
             fontList.AddRange(installedFonts.Families);
             foreach (FontFamily f in fontList)
             {
-                customFontBox.comboBox1.Items.Add(f.Name);
+                if (f.IsStyleAvailable(FontStyle.Regular))
+                {
+                    customFontBox.comboBox1.Items.Add(f.Name);
+                }
             }
             customFontBox.comboBox1.SelectedItem = font.FontFamily.ToString();
             customFontBox.numericUpDown1.Value = (decimal)float.Parse(font.Size.ToString());

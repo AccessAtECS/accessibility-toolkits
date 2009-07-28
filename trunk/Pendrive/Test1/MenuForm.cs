@@ -110,6 +110,7 @@ namespace Test1
          */
         private void launchApp()
         {
+            
             if (appTree.SelectedNode != (null))
             {
                 String selected = appTree.SelectedNode.Text;
@@ -118,8 +119,9 @@ namespace Test1
                     String inputPath = (String)((AppShortcut)menu[selected]).getPath();
                     try
                     {
-                        System.Diagnostics.Process.Start(@inputPath);
-                    }                    
+                        
+                        System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);                     
+                    }
                     catch (Exception e)
                     {
                         //MessageBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded"  , "Error!");
@@ -150,6 +152,7 @@ namespace Test1
             changeBackColour(CustomColourBox.show(appTree.BackColor, appTree.ForeColor, appTree.BackColor, this.Font));
             this.BringToFront();
             this.Focus();
+            colourComboBox.Text = "Quick Colour Change";
         }
 
         /**
@@ -169,6 +172,7 @@ namespace Test1
             changeForeColour(CustomColourBox.show(appTree.ForeColor, appTree.ForeColor, appTree.BackColor, this.Font));
             this.BringToFront();
             this.Focus();
+            colourComboBox.Text = "Quick Colour Change";
         }
         
         /**

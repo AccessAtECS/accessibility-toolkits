@@ -12,6 +12,7 @@ namespace Test1
     {
         static CustomColourBox customColorBox;
         static Color toReturn;
+        static bool text = false;
 
         public CustomColourBox()
         {
@@ -22,12 +23,14 @@ namespace Test1
         {
             customColorBox = new CustomColourBox();
             customColorBox.Font = font;
-            //customColorBox.BackColor = bg;
-            //customColorBox.ForeColor = fg;
             customColorBox.btnOk.BackColor = bg;
             customColorBox.btnOk.ForeColor = fg;
             customColorBox.btnMore.BackColor = bg;
             customColorBox.btnMore.ForeColor = fg;
+            if (current.Equals(fg))
+                text = true;
+            if (current.Equals(bg))
+                text = false;
             toReturn = current;
             customColorBox.ShowDialog();
             return toReturn;
@@ -40,43 +43,44 @@ namespace Test1
 
         private void btnWhite_Click(object sender, EventArgs e)
         {
-            toReturn = Color.White;
+            //toReturn = Color.White;
+            toReturn = checkClash(Color.White);
             this.Dispose();
         }
 
         private void btnBlack_Click(object sender, EventArgs e)
         {
-            toReturn = Color.Black;
+            toReturn = checkClash(Color.Black);
             this.Dispose();
         }
 
         private void btnCream_Click(object sender, EventArgs e)
         {
-            toReturn = Color.Cornsilk;
+            toReturn = checkClash(Color.Cornsilk);
             this.Dispose();
         }
 
         private void btnYellow_Click(object sender, EventArgs e)
         {
-            toReturn = Color.Yellow;
+            toReturn = checkClash(Color.Yellow);
             this.Dispose();
         }
 
         private void btnNavy_Click(object sender, EventArgs e)
         {
-            toReturn = Color.Navy;
+            toReturn = checkClash(Color.Navy);
             this.Dispose();
         }
 
         private void btnPaleBlue_Click(object sender, EventArgs e)
         {
-            toReturn = Color.AliceBlue;
+            toReturn = checkClash(Color.AliceBlue);
             this.Dispose();
         }
 
         private void btnPink_Click(object sender, EventArgs e)
         {
-            toReturn = Color.MistyRose;
+            toReturn = checkClash(Color.MistyRose);
             this.Dispose();
         }
 
@@ -84,9 +88,31 @@ namespace Test1
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
             {
-                toReturn = colorDialog1.Color;
+                toReturn = checkClash(colorDialog1.Color);
             }
             this.Dispose();
+        }
+
+        public Color checkClash(Color newColor)
+        {
+            if (text)
+            {
+                if (newColor.Equals(customColorBox.btnOk.BackColor))
+                {
+                    CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, customColorBox.btnOk.BackColor, customColorBox.btnOk.ForeColor);
+                    return toReturn;
+                }
+                else return newColor;
+            }
+            else
+            {
+                if (newColor.Equals(customColorBox.btnOk.ForeColor))
+                {
+                    CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, customColorBox.btnOk.BackColor, customColorBox.btnOk.ForeColor);
+                    return toReturn;
+                }
+                else return newColor;
+            }
         }
 
     }

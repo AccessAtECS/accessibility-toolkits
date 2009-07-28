@@ -104,7 +104,7 @@
             // 
             // colourButton
             // 
-            this.colourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu background";
+            this.colourButton.AccessibleDescription = "Open a dialog box to select a new colour for the menu background";
             this.colourButton.AccessibleName = "Change Background Colour";
             this.colourButton.Location = new System.Drawing.Point(0, 114);
             this.colourButton.Name = "colourButton";
@@ -119,7 +119,7 @@
             // 
             // fontButton
             // 
-            this.fontButton.AccessibleDescription = "Button to open a dialog box to choose the font used on the menu";
+            this.fontButton.AccessibleDescription = "Open a dialog box to choose the font used on the menu";
             this.fontButton.AccessibleName = "Change Font";
             this.fontButton.Location = new System.Drawing.Point(1, 79);
             this.fontButton.Name = "fontButton";
@@ -139,7 +139,7 @@
             // 
             // textColourButton
             // 
-            this.textColourButton.AccessibleDescription = "Button to open a dialog box to select a new colour for the menu text";
+            this.textColourButton.AccessibleDescription = "Open a dialog box to select a new colour for the menu text";
             this.textColourButton.AccessibleName = "Change Text Colour";
             this.textColourButton.Location = new System.Drawing.Point(204, 114);
             this.textColourButton.Name = "textColourButton";
@@ -154,6 +154,8 @@
             // 
             // downloadButton
             // 
+            this.downloadButton.AccessibleDescription = "Download new applications to your pendrive";
+            this.downloadButton.AccessibleName = "Download New Applications";
             this.downloadButton.Location = new System.Drawing.Point(1, 170);
             this.downloadButton.Name = "downloadButton";
             this.downloadButton.Size = new System.Drawing.Size(396, 29);
@@ -168,7 +170,7 @@
             // 
             // flipColourButton
             // 
-            this.flipColourButton.AccessibleDescription = "Button to reverse the colour scheme";
+            this.flipColourButton.AccessibleDescription = "Reverse the colour scheme";
             this.flipColourButton.AccessibleName = "Flip colours";
             this.flipColourButton.Location = new System.Drawing.Point(293, 45);
             this.flipColourButton.Name = "flipColourButton";
@@ -183,8 +185,9 @@
             // 
             // defaultFontButton
             // 
-            this.defaultFontButton.AccessibleDescription = "Button to revert to the default font";
+            this.defaultFontButton.AccessibleDescription = "Revert to the default font";
             this.defaultFontButton.AccessibleName = "Default Font";
+            this.defaultFontButton.ImageAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.defaultFontButton.Location = new System.Drawing.Point(293, 79);
             this.defaultFontButton.Name = "defaultFontButton";
             this.defaultFontButton.Size = new System.Drawing.Size(104, 29);
@@ -271,6 +274,7 @@
             // 
             // fileToolStripMenuItem
             // 
+            this.fileToolStripMenuItem.AccessibleName = "File Menu";
             this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.miniToolStripMenuItem,
             this.exitToolStripMenuItem});
@@ -280,13 +284,16 @@
             // 
             // miniToolStripMenuItem
             // 
+            this.miniToolStripMenuItem.AccessibleName = "Mini View";
             this.miniToolStripMenuItem.Name = "miniToolStripMenuItem";
             this.miniToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.miniToolStripMenuItem.Text = "Mini View";
+            this.miniToolStripMenuItem.ToolTipText = "Hide the buttons and display only the Menu List";
             this.miniToolStripMenuItem.Click += new System.EventHandler(this.miniToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
+            this.exitToolStripMenuItem.AccessibleName = "Exit";
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(132, 22);
             this.exitToolStripMenuItem.Text = "Exit";
@@ -294,6 +301,7 @@
             // 
             // helpToolStripMenuItem1
             // 
+            this.helpToolStripMenuItem1.AccessibleName = "Help Menu";
             this.helpToolStripMenuItem1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.helpToolStripMenuItem2,
             this.toolStripSeparator1,
@@ -304,6 +312,7 @@
             // 
             // helpToolStripMenuItem2
             // 
+            this.helpToolStripMenuItem2.AccessibleName = "Keyboard Shortcuts";
             this.helpToolStripMenuItem2.Name = "helpToolStripMenuItem2";
             this.helpToolStripMenuItem2.Size = new System.Drawing.Size(193, 22);
             this.helpToolStripMenuItem2.Text = "Keyboard Shortcuts";
@@ -316,6 +325,7 @@
             // 
             // aboutToolStripMenuItem
             // 
+            this.aboutToolStripMenuItem.AccessibleName = "About";
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(193, 22);
             this.aboutToolStripMenuItem.Text = "About";
