@@ -110,16 +110,16 @@ namespace Test1
          */
         private void launchApp()
         {
-            
             if (appTree.SelectedNode != (null))
             {
                 String selected = appTree.SelectedNode.Text;
                 if (!categories.ContainsKey(selected)) //check the selected item is not a category heading
                 {
+                    launchButton.Text = "Launching " + selected + "...";
+                    this.Refresh();
                     String inputPath = (String)((AppShortcut)menu[selected]).getPath();
                     try
                     {
-                        
                         System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);                     
                     }
                     catch (Exception e)
@@ -130,6 +130,8 @@ namespace Test1
                         this.BringToFront();
                         this.Focus();
                     }
+                    launchButton.Text = "Launch Selected Application";
+
                 }
             }
         }
@@ -265,8 +267,8 @@ namespace Test1
         private void downloadButton_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information");
-            //System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
-            CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://*** to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://access.ecs.soton.ac.uk to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
+            System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
             this.BringToFront();
             this.Focus();       
         }
@@ -357,7 +359,7 @@ namespace Test1
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //MessageBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu");
-            CustomBox.Show("Menu \nVersion 0.1 \n\nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("Menu \nVersion 0.1.2 \n\nCreated By:  \nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton \nFunded by LATEU", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }
@@ -469,6 +471,7 @@ namespace Test1
                 panel1.Enabled = false;
                 this.Height = this.Height - panel1.Height;
                 miniToolStripMenuItem.Text = "Full View";
+                miniToolStripMenuItem.ToolTipText = "Show the buttons and display the whole menu";
                 mini = !mini;
             }
             else
@@ -481,6 +484,7 @@ namespace Test1
                     this.WindowState = FormWindowState.Maximized;
                 }
                 miniToolStripMenuItem.Text = "Mini View";
+                miniToolStripMenuItem.ToolTipText = "Hide the buttons and display only the Menu List";
                 mini = !mini;
             }
         }
@@ -506,5 +510,6 @@ namespace Test1
             }
             Application.Exit();
         }
+
     }
 }

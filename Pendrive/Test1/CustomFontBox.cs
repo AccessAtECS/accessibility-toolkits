@@ -30,7 +30,7 @@ namespace Test1
             customFontBox.comboBox1.ForeColor = fg;
             customFontBox.numericUpDown1.BackColor = bg;
             customFontBox.numericUpDown1.ForeColor = fg;
-           
+            toReturn = font;
             InstalledFontCollection installedFonts = new InstalledFontCollection();
             ArrayList fontList = new ArrayList();
             fontList.AddRange(installedFonts.Families);
