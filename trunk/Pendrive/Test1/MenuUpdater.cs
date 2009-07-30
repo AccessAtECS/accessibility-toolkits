@@ -19,123 +19,7 @@ namespace Test1
         {
             
         }
-        
-        
-        /*public bool update(int oldCount, Menu appMenu)
-        {
-            this.appMenu = appMenu;
-            this.oldCount = oldCount;
-            int count = 0;
-            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory()); 
-            foreach (string subdirectory in directories)
-            {
-                
-                if (Directory.Exists(subdirectory))
-                {
-                    count++;
-                }
-            }
-            if (count > oldCount)
-            {
-                //then a new app has been downloaded - set up xml entry and add to xml file under "Downloaded category"
-                XmlDocument menuDoc = new XmlDocument();
-                menuDoc.Load("menu.xml");
-                XmlNodeList list = menuDoc.GetElementsByTagName("menu");
-                list[0].Attributes[0].Value = count.ToString(); //updates count
-                String slash = "\\";
-                lastSlash = slash.ToCharArray();
-                foreach (string subdirectory in directories)
-                {
-                    if (!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
-                    {
-                        //found new app
-                        XmlElement newNode = menuDoc.CreateElement("app");
-                        XmlElement newName = menuDoc.CreateElement("name");
-                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash)+1);
-                        XmlElement newPath = menuDoc.CreateElement("path");
-                        string path = findPath(subdirectory);
-                        newPath.InnerText = path;
-                        XmlElement newCategory = menuDoc.CreateElement("category");
-                        newCategory.InnerText = checkCategory(path);
-                        newNode.AppendChild(newName);
-                        newNode.AppendChild(newPath);
-                        newNode.AppendChild(newCategory);
-                        list[0].AppendChild(newNode);                              
-                    }
-                }
-                try
-                {
-                    menuDoc.Save("menu.xml");
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    //Console.WriteLine("Error " + e.ToString());
-                    return false;
-                }
-            }
-            return false;
-        }
-        */
-
-        /*
-        public bool update(int oldCount, Menu appMenu)
-        {
-            this.appMenu = appMenu;
-            this.oldCount = oldCount;
-            int count = 0;
-            String slash = "\\";
-            lastSlash = slash.ToCharArray();
-            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            foreach (string subdirectory in directories)
-            {
-                if (Directory.Exists(subdirectory))
-                {                    
-                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
-                    Console.WriteLine(subdir + " found");
-                    if (subdir.Equals("Guides") || subdir.Equals("Applications") || subdir.Equals("Accessibility"))
-                    {
-                        count++;
-                        String[] futherSubs = Directory.GetDirectories(subdirectory);
-                        foreach (string furtherSub in futherSubs)
-                        {
-                            if (Directory.Exists(furtherSub))
-                                count++;
-                        }
-                    }
-                    else count++;
-                }
-            }
-            if (count > oldCount)
-            {
-                menuDoc = new XmlDocument();
-                menuDoc.Load("menu.xml");
-                list = menuDoc.GetElementsByTagName("menu");
-                list[0].Attributes[0].Value = count.ToString(); //updates count
-               
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Guides");
-                checkTable(directories, true, "Guides");
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Applications");
-                checkTable(directories, true, "Applications");
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory() + @"\Accessibility");
-                checkTable(directories, true, "Accessibility");
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-                checkTable(directories, false, "");
-                try
-                {
-                    menuDoc.Save("menu.xml");
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
-            }
-            return false;
-
-        }
-        */
-
+            
         /**
         * Takes in the old count of how many apps there were, and compares this with the number of directories local to the menu
         * If there are now more, then the menu is updated to include these new folders.
@@ -165,11 +49,13 @@ namespace Test1
                         {
                             cats.Add(catFolder);
                             count++;
-                            String[] futherSubs = Directory.GetDirectories(subdirectory);
+                            String[] futherSubs = Directory.GetDirectories(catFolder);
                             foreach (string furtherSub in futherSubs)
                             {
                                 if (Directory.Exists(furtherSub))
+                                {
                                     count++;
+                                }
                             }
                         }
                     }
@@ -201,7 +87,10 @@ namespace Test1
             return false;
         }
 
-
+        /**
+         * Checks the menu table to see if the folders in the directory are listed as applications in the menu already.
+         * If not, it creates the new xml nodes to add so that they can be seen.
+         */ 
         public void checkTable(String[] directories, bool catFolder, String cat)
         {
          
@@ -224,7 +113,7 @@ namespace Test1
                             newCategory.InnerText = cat;
                         }
                         else
-                            newCategory.InnerText = checkCategory(path);
+                            newCategory.InnerText = checkCategory(path); //attempt to guess the category
                         newNode.AppendChild(newName);
                         newNode.AppendChild(newPath);
                         newNode.AppendChild(newCategory);
@@ -234,6 +123,9 @@ namespace Test1
             }
         }
 
+        /*
+         * Checks that a Directory is not the Category parent folder
+         */ 
         public bool isNotCat(String title)
         {
             if (!title.Equals("Categories"))
