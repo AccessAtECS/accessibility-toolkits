@@ -17,7 +17,8 @@ namespace Test1
         {
             this.appName = appName;
             this.appPath = appPath;
-            this.category = category;
+            this.category = category;  
+            
         }
 
         public String getName()
