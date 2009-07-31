@@ -33,7 +33,7 @@ namespace Test1
                 TreeNode tempN = new TreeNode(cat); 
                 appTree.Nodes.Add(tempN);                    
                 foreach (String app in ((ArrayList)categories[cat]))
-                {  
+                {
                     tempN.Nodes.Add(app);
                 }                  
             }
@@ -47,7 +47,10 @@ namespace Test1
             colourButton.TabIndex = 4;
             textColourButton.TabIndex = 5;
             downloadButton.TabIndex = 6;
-            exitButton.TabIndex = 7;                  
+            exitButton.TabIndex = 7;
+
+            btnMiniLaunch.TabIndex = 8;
+            btnMiniOptions.TabIndex = 9;
             appTree.ExpandAll();
             try
             {
@@ -63,7 +66,7 @@ namespace Test1
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
-                else this.Height = panel2.Height + panel1.Height + (3* menuStrip1.Height) ;
+                else this.Height =  panel2.Height + panel1.Height + (3* menuStrip1.Height) ;
             }
             catch(Exception ex)
             {
@@ -202,7 +205,7 @@ namespace Test1
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
-                else this.Height = panel2.Height + panel1.Height + (2 * menuStrip1.Height);
+                else this.Height = panel3.Height + panel2.Height + panel1.Height + (2 * menuStrip1.Height);
             }
             this.BringToFront();
             this.Focus();
@@ -348,6 +351,16 @@ namespace Test1
             MenuForm_KeyDown(sender, e);
         }
 
+        private void btnMiniLaunch_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
+        private void btnMiniOptions_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveAndClose();
@@ -425,7 +438,7 @@ namespace Test1
                 {
                     this.WindowState = FormWindowState.Maximized;
                 }
-                else this.Height = panel2.Height + panel1.Height + (3 * menuStrip1.Height);
+                else this.Height = panel3.Height + panel2.Height + panel1.Height + (3 * menuStrip1.Height);
             }
         }
 
@@ -442,6 +455,9 @@ namespace Test1
             colourComboBox.ForeColor = fg;
             flipColourButton.ForeColor = fg;
             defaultFontButton.ForeColor = fg;
+
+            btnMiniLaunch.ForeColor = fg;
+            btnMiniOptions.ForeColor = fg;
         }
 
         private void changeBackColour(Color bg)
@@ -456,6 +472,9 @@ namespace Test1
             fontButton.BackColor = bg;
             exitButton.BackColor = bg;
             downloadButton.BackColor = bg;
+
+            btnMiniLaunch.BackColor = bg;
+            btnMiniOptions.BackColor = bg;
         }
 
         private void miniToolStripMenuItem_Click(object sender, EventArgs e)
@@ -469,7 +488,9 @@ namespace Test1
             {
                 panel1.Visible = false;
                 panel1.Enabled = false;
-                this.Height = this.Height - panel1.Height;
+                panel3.Visible = true;
+                panel3.Enabled = true;
+                this.Height = this.Height - panel1.Height + panel3.Height;
                 miniToolStripMenuItem.Text = "Full View";
                 miniToolStripMenuItem.ToolTipText = "Show the buttons and display the whole menu";
                 mini = !mini;
@@ -478,7 +499,9 @@ namespace Test1
             {
                 panel1.Visible = true;
                 panel1.Enabled = true;
-                this.Height = this.Height + panel1.Height;
+                panel3.Visible = false;
+                panel3.Enabled = false;
+                this.Height = this.Height - panel3.Height + panel1.Height;
                 if (this.Height > Screen.PrimaryScreen.WorkingArea.Height)
                 {
                     this.WindowState = FormWindowState.Maximized;
@@ -510,6 +533,18 @@ namespace Test1
             }
             Application.Exit();
         }
+
+        private void btnMiniLaunch_Click(object sender, EventArgs e)
+        {
+            launchApp();
+        }
+
+        private void btnMiniOptions_Click(object sender, EventArgs e)
+        {
+            toggleMini();
+        }
+
+              
 
     }
 }

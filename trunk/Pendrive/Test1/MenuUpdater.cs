@@ -164,6 +164,7 @@ namespace Test1
                     String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1) + ".exe";
                     if (filename.Equals(pathname) || filename.Equals(pathname.ToLower()))
                         return file.Substring(sub);
+                   
                 }
             }
             return subdirectory.Substring(sub);
