@@ -105,19 +105,38 @@ namespace Test1
                         XmlElement newName = menuDoc.CreateElement("name");
                         newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
                         XmlElement newPath = menuDoc.CreateElement("path");
-                        string path = findPath(subdirectory, catFolder);
+                        string path = findPath(subdirectory, catFolder);                        
                         newPath.InnerText = path;
+                        //
+                        try
+                        {
+                            String file;
+                            String temp = System.Diagnostics.FileVersionInfo.GetVersionInfo(path).FileDescription;
+                            if (temp == null)
+                                file = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                            else file = temp;
+                            newName.InnerText = file;
+                        }
+                        catch
+                        {
+                        }
+                        //
                         XmlElement newCategory = menuDoc.CreateElement("category");
                         if (catFolder)
                         {
                             newCategory.InnerText = cat;
                         }
                         else
+                        {
                             newCategory.InnerText = checkCategory(path); //attempt to guess the category
-                        newNode.AppendChild(newName);
-                        newNode.AppendChild(newPath);
-                        newNode.AppendChild(newCategory);
-                        list[0].AppendChild(newNode);
+                        }
+                        if (!(newCategory.InnerText.Equals("User's Folders") && newName.InnerText.Equals("Menu_Data")))
+                        {
+                            newNode.AppendChild(newName);
+                            newNode.AppendChild(newPath);
+                            newNode.AppendChild(newCategory);
+                            list[0].AppendChild(newNode);
+                        }
                     }
                 }
             }
@@ -181,12 +200,12 @@ namespace Test1
             if (File.Exists(directory)) //if a path to the actual file/exe was found, rather than the folder
             {
                 if (directory.EndsWith(".doc"))
-                    return ("Guides");
+                    return ("Accessibility Guides");
                 if (directory.EndsWith(".exe"))
                     return ("Applications"); //could be an application e.g. firefox, or an accessibility tool e.g. a screenreader, need to distinguish   
             }
             else if (Directory.Exists(directory))
-                    return ("Folders");
+                    return ("User's Folders");
             return ("Downloads");
         }
 
@@ -215,19 +234,28 @@ namespace Test1
         /**
          * Saves the users settings in an xml file so that they can be restored when the user next loads the menu.
          */ 
-        public void saveSettings(String bgcolour, String txtcolour, String font, String fontsize)
+        public void saveSettings(String bgcolour, String txtcolour, String font, String fontsize, String mini)
         {
-            XmlDocument settingsDoc = new XmlDocument();
-            settingsDoc.Load("settings.xml");
-            XmlNodeList settings = settingsDoc.GetElementsByTagName("bgcolour");
-            settings[0].InnerText = bgcolour;
-            settings = settingsDoc.GetElementsByTagName("textcolour");
-            settings[0].InnerText = txtcolour;
-            settings = settingsDoc.GetElementsByTagName("font");
-            settings[0].InnerText = font;
-            settings = settingsDoc.GetElementsByTagName("fontsize");
-            settings[0].InnerText = fontsize;
-            settingsDoc.Save("settings.xml");
+            try
+            {
+                XmlDocument settingsDoc = new XmlDocument();
+                settingsDoc.Load("settings.xml");
+                XmlNodeList settings = settingsDoc.GetElementsByTagName("bgcolour");
+                settings[0].InnerText = bgcolour;
+                settings = settingsDoc.GetElementsByTagName("textcolour");
+                settings[0].InnerText = txtcolour;
+                settings = settingsDoc.GetElementsByTagName("font");
+                settings[0].InnerText = font;
+                settings = settingsDoc.GetElementsByTagName("fontsize");
+                settings[0].InnerText = fontsize;
+                settings = settingsDoc.GetElementsByTagName("mini");
+                settings[0].InnerText = mini;
+                settingsDoc.Save("settings.xml");
+            }
+            catch (IOException e)
+            {
+
+            }
         }
 
         /**
@@ -280,6 +308,8 @@ namespace Test1
             list[0].AppendChild(settingsFont);
             XmlElement settingsFontSize = newSettings.CreateElement("fontsize");
             list[0].AppendChild(settingsFontSize);
+            XmlElement settingsMini = newSettings.CreateElement("mini");
+            list[0].AppendChild(settingsMini);
             newSettings.Save("settings.xml");
         }          
     }
