@@ -1,6 +1,7 @@
 <settings>
   <bgcolour>White</bgcolour>
   <textcolour>Black</textcolour>
-  <font>Microsoft Sans Serif</font>
-  <fontsize>12</fontsize>
+  <font>Arial</font>
+  <fontsize>14</fontsize>
+  <mini>False</mini>
 </settings>

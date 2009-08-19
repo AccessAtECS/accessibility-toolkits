@@ -11,6 +11,7 @@ namespace Test1
         private String textcolour;
         private String font;
         private String fontsize;
+        private bool mini;
 
         public Settings(ArrayList values)
         {
@@ -21,6 +22,9 @@ namespace Test1
                 textcolour = items[1];
                 font = items[2];
                 fontsize = items[3];
+                if (items[4].Equals("True"))
+                    mini = true;
+                else mini = false;
             }
         }
 
@@ -42,6 +46,11 @@ namespace Test1
         public String getFontSize()
         {
             return fontsize;
+        }
+
+        public bool getMini()
+        {
+            return mini;
         }
     }
 }
