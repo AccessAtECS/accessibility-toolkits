@@ -16,16 +16,11 @@ namespace Test1
         private Hashtable menu;
         private Hashtable categories;
         private MenuUpdater mu;
-        private bool mini;
-        private bool horizontal;
-        private bool notified;
-        private int correctMainHeight;
-        private int correctOptionsHeight;
-        private int correctWidth;
-        private int hWidth;
-        private int defaultWidth;
-        private int defaultTreeHeight;
+        private ArrayList keys;
+        private ArrayList messages;
+        private bool tooLarge;
         Rectangle maxSize = new Rectangle();
+        Rectangle resetSize;
 
         /**
          * Create a new MenuForm, and try to load saved settings.
@@ -37,19 +32,23 @@ namespace Test1
             this.categories = appMenu.getCategories();
             this.mu = updater;
             InitializeComponent();
+            
            
             //Set up logo
             Bitmap bmpLogo = new Bitmap("Menu_Data\\logo.png");
-            pictureBox1.Image = bmpLogo;
-            ImageList imgList = new ImageList();
+            Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
+            this.Icon = mainIcon;
+            notifyIcon1.Icon = mainIcon;
             
+            ImageList imgList = new ImageList();            
             //Set up menu treeview
             Bitmap bmpIcon = new Bitmap("Menu_Data\\icon.png");
             Icon ic = Icon.FromHandle(bmpIcon.GetHicon());
-            notifyIcon1.Icon = ic;
+            
             imgList.Images.Add(ic); //adds the Folder icon as a basic icon to be used for categories
             foreach (String cat in categories.Keys)
             {
+                appTree.BeginUpdate();
                 TreeNode categoryNode = new TreeNode(cat);
                 categoryNode.ImageIndex = 0;
                 appTree.Nodes.Add(categoryNode); 
@@ -80,8 +79,49 @@ namespace Test1
                 categoryNode.SelectedImageIndex = 0;                 
             }
             appTree.Sort();
-            ActiveControl = btnMiniLaunch;
+            appTree.EndUpdate();
+            ActiveControl = appTree;
+
+            //set up font menu
+            System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
+            ArrayList fontList = new ArrayList();
+            fontList.AddRange(installedFonts.Families);
+            foreach (FontFamily f in fontList)
+            {
+                if (f.IsStyleAvailable(FontStyle.Regular))
+                {
+                    fontToolStripMenuItem.DropDownItems.Add(f.Name);
+                }
+            }
+            for (int i = 10; i < 72; i += 2)
+            {
+                sizeToolStripMenuItem.DropDownItems.Add(i.ToString());
+            }
+
+            //set up shortcuts
+            keys = new ArrayList();
+            keys.Add("CTRL + +, Increase Text Size");
+            keys.Add("CTRL + -, Decrease Text Size");
+            keys.Add("CTRL + F, Change Font");
+            keys.Add("CTRL + D, Set Default Font");
+            keys.Add("CTRL + T, Change Text Colour");
+            keys.Add("CTRL + B, Change Background Colour");
+            keys.Add("CTRL + R, Reverse Colours");
+            keys.Add("CTRL + [numbers], Change Colour Combinations");
+            keys.Add("ESC, Reset Colours and Font");
+
+            messages = new ArrayList();
+            Char[] separator = ",".ToCharArray();
+            foreach (String shortcut in keys)
+            {
+                String[] subs = shortcut.Split(separator);
+                messages.Add("Press " + subs[0] + " to " + subs[1] + ".");
+            }
+            
+
+
             //Set up colours and fonts from settings file
+            this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
             try
             {
                 Color bgColour = ColorTranslator.FromHtml(settings.getBgColour());
@@ -92,42 +132,24 @@ namespace Test1
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
                 this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-             
-                mini = settings.getMini();
-                defaultTreeHeight = 280;
-                defaultWidth = 442;
-                correctMainHeight = (pictureBox1.Height + menuStrip1.Height + panelMain.Height + panelMiniOptions.Height);
-                correctOptionsHeight = groupBox1.Height;
-                correctWidth = groupBox1.Width + 23;
-                this.Width = correctWidth;
-                this.Height = correctOptionsHeight + correctMainHeight;
-                
-                if (mini)
-                {
-                    groupBox1.Visible = false;
-                    groupBox1.Enabled = false;
-                    if (this.WindowState == FormWindowState.Normal)
-                    {
-                        this.Height = correctMainHeight;
-                    }
-                    miniToolStripMenuItem.Text = "Full View";
-                    miniToolStripMenuItem.ToolTipText = "Show the buttons and display the whole menu";
-                    btnMiniOptions.Text = "Show Options";
-                }
+                statusLabel.Font = this.Font;
+                menuStrip1.Font = this.Font;
+
+                resetSize = new Rectangle();
+                resetSize.Width = 295;
+                resetSize.Height = 335;
+                menuStrip1.Items.Insert(1, new ToolStripSeparator());
+                menuStrip1.Items.Insert(3, new ToolStripSeparator());
                 appTree.Focus();
             }
             catch(Exception ex)
             {
                 CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                 mu.createSettingsFile();
-                mini = false;
                 this.BringToFront();
                 this.Focus();
             }
-            
             checkScreenSize();
-            notified = false;
-            horizontal = false;
             appTree.ExpandAll();
             colorOptions.AllowFullOpen = false;
         }
@@ -161,21 +183,32 @@ namespace Test1
             }
             if (e.KeyData == Keys.Up)
             {
-                if (appTree.SelectedNode != null)
+                if (appTree.SelectedNode != (null))
                 {
+                    statusLabel.Text = "Press Enter to launch";
+                
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
             if (e.KeyData == Keys.Down)
             {
-                if (appTree.SelectedNode != null)
+                if (appTree.SelectedNode != (null))
                 {
+                    statusLabel.Text = "Press Enter to launch";
+                   
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
             else MenuForm_KeyDown(sender, e);
         }
 
+        private void appTree_Click(object sender, EventArgs e)
+        {
+            if (appTree.SelectedNode != (null))
+            {
+                statusLabel.Text = "Double click an app to launch";
+            }
+        }
                
         /**
          * Executes the selected application
@@ -187,12 +220,13 @@ namespace Test1
                 String selected = appTree.SelectedNode.Text;
                 if (!categories.ContainsKey(selected)) //check the selected item is not a category heading
                 {
-                    btnMiniLaunch.Text = "Launching " + selected + "...";
+                    statusLabel.Text = "Launching";
                     this.Refresh();
                     String inputPath = (String)((AppShortcut)menu[selected]).getPath();
                     try
                     {
-                        System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);                     
+                        System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);
+                        
                     }
                     catch (Exception e)
                     {
@@ -201,66 +235,10 @@ namespace Test1
                         this.BringToFront();
                         this.Focus();
                     }
-                    btnMiniLaunch.Text = "Launch Selected Application";
+                    statusLabel.Text = "Ready";
+                    
                 }
             }
-        }
-
-
-        /**
-         * Manually change the background colour of the menu components.
-         */
-        private void colourButton_Click(object sender, EventArgs e)
-        {
-            backgroundChange();             
-        }
-
-        private void backgroundChange()
-        {
-            changeBackColour(CustomColourBox.show(appTree.BackColor, appTree.ForeColor, appTree.BackColor, this.Font));
-            this.BringToFront();
-            this.Focus();
-            colourComboBox.Text = "Quick Colour Change";
-        }
-
-        /**
-         * Manually change the text colour of the menu components.
-         */
-        private void textColourButton_Click(object sender, EventArgs e)
-        {
-            foregroundChange();           
-        }
-
-        private void foregroundChange()
-        {
-            changeForeColour(CustomColourBox.show(appTree.ForeColor, appTree.ForeColor, appTree.BackColor, this.Font));
-            this.BringToFront();
-            this.Focus();
-            colourComboBox.Text = "Quick Colour Change";
-        }
-        
-        /**
-         * Method to change font family, style and size.
-         * Also handles the resizing of the window and components to accomodate the change in font size 
-         */
-        private void fontButton_Click(object sender, EventArgs e)
-        {
-            fontChange();
-        }    
-
-        private void fontChange()
-        {
-            double oldFontSize = this.Font.Size;
-            this.ResizeRedraw = true;
-            this.Font = CustomFontBox.show(this.Font, appTree.BackColor, appTree.ForeColor);
-            this.WindowState = FormWindowState.Normal;
-            correctMainHeight = (pictureBox1.Height + menuStrip1.Height + panelMain.Height + panelMiniOptions.Height);
-            correctOptionsHeight = groupBox1.Height;
-            correctWidth = groupBox1.Width +23;
-            if (oldFontSize < this.Font.Size)
-                checkScreenSize();
-            this.BringToFront();
-            this.Focus();
         }
 
         private void changeFontSize(int change)
@@ -271,21 +249,20 @@ namespace Test1
             if (fontSize >= 10)
             {
                 this.Font = new Font(this.Font.FontFamily, fontSize, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
+                statusLabel.Font = this.Font;
+                menuStrip1.Font = this.Font;
             }
-            correctMainHeight = (pictureBox1.Height + menuStrip1.Height + panelMain.Height + panelMiniOptions.Height);
-            correctOptionsHeight = groupBox1.Height;
-            correctWidth = groupBox1.Width + 23;
+            if (!tooLarge)
+            {
+                statusLabel.Text = "Text Size: " + this.Font.Size;
+            }
+            else
+            {
+                statusLabel.Text = "Text Size: " + this.Font.Size;
+            }
             int newSize = this.Size.Height;
-            if (change > 0)
-                checkScreenSize();
-        }
-
-        /**
-         * Automatically change the font/background colour combination using the comboBox
-         */
-        private void colourComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            colourComboChanged(colourComboBox.SelectedIndex);
+            checkScreenSize();
+                
         }
 
         private void colourComboChanged(int i)
@@ -331,13 +308,13 @@ namespace Test1
             changeBackColour(bg);        
         }
 
-        private void downloadButton_Click(object sender, EventArgs e)
+        /*private void downloadButton_Click(object sender, EventArgs e)
         {
             CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nIn the meantime, please visit http://access.ecs.soton.ac.uk to manually download additional applications. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
             System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/blog");
             this.BringToFront();
             this.Focus();       
-        }
+        }*/
 
         /**
          * General key commands that are also called whenever the KeyDown occurs on the other Form components
@@ -345,21 +322,15 @@ namespace Test1
         private void MenuForm_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F && e.Control)
-                fontChange();
+                settingsFont.ShowDropDown();
             if (e.KeyCode == Keys.B && e.Control)
-                backgroundChange();
+                settingsBg.ShowDropDown();
             if (e.KeyCode == Keys.T && e.Control)
-                foregroundChange();
+                settingsFg.ShowDropDown();
             if (e.KeyCode == Keys.D && e.Control)
-                downloadButton.PerformClick();
+                fontReset();
             if (e.KeyCode == Keys.R && e.Control)
                 colourSchemeOrderChanged();
-            if (e.KeyCode == Keys.O && e.Control)
-                fontReset();
-            if (e.KeyCode == Keys.M && e.Control)
-                toggleMini();
-            if (e.KeyCode == Keys.H && e.Control)
-                toggleHorizontal();
             if (e.KeyCode == Keys.D1 && e.Control)
                 colourComboChanged(0);
             if (e.KeyCode == Keys.D2 && e.Control)
@@ -380,9 +351,11 @@ namespace Test1
                 changeFontSize(-2);
             if (e.KeyCode == Keys.Escape)
                 resetAll();
+            if (e.KeyCode == Keys.Alt)
+                menuStrip1.Focus();
         }
 
-        private void launchButton_KeyDown(object sender, KeyEventArgs e)
+        /*private void launchButton_KeyDown(object sender, KeyEventArgs e)
         {
             MenuForm_KeyDown(sender, e);
         }
@@ -437,59 +410,23 @@ namespace Test1
             MenuForm_KeyDown(sender, e);
         }
 
+        private void menuStrip1_KeyDown(object sender, KeyEventArgs e)
+        {
+            MenuForm_KeyDown(sender, e);
+        }
+        */
+
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
             saveAndClose();
-        }     
-
-        /**
-         * Handler for the "About" option in the Menu bar
-         */ 
-        private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            CustomBox.Show("Menu \nVersion 0.1.2 \n\nCreated By:  \nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton \nFunded by LATEU", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
-            this.BringToFront();
-            this.Focus();
-        }
-
-        /**
-         * Handler for the "Keyboard Shortcuts" option in the Menu bar
-         */ 
-        private void helpToolStripMenuItem2_Click(object sender, EventArgs e)
-        {
-            ArrayList keys = new ArrayList();
-            keys.Add("CTRL + +, Increase Text Size");
-            keys.Add("CTRL + -, Decrease Text Size");
-            keys.Add("CTRL + F, Change Font");
-            keys.Add("CTRL + O, Default Font");
-            keys.Add("CTRL + T, Change Text Colour");
-            keys.Add("CTRL + B, Change Background Colour");
-            keys.Add("CTRL + R, Reverse Colours");
-            keys.Add("CTRL + D, Downloads");
-            keys.Add("CTRL + M, Toggle Mini View");
-            keys.Add("CTRL + [numbers], Preset Colour Combinations");
-            keys.Add("ESC, Reset Colours and Font");
-            String shortcuts = "";
-            Char[] separator = ",".ToCharArray();
-            foreach (String shortcut in keys)
-            {
-                String[] subs = shortcut.Split(separator);
-                shortcuts += subs[0] + " : " + subs[1] + ". \n";
-            }
-            CustomBox.Show(shortcuts, "Keyboard Shortcuts", this.Font, appTree.BackColor, appTree.ForeColor);
-            this.BringToFront();
-            this.Focus();
-        }
-
-        private void flipColourButton_Click(object sender, EventArgs e)
-        {
-            colourSchemeOrderChanged();
-        }
+        }    
 
         private void colourSchemeOrderChanged()
         {
             Color tempB = appTree.BackColor;
             Color tempF = appTree.ForeColor;
+            appTree.ForeColor = tempB;
+            //appTree.BackColor = tempF;
             changeBackColour(tempF);
             changeForeColour(tempB);
         }
@@ -499,34 +436,16 @@ namespace Test1
             launchApp();
         }
 
-        private void defaultFontButton_Click(object sender, EventArgs e)
-        {
-            fontReset();
-        }
-
-
         private void resetAll()
         {
             fontReset();
             changeBackColour(Color.White);
             changeForeColour(Color.Black);
-            colourComboBox.Text = "Quick Colour Change";
-            if (horizontal)
-            {
-                this.Width = correctWidth;
-                panelMain.Dock = DockStyle.Top;
-                groupBox1.Dock = DockStyle.Top;
-                horizontalDisplayToolStripMenuItem.Text = "Horizontal Display";
-                horizontal = !horizontal;
-            }
-            if (mini)
-                this.Height = correctMainHeight;
-            else
-                this.Height = correctMainHeight + correctOptionsHeight;
-            //correctWidth = groupBox1.Width + 23;
-            //if (correctWidth < defaultWidth)
-                correctWidth = defaultWidth;
-            this.Width = correctWidth;
+            this.Size = resetSize.Size;
+            this.MinimumSize = resetSize.Size;
+            this.Location = new Point(0, 0);
+            statusLabel.Text = "Text Size: " + this.Font.Size;
+            checkScreenSize();
             
             
         }
@@ -535,13 +454,14 @@ namespace Test1
         {
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
             Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
-            this.Font = new Font(newFont.FontFamily, float.Parse("12.0"), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            this.Font = new Font(newFont.FontFamily, float.Parse("10.0"), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            
+            statusLabel.Font = this.Font;
+            menuStrip1.Font = this.Font;
+            this.Size = resetSize.Size;
+            this.MinimumSize = resetSize.Size;
             checkScreenSize();
-            appTree.Height = defaultTreeHeight;
-            panelMain.Height = appTree.Height + panelMiniOptions.Height;
-            correctMainHeight = (pictureBox1.Height + menuStrip1.Height + panelMain.Height + panelMiniOptions.Height);
-            correctOptionsHeight = groupBox1.Height;
-            correctWidth = groupBox1.Width + 23;
+            
             this.WindowState = FormWindowState.Normal;
             this.Refresh();
         }
@@ -550,78 +470,96 @@ namespace Test1
         private void changeForeColour(Color fg)
         {
             appTree.ForeColor = fg;
-            colourButton.ForeColor = fg;
-            textColourButton.ForeColor = fg;
-            fontButton.ForeColor = fg;
-            exitButton.ForeColor = fg;
-            downloadButton.ForeColor = fg;
-            colourComboBox.ForeColor = fg;
-            flipColourButton.ForeColor = fg;
-            defaultFontButton.ForeColor = fg;
-            btnMiniLaunch.ForeColor = fg;
-            btnMiniOptions.ForeColor = fg;
+            menuStrip1.ForeColor = fg;
+
+            settingsBg.ForeColor = fg;
+            settingsColourScheme.ForeColor = fg;
+            settingsDefaultFont.ForeColor = fg;
+            settingsFg.ForeColor = fg;
+            settingsFont.ForeColor = fg;
+            settingsReverse.ForeColor = fg;
+            fileMenuExit.ForeColor = fg;
+            aboutToolStripMenuItem1.ForeColor = fg;
+            keyboardShortcutsToolStripMenuItem.ForeColor = fg;
+            fontToolStripMenuItem.ForeColor = fg;
+            sizeToolStripMenuItem.ForeColor = fg;
+            moreBgMenuItem.ForeColor = fg;
+            moreFgMenuItem.ForeColor = fg;
+            foreach (ToolStripMenuItem t in settingsBg.DropDownItems)
+            {
+                if (!t.Text.Equals("Custom..."))
+                {
+                    t.ForeColor = fg;
+                    Color temp = checkClash(t.BackColor, false, false);
+                    if (temp != t.BackColor)
+                    {
+                        t.Enabled = false;
+                        t.Visible = false;
+                    }
+                    else
+                    {
+                        t.Enabled = true;
+                        t.Visible = true;
+                    }
+                }
+            }
+            foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
+            {
+                t.ForeColor = fg;
+            }
+            foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
+            {
+                t.ForeColor = fg;
+            }
+            
         }
 
         private void changeBackColour(Color bg)
         {
-            defaultFontButton.BackColor = bg;
-            flipColourButton.BackColor = bg;
-            colourComboBox.BackColor = bg;
             appTree.BackColor = bg;
-            colourButton.BackColor = bg;
-            textColourButton.BackColor = bg;
-            fontButton.BackColor = bg;
-            exitButton.BackColor = bg;
-            downloadButton.BackColor = bg;
-            btnMiniLaunch.BackColor = bg;
-            btnMiniOptions.BackColor = bg;
-        }
+            menuStrip1.BackColor = bg;
 
-        private void miniToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            toggleMini();
-        }
-
-        private void toggleMini()
-        {
-           
-                if (!mini)
+            settingsBg.BackColor = bg;
+            settingsColourScheme.BackColor = bg;
+            settingsDefaultFont.BackColor = bg;
+            settingsFg.BackColor = bg;
+            settingsFont.BackColor = bg;
+            settingsReverse.BackColor = bg;
+            fileMenuExit.BackColor = bg;
+            aboutToolStripMenuItem1.BackColor = bg;
+            keyboardShortcutsToolStripMenuItem.BackColor = bg;
+            fontToolStripMenuItem.BackColor = bg;
+            sizeToolStripMenuItem.BackColor = bg;
+            moreFgMenuItem.BackColor = bg;
+            moreBgMenuItem.BackColor = bg;
+            foreach (ToolStripMenuItem t in settingsFg.DropDownItems)
+            {
+                if (!t.Text.Equals("Custom..."))
                 {
-                    groupBox1.Visible = false;
-                    groupBox1.Enabled = false;
-
-                    this.Height = correctMainHeight;
-                    this.Width = correctWidth;
-
-                    miniToolStripMenuItem.Text = "Full View";
-                    miniToolStripMenuItem.ToolTipText = "Show the buttons and display the whole menu";
-                    btnMiniOptions.Text = "Show Options";
-                    mini = !mini;
-                }
-                else
-                {
-                    groupBox1.Visible = true;
-                    groupBox1.Enabled = true;
-
-                    if (horizontal)
+                    t.BackColor = bg;
+                    Color temp = checkClash(t.ForeColor, true, false);
+                    if (temp != t.ForeColor)
                     {
-                        hWidth = 2 * correctWidth;
-                        this.Width = hWidth;
-                        this.Height = correctMainHeight;
+                        t.Enabled = false;
+                        t.Visible = false;
                     }
                     else
                     {
-                        this.Height = correctMainHeight + correctOptionsHeight;
-                        this.Width = correctWidth;
+                        t.Enabled = true;
+                        t.Visible = true;
                     }
-
-                    miniToolStripMenuItem.Text = "Mini View";
-                    miniToolStripMenuItem.ToolTipText = "Hide the buttons and display only the Menu List";
-                    btnMiniOptions.Text = "Hide Options";
-                    mini = !mini;
                 }
-            
+            }
+            foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
+            {
+                t.BackColor = bg;
+            }
+            foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
+            {
+                t.BackColor = bg;
+            }
         }
+
 
         private void MenuForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -636,25 +574,16 @@ namespace Test1
         {
             try
             {
-                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString(), this.mini.ToString());
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
             }
             catch (Exception ex)
             {
                 mu.createSettingsFile();
-                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString(), this.mini.ToString());
+                mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
             }
             Application.Exit();
         }
 
-        private void btnMiniLaunch_Click(object sender, EventArgs e)
-        {
-            launchApp();
-        }
-
-        private void btnMiniOptions_Click(object sender, EventArgs e)
-        {
-            toggleMini();
-        }
 
         /**
          * Checks if the window has been minimized and if so hides it in the system tray and shows a balloon tip
@@ -664,33 +593,8 @@ namespace Test1
             if (this.WindowState == FormWindowState.Minimized)
             {
                 Hide();
+                notifyIcon1.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
                 notifyIcon1.ShowBalloonTip(200);
-            }
-
-            if (this.Size.Width > Screen.PrimaryScreen.WorkingArea.Width || this.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-            {
-                if (!notified)
-                {
-                    String orientation = "";
-                    if (this.Size.Width > Screen.PrimaryScreen.WorkingArea.Width)
-                        orientation = "wider";
-                    if (this.Size.Height > Screen.PrimaryScreen.WorkingArea.Height)
-                        orientation = "taller";
-                    CustomBox.Show("The menu window is now " + orientation + " than your screen which may cause some viewing problems. \nYou may continue to increase the text size, but if the menu becomes unusable, press the Escape key to reset the settings, or select 'Fix Size/Layout' from the File Menu.", "Warning", this.Font, appTree.BackColor, appTree.ForeColor);
-                    notified = true;
-                }
-            }
-            if (this.Size.Width < Screen.PrimaryScreen.WorkingArea.Width && this.Size.Height < Screen.PrimaryScreen.WorkingArea.Height)
-            {
-                notified = false;
-                fixSizeLayoutToolStripMenuItem.Enabled = false;
-                fixSizeLayoutToolStripMenuItem.Visible = false;
-            }
-
-            if (notified)
-            {
-                fixSizeLayoutToolStripMenuItem.Enabled = true;
-                fixSizeLayoutToolStripMenuItem.Visible = true;
             }
         }
 
@@ -749,56 +653,260 @@ namespace Test1
             }
 
         }
-
-        private void horizontalDisplayToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            toggleHorizontal();
-        }
-
-        private void toggleHorizontal()
-        {
-            if (horizontal)
-            {
-                if (!mini)
-                {
-                    this.Height = correctMainHeight + correctOptionsHeight;
-                }
-                this.Width = correctWidth;
-                panelMain.Dock = DockStyle.Top;
-                groupBox1.Dock = DockStyle.Top;
-                horizontalDisplayToolStripMenuItem.Text = "Horizontal Display";
-            }
-            else
-            {
-                this.Height = correctMainHeight;
-                if (!mini)
-                {
-                    hWidth = 2 * correctWidth;
-                    this.Width = hWidth;
-                }
-                panelMain.Dock = DockStyle.Fill;
-                groupBox1.Dock = DockStyle.Right;
-                horizontalDisplayToolStripMenuItem.Text = "Vertical Display";
-            }
-            horizontal = !horizontal;
-        }
-
-        private void fixSizeLayoutToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            resetAll();
-        }
+         
 
         private void checkScreenSize()
         {
             maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width - 18);
-            maxSize.Height = (Screen.PrimaryScreen.WorkingArea.Height - pictureBox1.Height);
-            appTree.MaximumSize = maxSize.Size;
+            maxSize.Height = Screen.PrimaryScreen.WorkingArea.Height - 18;
+            this.MaximumSize = maxSize.Size;
+            appTree.Height = this.Height - menuStrip1.Height - statusLabel.Height;
+            appTree.Scrollable = true;
+            if (this.Height == this.MaximumSize.Height || this.Width == this.MaximumSize.Width)
+                tooLarge = true;
+            else tooLarge = false;
+            if (tooLarge)
+            {
+                notifyIcon1.BalloonTipText = "The menu window is now larger than your screen. Press the Escape key to fix any layout problems.";
+                notifyIcon1.ShowBalloonTip(250);
+            }
         }
-
+        
         private void appTree_Enter(object sender, EventArgs e)
         {
             appTree.SelectedNode = appTree.Nodes[0];
         }
+
+        private void fileMenuExit_Click(object sender, EventArgs e)
+        {
+            saveAndClose();
+        }
+
+        private void settingsReverse_Click(object sender, EventArgs e)
+        {
+            colourSchemeOrderChanged();
+        }
+
+        private void settingsDefaultFont_Click(object sender, EventArgs e)
+        {
+            fontReset();
+        }
+
+        private void blackOnWhiteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(0);
+        }
+
+        private void whiteOnBlackToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(1);
+        }
+
+        private void yellowOnBlueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(2);
+        }
+
+        private void blackOnYellowToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(3);
+        }
+
+        private void blackOnPaleBlueToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(4);
+        }
+
+        private void blackOnCreamToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(5);
+        }
+
+        private void blackOnPinkToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            colourComboChanged(6);
+        }
+
+        private void keyboardShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            
+            String shortcuts = "";
+            Char[] separator = ",".ToCharArray();
+            foreach (String shortcut in keys)
+            {
+                String[] subs = shortcut.Split(separator);
+                shortcuts += subs[0] + " : " + subs[1] + ". \n";
+            }
+            CustomBox.Show(shortcuts, "Keyboard Shortcuts", this.Font, appTree.BackColor, appTree.ForeColor);
+            this.BringToFront();
+            this.Focus();
+        }
+
+        private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            CustomBox.Show("Menu \nVersion 0.2 \n\nCreated By:  \nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton \nFunded by LATEU", "Application Menu", this.Font, appTree.BackColor, appTree.ForeColor);
+            this.BringToFront();
+            this.Focus();
+        }
+
+        private void fontToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            String selected = e.ClickedItem.Text;
+            Font newFont = (Font)toFont.ConvertFromString(selected);
+            this.Font = new Font(newFont.FontFamily, this.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            toolStrip1.Font = this.Font;
+            menuStrip1.Font = this.Font;
+        }
+
+        private void sizeToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            int selected = int.Parse(e.ClickedItem.Text);
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            Font newFont = (Font)toFont.ConvertFromString(this.Font.FontFamily.ToString());
+            this.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            
+            statusLabel.Font = this.Font;
+            menuStrip1.Font = this.Font;
+            statusLabel.Text = "";
+            checkScreenSize();
+        }
+
+        private void settingsBg_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (!e.ClickedItem.Text.Equals("Custom..."))
+            {
+                Color bg = appTree.BackColor;
+                bg = checkClash(e.ClickedItem.BackColor, false, false);
+                changeBackColour(bg);
+            }
+        }
+
+        private void settingsFg_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            if (!e.ClickedItem.Text.Equals("Custom..."))
+            {
+            Color fg = appTree.ForeColor;
+            fg = checkClash(e.ClickedItem.ForeColor, true, false);
+            changeForeColour(fg);
+            }
+        }
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            resetAll();
+        }
+
+        private void moreBgMenuItem_Click(object sender, EventArgs e)
+        {
+            Color toReturn = appTree.BackColor;
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                toReturn = checkClash(colorDialog1.Color, false, true);
+            }
+            changeBackColour(toReturn);
+        }
+
+        private void moreFgMenuItem_Click(object sender, EventArgs e)
+        {
+            Color toReturn = appTree.ForeColor;
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+            {
+                toReturn = checkClash(colorDialog1.Color, true, true);
+            }
+            changeForeColour(toReturn);
+        }
+
+        public Color checkClash(Color newColor, bool text, bool userCaused)
+        {
+            if (text) //if it is the text colour that is being changed
+            {
+                if (newColor.Equals(appTree.BackColor))
+                {
+                    if (userCaused)
+                        CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                    return appTree.ForeColor;
+                }
+                else
+                {
+                    if (checkRatio(appTree.BackColor, newColor) == true)
+                        return newColor;
+                    else
+                    {
+                        if (userCaused)
+                            CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        return appTree.ForeColor;
+                    }
+                }
+            }
+            else
+            {
+                if (newColor.Equals(appTree.ForeColor))
+                {
+                    if (userCaused)
+                        CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                    return appTree.BackColor;
+                }
+                {
+                    if (checkRatio(newColor, appTree.ForeColor) == true)
+                        return newColor;
+                    else
+                    {
+                        if (userCaused)
+                            CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        return appTree.BackColor;
+                    }
+                }
+            }
+        }
+
+        public bool checkRatio(Color back, Color fore)
+        {
+            decimal backR = Decimal.Divide(back.R, 255);
+            decimal backG = Decimal.Divide(back.G, 255);
+            decimal backB = Decimal.Divide(back.B, 255);
+            backR = relLuminance(backR);
+            backG = relLuminance(backG);
+            backB = relLuminance(backB);
+
+            decimal backVal = (((decimal)0.2126 * backR) + ((decimal)0.7152 * backG) + ((decimal)0.0722 * backB));
+
+            decimal foreR = Decimal.Divide(fore.R, 255);
+            decimal foreG = Decimal.Divide(fore.G, 255);
+            decimal foreB = Decimal.Divide(fore.B, 255);
+            foreR = relLuminance(foreR);
+            foreG = relLuminance(foreG);
+            foreB = relLuminance(foreB);
+
+            decimal foreVal = (((decimal)0.2126 * foreR) + ((decimal)0.7152 * foreG) + ((decimal)0.0722 * foreB));
+
+            decimal result;
+            if (foreVal > backVal)
+                result = ((foreVal + (decimal)0.05) / (backVal + (decimal)0.05));
+            else result = ((backVal + (decimal)0.05) / (foreVal + (decimal)0.05));
+
+            if (result >= (decimal)4.5)
+                return true;
+            else return false;
+
+        }
+
+        public decimal relLuminance(decimal num)
+        {
+            decimal num2;
+            if (num <= (decimal)0.03928)
+            {
+                num2 = (num / (decimal)12.92);
+            }
+            else num2 = (decimal)(Math.Pow((double)((num + (decimal)0.055) / (decimal)1.055), 2.4));
+            return num2;
+        }
+
+        
+
+        
+
+       
 
 
     }

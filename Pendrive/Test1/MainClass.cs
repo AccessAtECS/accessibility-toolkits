@@ -36,13 +36,13 @@ namespace Test1
             }
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            String[] settingsTags = new String[5];
+            String[] settingsTags = new String[4];
             settingsTags[0] = "bgcolour";
             settingsTags[1] = "textcolour";
             settingsTags[2] = "font";
             settingsTags[3] = "fontsize";
-            settingsTags[4] = "mini";
-            Settings s = new Settings(x.readXmlFile("settings.xml", settingsTags));            
+            Settings s = new Settings(x.readXmlFile("settings.xml", settingsTags));
+            //Application.Run(new formMenu(s, appMenu, updater));
             Application.Run(new MenuForm(s, appMenu, updater));            
         }
     }
