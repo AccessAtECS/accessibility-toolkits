@@ -234,7 +234,7 @@ namespace Test1
         /**
          * Saves the users settings in an xml file so that they can be restored when the user next loads the menu.
          */ 
-        public void saveSettings(String bgcolour, String txtcolour, String font, String fontsize, String mini)
+        public void saveSettings(String bgcolour, String txtcolour, String font, String fontsize)
         {
             try
             {
@@ -248,8 +248,7 @@ namespace Test1
                 settings[0].InnerText = font;
                 settings = settingsDoc.GetElementsByTagName("fontsize");
                 settings[0].InnerText = fontsize;
-                settings = settingsDoc.GetElementsByTagName("mini");
-                settings[0].InnerText = mini;
+                
                 settingsDoc.Save("settings.xml");
             }
             catch (IOException e)
@@ -308,8 +307,7 @@ namespace Test1
             list[0].AppendChild(settingsFont);
             XmlElement settingsFontSize = newSettings.CreateElement("fontsize");
             list[0].AppendChild(settingsFontSize);
-            XmlElement settingsMini = newSettings.CreateElement("mini");
-            list[0].AppendChild(settingsMini);
+            
             newSettings.Save("settings.xml");
         }          
     }

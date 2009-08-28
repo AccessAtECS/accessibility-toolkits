@@ -21,17 +21,22 @@ namespace Test1
         public static void Show(String message, String title, Font font, Color bg, Color fg)
         {
             customBox = new CustomBox();
-            customBox.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
-            //customBox.richTextBox1.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
-            //customBox.lblMessage.Text = message;
+
+            //Set up logo
+            Bitmap bmpLogo = new Bitmap("Menu_Data\\logo.png");
+            Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
+            customBox.Icon = mainIcon;
+
+            Rectangle maxSize = new Rectangle();
+            maxSize.Height = 150;
+            maxSize.Width = 360;
             customBox.richTextBox1.Text = message;
             customBox.Text = title;
-            customBox.Font = font;
+            customBox.richTextBox1.Font = font;
             customBox.BackColor = bg;
             customBox.ForeColor = fg;
-            customBox.btnOk.BackColor = bg;
-            customBox.btnOk.ForeColor = fg;
-            
+            customBox.MaximumSize = maxSize.Size;
+            customBox.richTextBox1.MaximumSize = maxSize.Size;
             customBox.ShowDialog();
         }
 
