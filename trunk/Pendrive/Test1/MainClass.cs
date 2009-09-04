@@ -14,10 +14,11 @@ namespace Test1
             Menu appMenu = new Menu();
             MenuUpdater updater = new MenuUpdater();
             XMLparser x = new XMLparser();
-            String[] menuTags = new String[3];
+            String[] menuTags = new String[4];
             menuTags[0] = "name";
             menuTags[1] = "path";
             menuTags[2] = "category";
+            menuTags[3] = "extra";
             try
             {
                 appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));

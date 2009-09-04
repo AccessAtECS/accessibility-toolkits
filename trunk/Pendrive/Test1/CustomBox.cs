@@ -12,16 +12,18 @@ namespace Test1
     public partial class CustomBox : Form
     {
         static CustomBox customBox;
+        static string toReturn;
 
         public CustomBox()
         {
             InitializeComponent();
+            toReturn = "";
+
         }
 
-        public static void Show(String message, String title, Font font, Color bg, Color fg)
+        public static string Show(String message, String title, Font font, Color bg, Color fg)
         {
             customBox = new CustomBox();
-
             //Set up logo
             Bitmap bmpLogo = new Bitmap("Menu_Data\\logo.png");
             Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
@@ -31,6 +33,12 @@ namespace Test1
             {
                 customBox.pictureBox1.Visible = true;
                 customBox.pictureBox1.Height = 45;
+            }
+            
+            if (title.StartsWith("Edit Description"))
+            {
+                customBox.richTextBox1.ReadOnly = false;
+                toReturn = message;
             }
 
             Rectangle maxSize = new Rectangle();
@@ -45,6 +53,7 @@ namespace Test1
             maxSize.Height = maxSize.Height - customBox.pictureBox1.Height;
             customBox.richTextBox1.MaximumSize = maxSize.Size;
             customBox.ShowDialog();
+            return toReturn;
         }
 
         private void btnOk_Click(object sender, EventArgs e)
@@ -60,6 +69,11 @@ namespace Test1
         private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.LinkText);
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            toReturn = customBox.richTextBox1.Text;
         }
     }
 }

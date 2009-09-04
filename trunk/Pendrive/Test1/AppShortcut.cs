@@ -12,12 +12,14 @@ namespace Test1
         private String appName;
         private String appPath;
         private String category;
+        private String extra;
 
-        public AppShortcut(String appName, String appPath, String category)
+        public AppShortcut(String appName, String appPath, String category, String extra)
         {
             this.appName = appName;
             this.appPath = appPath;
-            this.category = category;  
+            this.category = category;
+            this.extra = extra;
             
         }
 
@@ -34,6 +36,16 @@ namespace Test1
         public String getCategory()
         {
             return category;
+        }
+
+        public String getExtra()
+        {
+            return extra;
+        }
+
+        public void setExtra(String extra)
+        {
+            this.extra = extra;
         }
     }
 }

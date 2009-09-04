@@ -56,13 +56,20 @@ namespace Test1
                     try
                     {
                         String path = (String)((AppShortcut)menu[app]).getPath(); //gets the app from the Menu and extracts its path
+                        String extra = (String)((AppShortcut)menu[app]).getExtra(); //gets extra information
                         System.Drawing.Icon appIcon = System.Drawing.Icon.ExtractAssociatedIcon(path); //extracts the associated icon for that app
-                        imgList.Images.Add(appIcon);                        
-                        TreeNode appNode = new TreeNode(app);
+                        imgList.Images.Add(appIcon);
+                        String appTitle = app;
+                        if (!extra.Equals("."))
+                        {
+                            appTitle = app + " (" + extra + ")";
+                        }
+                        TreeNode appNode = new TreeNode(appTitle);
                         appTree.ImageList = imgList;
                         appTree.ImageIndex = appTree.ImageList.Images.Count;
                         appNode.ImageIndex = appTree.ImageIndex;
                         appNode.SelectedImageIndex = appNode.ImageIndex;
+                        appNode.ContextMenuStrip = appTreeContextMenu;
                         categoryNode.Nodes.Add(appNode);
                         ToolStripMenuItem appTrayItem = new ToolStripMenuItem(app);
                         contextMenuStrip1.Items.Add(appTrayItem);
@@ -124,6 +131,7 @@ namespace Test1
                 this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
                 statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
+                appTreeContextMenu.Font = this.Font;
 
                 resetSize = new Rectangle();
                 resetSize.Width = 295;
@@ -170,21 +178,31 @@ namespace Test1
         {
             if (appTree.SelectedNode != (null))
             {
+                char[] extraSplit = "(".ToCharArray();
                 String selected = appTree.SelectedNode.Text;
+                try
+                {
+                    selected = selected.Substring(0, selected.LastIndexOfAny(extraSplit) - 1);
+                }
+                catch
+                {
+
+                }
                 if (!categories.ContainsKey(selected)) //check the selected item is not a category heading
                 {
-                    statusLabel1.Text = "Launching";
+                    statusLabel1.Text = "Launching"; 
                     this.Refresh();
-                    String inputPath = (String)((AppShortcut)menu[selected]).getPath();
                     try
                     {
+                        String inputPath = (String)((AppShortcut)menu[selected]).getPath();
                         System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);
 
                     }
                     catch (Exception e)
                     {
-                        CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                        CustomBox.Show("Application not found! \nThis application will no longer be shown in the menu.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                         mu.remove(selected);
+                        appTree.Nodes.Remove(appTree.SelectedNode);
                         this.BringToFront();
                         this.Focus();
                     }
@@ -208,6 +226,7 @@ namespace Test1
                 this.Font = new Font(this.Font.FontFamily, fontSize, this.Font.Style, this.Font.Unit, this.Font.GdiCharSet, this.Font.GdiVerticalFont);
                 statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
+                appTreeContextMenu.Font = this.Font;
             }
             if (!tooLarge)
             {
@@ -503,6 +522,7 @@ namespace Test1
 
             statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
+            appTreeContextMenu.Font = this.Font;
             this.Size = resetSize.Size;
             this.MinimumSize = resetSize.Size;
             checkScreenSize();
@@ -519,7 +539,7 @@ namespace Test1
             maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width - 18);
             maxSize.Height = Screen.PrimaryScreen.WorkingArea.Height - 18;
             this.MaximumSize = maxSize.Size;
-            appTree.Height = this.Height - menuStrip1.Height - statusStrip1.Height;
+            appTree.Height = this.Height - menuStrip1.Height - (2 * statusStrip1.Height);
             appTree.Scrollable = true;
             if (this.Height == this.MaximumSize.Height || this.Width == this.MaximumSize.Width)
                 tooLarge = true;
@@ -598,7 +618,14 @@ namespace Test1
          */ 
         private void appTree_Enter(object sender, EventArgs e)
         {
-            appTree.SelectedNode = appTree.Nodes[0];
+            try
+            {
+                appTree.SelectedNode = appTree.Nodes[0];
+            }
+            catch
+            {
+
+            }
         }
 
         /**
@@ -610,6 +637,7 @@ namespace Test1
             {
                 statusLabel1.Text = "Double click an app to launch";
             }
+
         }
 
         /**
@@ -812,6 +840,7 @@ namespace Test1
 
             statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
+            appTreeContextMenu.Font = this.Font;
             statusLabel1.Text = "";
             checkScreenSize();
         }
@@ -851,7 +880,7 @@ namespace Test1
             double version = 0.3;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
-            CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects \nLearning Societies Lab \nSchool of Electronics and Computer Science \nUniversity of Southampton \nFunded by LATEU \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }     
@@ -914,5 +943,71 @@ namespace Test1
             }
 
         }
+
+        private void appTree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                appTree.SelectedNode = e.Node;
+            }
+
+        }
+
+        private void launchToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            launchApp();
+        }
+
+        private void descriptionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+             
+            if (appTree.SelectedNode != (null))
+            {
+                String selected = appTree.SelectedNode.Text;
+                char[] extraSplit = "(".ToCharArray();
+                try
+                {
+                    selected = selected.Substring(0, selected.LastIndexOfAny(extraSplit) - 1);
+                }
+                catch
+                {
+
+                }
+                String current = appTree.SelectedNode.Text.Substring(appTree.SelectedNode.Text.LastIndexOfAny(extraSplit) + 1);
+                current = current.Substring(0, current.Length - 1);
+                String description = CustomBox.Show(current, "Edit Description - " + selected, this.Font, this.BackColor, this.ForeColor);
+
+                try
+                {
+                    mu.editExtra(selected, description);
+                    ((AppShortcut)menu[selected]).setExtra(description);
+                    String extra = (String)((AppShortcut)menu[selected]).getExtra();
+                    TreeNode toChange = appTree.SelectedNode;
+                    appTree.BeginUpdate();
+                    if (extra.Equals(""))
+                    {
+                        toChange.Text = selected;
+                    }
+                    else
+                    {
+                        toChange.Text = selected + " (" + extra + ")";
+                    }
+                    appTree.EndUpdate();
+                    appTree.Refresh();                    
+                }
+                catch
+                {
+                    CustomBox.Show("Could not update description", "Error", this.Font, this.BackColor, this.ForeColor);
+                }
+            }
+        }
+
+        private void hToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
+            appTree.Nodes.Remove(appTree.SelectedNode);
+            
+        }
+
     }
 }

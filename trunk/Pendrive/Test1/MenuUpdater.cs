@@ -139,11 +139,14 @@ namespace Test1
                         {
                             newCategory.InnerText = checkCategory(path); //attempt to guess the category
                         }
+                        XmlElement newExtra = menuDoc.CreateElement("extra");
+                        newExtra.InnerText = ".";
                         if (!(newCategory.InnerText.Equals("User's Folders") && newName.InnerText.Equals("Menu_Data")))
                         {
                             newNode.AppendChild(newName);
                             newNode.AppendChild(newPath);
                             newNode.AppendChild(newCategory);
+                            newNode.AppendChild(newExtra);
                             list[0].AppendChild(newNode);
                         }
                     }
@@ -238,6 +241,23 @@ namespace Test1
                 }
             }
             menuDoc.Save("menu.xml");
+        }
+
+        public void editExtra(string app, string newExtra)
+        {
+            XmlDocument menuDoc = new XmlDocument();
+            menuDoc.Load("menu.xml");
+            XmlNodeList list = menuDoc.GetElementsByTagName("app");
+            foreach (XmlElement application in list)
+            {
+                if (application.FirstChild.InnerText.Equals(app))
+                {
+                    application.ChildNodes[3].InnerText = newExtra;
+                    break;
+                }
+            }
+            menuDoc.Save("menu.xml");
+
         }
 
         /**
