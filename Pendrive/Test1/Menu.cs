@@ -80,8 +80,9 @@ namespace Test1
                 String name = items[0];
                 String path = items[1];
                 String category = items[2];
+                String extra = items[3];
                 addCategory(category);
-                addItem(new AppShortcut(name, path, category));
+                addItem(new AppShortcut(name, path, category, extra));
             }
             sortCategories();
         }

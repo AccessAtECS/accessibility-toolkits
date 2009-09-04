@@ -81,6 +81,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.appTree = new System.Windows.Forms.TreeView();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.appTreeContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
@@ -89,6 +93,7 @@
             this.toolStripContainer1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.appTreeContextMenu.SuspendLayout();
             this.SuspendLayout();
             // 
             // fontOptions
@@ -543,8 +548,39 @@
             this.appTree.TabIndex = 0;
             this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
             this.appTree.Enter += new System.EventHandler(this.appTree_Enter);
+            this.appTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.appTree_NodeMouseClick);
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);
             this.appTree.Click += new System.EventHandler(this.appTree_Click);
+            // 
+            // appTreeContextMenu
+            // 
+            this.appTreeContextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.launchToolStripMenuItem,
+            this.descriptionToolStripMenuItem,
+            this.hToolStripMenuItem});
+            this.appTreeContextMenu.Name = "appTreeContextMenu";
+            this.appTreeContextMenu.Size = new System.Drawing.Size(167, 70);
+            // 
+            // launchToolStripMenuItem
+            // 
+            this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
+            // 
+            // descriptionToolStripMenuItem
+            // 
+            this.descriptionToolStripMenuItem.Name = "descriptionToolStripMenuItem";
+            this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.descriptionToolStripMenuItem.Text = "Edit Description...";
+            this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.descriptionToolStripMenuItem_Click);
+            // 
+            // hToolStripMenuItem
+            // 
+            this.hToolStripMenuItem.Name = "hToolStripMenuItem";
+            this.hToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.hToolStripMenuItem.Text = "Hide Application";
+            this.hToolStripMenuItem.Click += new System.EventHandler(this.hToolStripMenuItem_Click);
             // 
             // MenuForm
             // 
@@ -579,6 +615,7 @@
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
+            this.appTreeContextMenu.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -637,5 +674,9 @@
         private System.Windows.Forms.ToolStripMenuItem downloadMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel statusLabel1;
+        private System.Windows.Forms.ContextMenuStrip appTreeContextMenu;
+        private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem descriptionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hToolStripMenuItem;
     }
 }
