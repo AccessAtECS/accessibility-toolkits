@@ -27,15 +27,22 @@ namespace Test1
             Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
             customBox.Icon = mainIcon;
 
+            if (title.Equals("Access Tools - About"))
+            {
+                customBox.pictureBox1.Visible = true;
+                customBox.pictureBox1.Height = 45;
+            }
+
             Rectangle maxSize = new Rectangle();
-            maxSize.Height = 150;
-            maxSize.Width = 360;
+            maxSize.Height = 600;
+            maxSize.Width = 800;
             customBox.richTextBox1.Text = message;
             customBox.Text = title;
             customBox.richTextBox1.Font = font;
             customBox.BackColor = bg;
             customBox.ForeColor = fg;
             customBox.MaximumSize = maxSize.Size;
+            maxSize.Height = maxSize.Height - customBox.pictureBox1.Height;
             customBox.richTextBox1.MaximumSize = maxSize.Size;
             customBox.ShowDialog();
         }
@@ -48,6 +55,11 @@ namespace Test1
         private void CustomBox_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
         }
     }
 }

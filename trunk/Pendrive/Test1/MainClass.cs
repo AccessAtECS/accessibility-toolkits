@@ -13,7 +13,6 @@ namespace Test1
         {
             Menu appMenu = new Menu();
             MenuUpdater updater = new MenuUpdater();
-            //XMLparser x = new XMLparser(appMenu, updater);
             XMLparser x = new XMLparser();
             String[] menuTags = new String[3];
             menuTags[0] = "name";
@@ -42,7 +41,6 @@ namespace Test1
             settingsTags[2] = "font";
             settingsTags[3] = "fontsize";
             Settings s = new Settings(x.readXmlFile("settings.xml", settingsTags));
-            //Application.Run(new formMenu(s, appMenu, updater));
             Application.Run(new MenuForm(s, appMenu, updater));            
         }
     }
