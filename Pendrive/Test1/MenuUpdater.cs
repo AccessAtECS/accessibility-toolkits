@@ -38,7 +38,11 @@ namespace Test1
             System.Collections.ArrayList cats = new System.Collections.ArrayList();
             foreach (string subdirectory in directories)
             {
-                if (Directory.Exists(subdirectory))
+                if (subdirectory.StartsWith("."))
+                {
+                    //ignore
+                }
+                else if (Directory.Exists(subdirectory))
                 {
                     count++;
                     String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
@@ -84,6 +88,10 @@ namespace Test1
                     return false;
                 }
             }
+            else if (count < oldCount) //something has been deleted
+            {
+
+            }
             return false;
         }
 
@@ -96,7 +104,7 @@ namespace Test1
          
             foreach (string subdirectory in directories)
             {
-                if (!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
+                if ((!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1))) && !subdirectory.StartsWith("."))
                 {
                     if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
                     {
@@ -108,6 +116,7 @@ namespace Test1
                         string path = findPath(subdirectory, catFolder);                        
                         newPath.InnerText = path;
                         //
+                        /*
                         try
                         {
                             String file;
@@ -119,7 +128,7 @@ namespace Test1
                         }
                         catch
                         {
-                        }
+                        }*/
                         //
                         XmlElement newCategory = menuDoc.CreateElement("category");
                         if (catFolder)

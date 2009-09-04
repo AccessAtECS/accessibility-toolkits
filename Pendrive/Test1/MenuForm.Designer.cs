@@ -32,12 +32,13 @@
             this.colorOptions = new System.Windows.Forms.ColorDialog();
             this.fontOptions = new System.Windows.Forms.FontDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.itemShow = new System.Windows.Forms.ToolStripMenuItem();
             this.itemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
+            this.downloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.fileMenuExit = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsColourScheme = new System.Windows.Forms.ToolStripMenuItem();
@@ -75,8 +76,8 @@
             this.keyboardShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
-            this.toolStrip1 = new System.Windows.Forms.ToolStrip();
-            this.statusLabel = new System.Windows.Forms.ToolStripLabel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.statusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.appTree = new System.Windows.Forms.TreeView();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
@@ -86,7 +87,7 @@
             this.toolStripContainer1.ContentPanel.SuspendLayout();
             this.toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this.toolStripContainer1.SuspendLayout();
-            this.toolStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -95,16 +96,16 @@
             this.fontOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.fontOptions.MinSize = 10;
             // 
-            // notifyIcon1
+            // trayIcon
             // 
-            this.notifyIcon1.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.notifyIcon1.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
-            this.notifyIcon1.BalloonTipTitle = "Application Menu";
-            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
-            this.notifyIcon1.Text = "Application Menu";
-            this.notifyIcon1.Visible = true;
-            this.notifyIcon1.BalloonTipClicked += new System.EventHandler(this.notifyIcon1_BalloonTipClicked);
-            this.notifyIcon1.DoubleClick += new System.EventHandler(this.notifyIcon1_DoubleClick);
+            this.trayIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.trayIcon.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
+            this.trayIcon.BalloonTipTitle = "Access Tools - BETA";
+            this.trayIcon.ContextMenuStrip = this.contextMenuStrip1;
+            this.trayIcon.Text = "Access Tools";
+            this.trayIcon.Visible = true;
+            this.trayIcon.BalloonTipClicked += new System.EventHandler(this.trayIcon_BalloonTipClicked);
+            this.trayIcon.DoubleClick += new System.EventHandler(this.trayIcon_DoubleClick);
             // 
             // contextMenuStrip1
             // 
@@ -150,6 +151,7 @@
             // 
             this.fileMenu.AccessibleName = "File Menu";
             this.fileMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.downloadMenuItem,
             this.fileMenuExit});
             this.fileMenu.Name = "fileMenu";
             this.fileMenu.Overflow = System.Windows.Forms.ToolStripItemOverflow.AsNeeded;
@@ -158,10 +160,17 @@
             this.fileMenu.Size = new System.Drawing.Size(37, 19);
             this.fileMenu.Text = "File";
             // 
+            // downloadMenuItem
+            // 
+            this.downloadMenuItem.Name = "downloadMenuItem";
+            this.downloadMenuItem.Size = new System.Drawing.Size(224, 22);
+            this.downloadMenuItem.Text = "Download New Applications";
+            this.downloadMenuItem.Click += new System.EventHandler(this.downloadMenuItem_Click);
+            // 
             // fileMenuExit
             // 
             this.fileMenuExit.Name = "fileMenuExit";
-            this.fileMenuExit.Size = new System.Drawing.Size(92, 22);
+            this.fileMenuExit.Size = new System.Drawing.Size(224, 22);
             this.fileMenuExit.Text = "Exit";
             this.fileMenuExit.Click += new System.EventHandler(this.fileMenuExit_Click);
             // 
@@ -467,15 +476,15 @@
             // 
             // toolStripContainer1.BottomToolStripPanel
             // 
-            this.toolStripContainer1.BottomToolStripPanel.BackColor = System.Drawing.Color.Silver;
-            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.toolStrip1);
+            this.toolStripContainer1.BottomToolStripPanel.BackColor = System.Drawing.Color.Transparent;
+            this.toolStripContainer1.BottomToolStripPanel.Controls.Add(this.statusStrip1);
             this.toolStripContainer1.BottomToolStripPanel.Font = new System.Drawing.Font("Microsoft Sans Serif", 24F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.toolStripContainer1.BottomToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
             // 
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.panel1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(279, 252);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(279, 250);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
@@ -489,37 +498,34 @@
             // 
             this.toolStripContainer1.TopToolStripPanel.Controls.Add(this.menuStrip1);
             // 
-            // toolStrip1
+            // statusStrip1
             // 
-            this.toolStrip1.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statusLabel});
-            this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(3, 0);
-            this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(47, 22);
-            this.toolStrip1.TabIndex = 1;
-            this.toolStrip1.TabStop = true;
+            this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 0);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
+            this.statusStrip1.Size = new System.Drawing.Size(279, 24);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
             // 
-            // statusLabel
+            // statusLabel1
             // 
-            this.statusLabel.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.statusLabel.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.statusLabel.ForeColor = System.Drawing.SystemColors.HotTrack;
-            this.statusLabel.Name = "statusLabel";
-            this.statusLabel.Size = new System.Drawing.Size(46, 19);
-            this.statusLabel.Text = "Ready";
-            this.statusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.statusLabel1.BackColor = System.Drawing.Color.Transparent;
+            this.statusLabel1.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.statusLabel1.Name = "statusLabel1";
+            this.statusLabel1.Size = new System.Drawing.Size(46, 19);
+            this.statusLabel1.Text = "Ready";
             // 
             // panel1
             // 
-            this.panel1.AutoScroll = true;
             this.panel1.Controls.Add(this.appTree);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 3);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 30);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(279, 252);
+            this.panel1.Size = new System.Drawing.Size(279, 250);
             this.panel1.TabIndex = 1;
             // 
             // appTree
@@ -527,12 +533,13 @@
             this.appTree.AccessibleDescription = "The list of available applications, grouped by category, organised in a tree stru" +
                 "cture";
             this.appTree.AccessibleName = "Application List";
-            this.appTree.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.appTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+                        | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.appTree.Location = new System.Drawing.Point(0, 0);
-            this.appTree.Margin = new System.Windows.Forms.Padding(3, 3, 1, 3);
+            this.appTree.Margin = new System.Windows.Forms.Padding(3, 3, 1, 30);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(278, 249);
+            this.appTree.Size = new System.Drawing.Size(279, 249);
             this.appTree.TabIndex = 0;
             this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
             this.appTree.Enter += new System.EventHandler(this.appTree_Enter);
@@ -545,7 +552,6 @@
             this.AccessibleName = "Application Menu";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoScroll = true;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
             this.ClientSize = new System.Drawing.Size(279, 297);
@@ -553,10 +559,10 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MinimumSize = new System.Drawing.Size(295, 305);
+            this.MinimumSize = new System.Drawing.Size(295, 335);
             this.Name = "MenuForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Application Menu";
+            this.Text = "Access Tools - BETA";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MenuForm_FormClosing);
             this.Resize += new System.EventHandler(this.MenuForm_Resize);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MenuForm_KeyDown);
@@ -570,8 +576,8 @@
             this.toolStripContainer1.TopToolStripPanel.PerformLayout();
             this.toolStripContainer1.ResumeLayout(false);
             this.toolStripContainer1.PerformLayout();
-            this.toolStrip1.ResumeLayout(false);
-            this.toolStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -582,7 +588,7 @@
         private System.Windows.Forms.ColorDialog colorOptions;
         private System.Windows.Forms.FontDialog fontOptions;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem itemShow;
         private System.Windows.Forms.ToolStripMenuItem itemExit;
@@ -625,10 +631,11 @@
         private System.Windows.Forms.ToolStripMenuItem pinkToolStripMenuItem1;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TreeView appTree;
-        private System.Windows.Forms.ToolStrip toolStrip1;
-        private System.Windows.Forms.ToolStripLabel statusLabel;
         private System.Windows.Forms.ToolStripMenuItem moreBgMenuItem;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.ToolStripMenuItem moreFgMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem downloadMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel statusLabel1;
     }
 }
