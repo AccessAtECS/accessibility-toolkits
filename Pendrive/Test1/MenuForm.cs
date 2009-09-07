@@ -34,11 +34,25 @@ namespace Test1
             
            
             //Set up logo
-            Bitmap bmpLogo = new Bitmap("Menu_Data\\logo.png");
-            Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
-            this.Icon = mainIcon;
-            trayIcon.Icon = mainIcon;
-
+            try
+            {
+                /*Bitmap bmpLogo = new Bitmap("Menu_Data\\logo16.png");
+                Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
+                //this.Icon = mainIcon;
+                Bitmap barLogo = new Bitmap("Menu_Data\\logo256.png");
+                Icon barIcon = Icon.FromHandle(barLogo.GetHicon());
+                //MessageBox.Show("Icon size: " + barIcon.Size);
+                this.Icon = barIcon;
+                trayIcon.Icon = barIcon;
+                 * */
+                Icon mainIcon = new Icon("Menu_Data\\logo.ico");
+                this.Icon = mainIcon;
+                trayIcon.Icon = mainIcon;
+            }
+            catch
+            {
+                //
+            }
             //Set up menu treeview
             ImageList imgList = new ImageList();
             Bitmap bmpFolderIcon = new Bitmap("Menu_Data\\icon.png");
@@ -834,8 +848,8 @@ namespace Test1
         private void sizeToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             int selected = int.Parse(e.ClickedItem.Text);
-            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
-            Font newFont = (Font)toFont.ConvertFromString(this.Font.FontFamily.ToString());
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font)); 
+            Font newFont = appTree.Font;
             this.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
 
             statusLabel1.Font = this.Font;

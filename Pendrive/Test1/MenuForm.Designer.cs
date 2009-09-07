@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuForm));
             this.colorOptions = new System.Windows.Forms.ColorDialog();
             this.fontOptions = new System.Windows.Forms.FontDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
@@ -107,6 +108,7 @@
             this.trayIcon.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
             this.trayIcon.BalloonTipTitle = "Access Tools - BETA";
             this.trayIcon.ContextMenuStrip = this.contextMenuStrip1;
+            this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
             this.trayIcon.Text = "Access Tools";
             this.trayIcon.Visible = true;
             this.trayIcon.BalloonTipClicked += new System.EventHandler(this.trayIcon_BalloonTipClicked);
@@ -564,7 +566,7 @@
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.launchToolStripMenuItem.Text = "Launch";
             this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
             // 
@@ -578,7 +580,7 @@
             // hToolStripMenuItem
             // 
             this.hToolStripMenuItem.Name = "hToolStripMenuItem";
-            this.hToolStripMenuItem.Size = new System.Drawing.Size(163, 22);
+            this.hToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.hToolStripMenuItem.Text = "Hide Application";
             this.hToolStripMenuItem.Click += new System.EventHandler(this.hToolStripMenuItem_Click);
             // 
@@ -593,6 +595,7 @@
             this.ClientSize = new System.Drawing.Size(279, 297);
             this.Controls.Add(this.toolStripContainer1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.MinimumSize = new System.Drawing.Size(295, 335);

@@ -113,7 +113,12 @@ namespace Test1
                         XmlElement newName = menuDoc.CreateElement("name");
                         newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
                         XmlElement newPath = menuDoc.CreateElement("path");
-                        string path = findPath(subdirectory, catFolder);                        
+                        string path = findPath(subdirectory, catFolder);
+                        if (path.Contains("Access Tools")) //This allows paths to be created if Access Tools is running within a folder on a hard drive rather than a USB pendrive.
+                        {
+                            String drive = Directory.GetDirectoryRoot(subdirectory);
+                            path = drive + path;
+                        }
                         newPath.InnerText = path;
                         //
                         /*
