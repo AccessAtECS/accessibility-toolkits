@@ -25,10 +25,17 @@ namespace Test1
         {
             customBox = new CustomBox();
             //Set up logo
-            Bitmap bmpLogo = new Bitmap("Menu_Data\\logo.png");
-            Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
-            customBox.Icon = mainIcon;
-
+            try
+            {
+                //Bitmap bmpLogo = new Bitmap("Menu_Data\\logo16.png");
+                //Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
+                Icon mainIcon = new Icon("Menu_Data\\logo.ico");
+                customBox.Icon = mainIcon;
+            }
+            catch
+            {
+                //
+            }
             if (title.Equals("Access Tools - About"))
             {
                 customBox.pictureBox1.Visible = true;
@@ -74,6 +81,24 @@ namespace Test1
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             toReturn = customBox.richTextBox1.Text;
+        }
+
+        private void CustomBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Oemplus && e.Control)
+            {
+                customBox.Size = new Size(800, 600);
+            }
+        }
+
+        private void richTextBox1_KeyDown(object sender, KeyEventArgs e)
+        {
+            CustomBox_KeyDown(sender, e);
+        }
+
+        private void btnOk_KeyDown(object sender, KeyEventArgs e)
+        {
+            CustomBox_KeyDown(sender, e);
         }
     }
 }
