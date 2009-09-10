@@ -209,6 +209,7 @@
             this.settingsColourScheme.Name = "settingsColourScheme";
             this.settingsColourScheme.Size = new System.Drawing.Size(223, 22);
             this.settingsColourScheme.Text = "Colour Scheme";
+            this.settingsColourScheme.ToolTipText = "Change the colour scheme of the menu";
             // 
             // blackOnWhiteToolStripMenuItem1
             // 
@@ -273,6 +274,7 @@
             this.settingsReverse.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.R)));
             this.settingsReverse.Size = new System.Drawing.Size(223, 22);
             this.settingsReverse.Text = "Reverse Colours";
+            this.settingsReverse.ToolTipText = "Reverse the foreground and background colours";
             this.settingsReverse.Click += new System.EventHandler(this.settingsReverse_Click);
             // 
             // settingsBg
@@ -290,6 +292,7 @@
             this.settingsBg.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.B)));
             this.settingsBg.Size = new System.Drawing.Size(223, 22);
             this.settingsBg.Text = "Change Background";
+            this.settingsBg.ToolTipText = "Change the background colour";
             this.settingsBg.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.settingsBg_DropDownItemClicked);
             // 
             // blackToolStripMenuItem
@@ -363,6 +366,7 @@
             this.settingsFg.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.T)));
             this.settingsFg.Size = new System.Drawing.Size(223, 22);
             this.settingsFg.Text = "Change Text Colour";
+            this.settingsFg.ToolTipText = "Change the text colour";
             this.settingsFg.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.settingsFg_DropDownItemClicked);
             // 
             // blackToolStripMenuItem1
@@ -429,6 +433,7 @@
             this.settingsFont.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.settingsFont.Size = new System.Drawing.Size(223, 22);
             this.settingsFont.Text = "Change Font";
+            this.settingsFont.ToolTipText = "Change the menu font";
             // 
             // fontToolStripMenuItem
             // 
@@ -450,6 +455,7 @@
             this.settingsDefaultFont.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
             this.settingsDefaultFont.Size = new System.Drawing.Size(223, 22);
             this.settingsDefaultFont.Text = "Default Font";
+            this.settingsDefaultFont.ToolTipText = "Reset to the default font";
             this.settingsDefaultFont.Click += new System.EventHandler(this.settingsDefaultFont_Click);
             // 
             // helpMenu
@@ -469,6 +475,7 @@
             this.keyboardShortcutsToolStripMenuItem.Name = "keyboardShortcutsToolStripMenuItem";
             this.keyboardShortcutsToolStripMenuItem.Size = new System.Drawing.Size(177, 22);
             this.keyboardShortcutsToolStripMenuItem.Text = "Keyboard Shortcuts";
+            this.keyboardShortcutsToolStripMenuItem.ToolTipText = "View a list of all keyboard shortcuts";
             this.keyboardShortcutsToolStripMenuItem.Click += new System.EventHandler(this.keyboardShortcutsToolStripMenuItem_Click);
             // 
             // aboutToolStripMenuItem1
@@ -565,23 +572,29 @@
             // 
             // launchToolStripMenuItem
             // 
+            this.launchToolStripMenuItem.AccessibleName = "Launch Application";
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
             this.launchToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.launchToolStripMenuItem.Text = "Launch";
+            this.launchToolStripMenuItem.ToolTipText = "Launch this application";
             this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
             // 
             // descriptionToolStripMenuItem
             // 
+            this.descriptionToolStripMenuItem.AccessibleName = "Edit Description...";
             this.descriptionToolStripMenuItem.Name = "descriptionToolStripMenuItem";
             this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.descriptionToolStripMenuItem.Text = "Edit Description...";
+            this.descriptionToolStripMenuItem.ToolTipText = "Change the description that appears in brackets for this application";
             this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.descriptionToolStripMenuItem_Click);
             // 
             // hToolStripMenuItem
             // 
+            this.hToolStripMenuItem.AccessibleName = "Hide Application";
             this.hToolStripMenuItem.Name = "hToolStripMenuItem";
             this.hToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.hToolStripMenuItem.Text = "Hide Application";
+            this.hToolStripMenuItem.ToolTipText = "Hide this application until the menu is re-launched";
             this.hToolStripMenuItem.Click += new System.EventHandler(this.hToolStripMenuItem_Click);
             // 
             // MenuForm
@@ -602,6 +615,7 @@
             this.Name = "MenuForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
             this.Text = "Access Tools - BETA";
+            this.Shown += new System.EventHandler(this.MenuForm_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MenuForm_FormClosing);
             this.Resize += new System.EventHandler(this.MenuForm_Resize);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MenuForm_KeyDown);
