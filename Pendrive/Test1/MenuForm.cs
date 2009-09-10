@@ -16,6 +16,7 @@ namespace Test1
         private Hashtable menu;
         private Hashtable categories;
         private MenuUpdater mu;
+        private Settings settings;
         private ArrayList shortcutKeys;
         private bool tooLarge;
         Rectangle maxSize = new Rectangle();
@@ -30,6 +31,7 @@ namespace Test1
             this.menu = appMenu.getTable();
             this.categories = appMenu.getCategories();
             this.mu = updater;
+            this.settings = settings;
             InitializeComponent();
             
            
@@ -102,34 +104,7 @@ namespace Test1
             appTree.EndUpdate();
             ActiveControl = appTree;
 
-            //set up font menu
-            System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
-            ArrayList fontList = new ArrayList();
-            fontList.AddRange(installedFonts.Families);
-            foreach (FontFamily f in fontList)
-            {
-                if (f.IsStyleAvailable(FontStyle.Regular))
-                {
-                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font
-                }
-            }
-            for (int i = 10; i <= 70; i += 2)
-            {
-                sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
-            }
-
-            //set up shortcut keys
-            shortcutKeys = new ArrayList();
-            shortcutKeys.Add("CTRL + +, Increase Text Size");
-            shortcutKeys.Add("CTRL + -, Decrease Text Size");
-            shortcutKeys.Add("CTRL + F, Change Font");
-            shortcutKeys.Add("CTRL + D, Set Default Font");
-            shortcutKeys.Add("CTRL + T, Change Text Colour");
-            shortcutKeys.Add("CTRL + B, Change Background Colour");
-            shortcutKeys.Add("CTRL + R, Reverse Colours");
-            shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
-            shortcutKeys.Add("ESC, Reset Colours and Font");
-            shortcutKeys.Add("F1, Launch Help File");
+            
 
             //Set up colours and fonts from settings file
             this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
@@ -162,8 +137,41 @@ namespace Test1
                 this.Focus();
             }
             checkScreenSize();
-            //appTree.ExpandAll();
+            this.BringToFront();
+            this.Focus();
+        }
 
+        private void MenuForm_Shown(object sender, EventArgs e)
+        {
+            //set up font menu
+            System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
+            ArrayList fontList = new ArrayList();
+            
+            fontList.AddRange(installedFonts.Families);
+            foreach (FontFamily f in fontList)
+            {
+                if (f.IsStyleAvailable(FontStyle.Regular))
+                {
+                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font - slow
+                }
+            }
+            for (int i = 10; i <= 70; i += 2)
+            {
+                sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
+            }
+
+            //set up shortcut keys
+            shortcutKeys = new ArrayList();
+            shortcutKeys.Add("CTRL + +, Increase Text Size");
+            shortcutKeys.Add("CTRL + -, Decrease Text Size");
+            shortcutKeys.Add("CTRL + F, Change Font");
+            shortcutKeys.Add("CTRL + D, Set Default Font");
+            shortcutKeys.Add("CTRL + T, Change Text Colour");
+            shortcutKeys.Add("CTRL + B, Change Background Colour");
+            shortcutKeys.Add("CTRL + R, Reverse Colours");
+            shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
+            shortcutKeys.Add("ESC, Reset Colours and Font");
+            shortcutKeys.Add("F1, Launch Help File");
         }
 
         /**
@@ -651,7 +659,6 @@ namespace Test1
             {
                 statusLabel1.Text = "Double click an app to launch";
             }
-
         }
 
         /**
@@ -988,12 +995,24 @@ namespace Test1
 
                 }
                 String current = appTree.SelectedNode.Text.Substring(appTree.SelectedNode.Text.LastIndexOfAny(extraSplit) + 1);
-                current = current.Substring(0, current.Length - 1);
+                if (current.Equals(selected))
+                {
+                    current = "";
+                }
+                else
+                {
+                    current = current.Substring(0, current.Length - 1);
+                }
                 String description = CustomBox.Show(current, "Edit Description - " + selected, this.Font, this.BackColor, this.ForeColor);
 
                 try
                 {
-                    mu.editExtra(selected, description);
+                    if (description.Equals(""))
+                    {
+                        mu.editExtra(selected, ".");
+                    }
+                    else
+                        mu.editExtra(selected, description);
                     ((AppShortcut)menu[selected]).setExtra(description);
                     String extra = (String)((AppShortcut)menu[selected]).getExtra();
                     TreeNode toChange = appTree.SelectedNode;
@@ -1022,6 +1041,8 @@ namespace Test1
             appTree.Nodes.Remove(appTree.SelectedNode);
             
         }
+
+        
 
     }
 }
