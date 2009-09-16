@@ -27,8 +27,6 @@ namespace Test1
             //Set up logo
             try
             {
-                //Bitmap bmpLogo = new Bitmap("Menu_Data\\logo16.png");
-                //Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
                 Icon mainIcon = new Icon("Menu_Data\\logo.ico");
                 customBox.Icon = mainIcon;
             }

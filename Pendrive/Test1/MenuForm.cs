@@ -13,11 +13,6 @@ namespace Test1
     public partial class MenuForm : Form
     {
         private Menu appMenu;
-        private Hashtable menu;
-        private Hashtable categories;
-        private MenuUpdater mu;
-        private Settings settings;
-        private ArrayList shortcutKeys;
         private bool tooLarge;
         Rectangle maxSize = new Rectangle();
         Rectangle resetSize;
@@ -25,28 +20,17 @@ namespace Test1
         /**
          * Create a new MenuForm, and try to load saved settings.
          */
-        public MenuForm(Settings settings, Menu appMenu, MenuUpdater updater)
+        public MenuForm(Settings settings)
         {
-            this.appMenu = appMenu;
-            this.menu = appMenu.getTable();
-            this.categories = appMenu.getCategories();
-            this.mu = updater;
-            this.settings = settings;
+            appMenu = new Menu();
             InitializeComponent();
+            trayIcon.BalloonTipText = "Access Tools is loading. Please Wait...";
+            trayIcon.ShowBalloonTip(150);
+
             
-           
             //Set up logo
             try
             {
-                /*Bitmap bmpLogo = new Bitmap("Menu_Data\\logo16.png");
-                Icon mainIcon = Icon.FromHandle(bmpLogo.GetHicon());
-                //this.Icon = mainIcon;
-                Bitmap barLogo = new Bitmap("Menu_Data\\logo256.png");
-                Icon barIcon = Icon.FromHandle(barLogo.GetHicon());
-                //MessageBox.Show("Icon size: " + barIcon.Size);
-                this.Icon = barIcon;
-                trayIcon.Icon = barIcon;
-                 * */
                 Icon mainIcon = new Icon("Menu_Data\\logo.ico");
                 this.Icon = mainIcon;
                 trayIcon.Icon = mainIcon;
@@ -55,39 +39,125 @@ namespace Test1
             {
                 //
             }
+            //Set up colours and fonts from settings file
+            this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
+            try
+            {
+                changeBackColour(ColorTranslator.FromHtml(settings.getBgColour()));
+                changeForeColour(ColorTranslator.FromHtml(settings.getTxtColour()));
+                TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+                Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
+                this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+                statusLabel1.Font = this.Font;
+                menuStrip1.Font = this.Font;
+                appTreeContextMenu.Font = this.Font;
+                resetSize = new Rectangle();
+                resetSize.Width = 295;
+                resetSize.Height = 335;
+                menuStrip1.Items.Insert(1, new ToolStripSeparator());
+                menuStrip1.Items.Insert(3, new ToolStripSeparator());
+                appTree.Focus();
+            }
+            catch(Exception ex)
+            {
+                this.BringToFront();
+                this.Focus();
+            }
+            checkScreenSize();
+            this.BringToFront();
+            this.Focus();
+        }
+
+        private void setImageIndex(TreeNode appNode, ToolStripMenuItem appTrayItem, int index)
+        {
+            appNode.ImageIndex = index;
+            appNode.SelectedImageIndex = index;
+            appTrayItem.Image = appTree.ImageList.Images[index]; //add the image to the system tray menu             
+        }
+
+        /**
+         * Set up font menu
+         * Read menu.xml to obtain app list
+         * Display app list in appTree
+         */ 
+        private void MenuForm_Shown(object sender, EventArgs e)
+        {
+            //read xml file
+            String[] menuTags = new String[4];
+            menuTags[0] = "name";
+            menuTags[1] = "path";
+            menuTags[2] = "category";
+            menuTags[3] = "extra";
+            MenuUpdater updater = new MenuUpdater();
+            try
+            {
+                XMLparser x = new XMLparser();
+                //
+                updater.update(x.readFirstElement("menu.xml"));
+                appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
+                //
+                /*appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
+                if (updater.update(x.getOldCount(), appMenu) == true)
+                {
+                    appMenu.getCategories().Clear();
+                    appMenu.getTable().Clear();
+                    appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
+                }*/
+            }
+            catch (FileNotFoundException ex)
+            {
+                CustomBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                updater.createMenuFile();
+            }
             //Set up menu treeview
+            Hashtable menu = appMenu.getTable();
+            Hashtable categories = appMenu.getCategories();
             ImageList imgList = new ImageList();
             Bitmap bmpFolderIcon = new Bitmap("Menu_Data\\icon.png");
             Icon ic = Icon.FromHandle(bmpFolderIcon.GetHicon());
-            
+
+            bool wordIcon = false;
+            int wordIndex = 0;
             imgList.Images.Add(ic); //adds the Folder icon as a basic icon to be used for categories
             foreach (String cat in categories.Keys)
             {
                 appTree.BeginUpdate();
                 TreeNode categoryNode = new TreeNode(cat);
                 categoryNode.ImageIndex = 0;
-                appTree.Nodes.Add(categoryNode); 
+                appTree.Nodes.Add(categoryNode);
                 foreach (String app in ((ArrayList)categories[cat])) //gets the ArrayList for each category and iterates through its contained applications
                 {
                     try
                     {
                         String path = (String)((AppShortcut)menu[app]).getPath(); //gets the app from the Menu and extracts its path
                         String extra = (String)((AppShortcut)menu[app]).getExtra(); //gets extra information
-                        System.Drawing.Icon appIcon = System.Drawing.Icon.ExtractAssociatedIcon(path); //extracts the associated icon for that app
-                        imgList.Images.Add(appIcon);
                         String appTitle = app;
                         if (!extra.Equals("."))
                         {
                             appTitle = app + " (" + extra + ")";
                         }
                         TreeNode appNode = new TreeNode(appTitle);
-                        appTree.ImageList = imgList;
-                        appTree.ImageIndex = appTree.ImageList.Images.Count;
-                        appNode.ImageIndex = appTree.ImageIndex;
-                        appNode.SelectedImageIndex = appNode.ImageIndex;
+                        ToolStripMenuItem appTrayItem = new ToolStripMenuItem(app);
+                        if (path.EndsWith(".doc") && wordIcon == true) //only load the icon for .doc once
+                        {
+                            setImageIndex(appNode, appTrayItem, wordIndex);
+                        }
+                        else
+                        {
+                            System.Drawing.Icon appIcon = System.Drawing.Icon.ExtractAssociatedIcon(path); //extracts the associated icon for that app
+                            imgList.Images.Add(appIcon);
+                            appTree.ImageList = imgList;
+                            contextMenuStrip1.ImageList = imgList;
+                            appTree.ImageIndex = appTree.ImageList.Images.Count;
+                            setImageIndex(appNode, appTrayItem, appTree.ImageIndex);
+                            if (path.EndsWith(".doc") && wordIcon == false) //then set the icon for .doc
+                            {
+                                wordIcon = true;
+                                wordIndex = appTree.ImageIndex;
+                            }
+                        }
                         appNode.ContextMenuStrip = appTreeContextMenu;
                         categoryNode.Nodes.Add(appNode);
-                        ToolStripMenuItem appTrayItem = new ToolStripMenuItem(app);
                         contextMenuStrip1.Items.Add(appTrayItem);
                     }
                     catch
@@ -98,55 +168,11 @@ namespace Test1
                         categoryNode.Nodes.Add(appNode);
                     }
                 }
-                categoryNode.SelectedImageIndex = 0;                 
+                categoryNode.SelectedImageIndex = 0;
             }
-            appTree.Sort();
-            appTree.EndUpdate();
-            ActiveControl = appTree;
-
-            
-
-            //Set up colours and fonts from settings file
-            this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
-            try
-            {
-                Color bgColour = ColorTranslator.FromHtml(settings.getBgColour());
-                Color fgColour = ColorTranslator.FromHtml(settings.getTxtColour());
-                changeBackColour(bgColour);
-                changeForeColour(fgColour);
-
-                TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
-                Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
-                this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-                statusLabel1.Font = this.Font;
-                menuStrip1.Font = this.Font;
-                appTreeContextMenu.Font = this.Font;
-
-                resetSize = new Rectangle();
-                resetSize.Width = 295;
-                resetSize.Height = 335;
-                menuStrip1.Items.Insert(1, new ToolStripSeparator());
-                menuStrip1.Items.Insert(3, new ToolStripSeparator());
-                appTree.Focus();
-            }
-            catch(Exception ex)
-            {
-                CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
-                mu.createSettingsFile();
-                this.BringToFront();
-                this.Focus();
-            }
-            checkScreenSize();
-            this.BringToFront();
-            this.Focus();
-        }
-
-        private void MenuForm_Shown(object sender, EventArgs e)
-        {
             //set up font menu
             System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
             ArrayList fontList = new ArrayList();
-            
             fontList.AddRange(installedFonts.Families);
             foreach (FontFamily f in fontList)
             {
@@ -159,19 +185,9 @@ namespace Test1
             {
                 sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
             }
-
-            //set up shortcut keys
-            shortcutKeys = new ArrayList();
-            shortcutKeys.Add("CTRL + +, Increase Text Size");
-            shortcutKeys.Add("CTRL + -, Decrease Text Size");
-            shortcutKeys.Add("CTRL + F, Change Font");
-            shortcutKeys.Add("CTRL + D, Set Default Font");
-            shortcutKeys.Add("CTRL + T, Change Text Colour");
-            shortcutKeys.Add("CTRL + B, Change Background Colour");
-            shortcutKeys.Add("CTRL + R, Reverse Colours");
-            shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
-            shortcutKeys.Add("ESC, Reset Colours and Font");
-            shortcutKeys.Add("F1, Launch Help File");
+            appTree.Sort();
+            appTree.EndUpdate();
+            ActiveControl = appTree;
         }
 
         /**
@@ -180,6 +196,7 @@ namespace Test1
          */
         private void saveAndClose()
         {
+            MenuUpdater mu = new MenuUpdater();
             try
             {
                 mu.saveSettings(ColorTranslator.ToHtml(appTree.BackColor), ColorTranslator.ToHtml(appTree.ForeColor), this.Font.FontFamily.Name.ToString(), this.Font.Size.ToString());
@@ -191,7 +208,6 @@ namespace Test1
             }
             Application.Exit();
         }
-
 
         /**
          * Executes the selected application
@@ -210,26 +226,27 @@ namespace Test1
                 {
 
                 }
-                if (!categories.ContainsKey(selected)) //check the selected item is not a category heading
+                if (!appMenu.getCategories().ContainsKey(selected)) //check the selected item is not a category heading
                 {
                     statusLabel1.Text = "Launching"; 
                     this.Refresh();
                     try
                     {
-                        String inputPath = (String)((AppShortcut)menu[selected]).getPath();
+                        String inputPath = (String)((AppShortcut)appMenu.getTable()[selected]).getPath();
                         System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);
 
                     }
                     catch (Exception e)
                     {
                         CustomBox.Show("Application not found! \nThis application will no longer be shown in the menu.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                        MenuUpdater mu = new MenuUpdater();
                         mu.remove(selected);
                         appTree.Nodes.Remove(appTree.SelectedNode);
                         this.BringToFront();
                         this.Focus();
                     }
                     statusLabel1.Text = "Ready";
-
+                    
                 }
             }
         }
@@ -646,7 +663,7 @@ namespace Test1
             }
             catch
             {
-
+                //if there is nothing in the list
             }
         }
 
@@ -659,15 +676,15 @@ namespace Test1
             {
                 statusLabel1.Text = "Double click an app to launch";
             }
-        }
+        }         
 
         /**
          * Launch the application that is double-clicked
          */
-        private void appTree_DoubleClick(object sender, EventArgs e)
+        private void appTree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
             launchApp();
-        }    
+        }
 
         /**
          * Keyboard listener for when the appTree is in focus.
@@ -685,7 +702,6 @@ namespace Test1
                 if (appTree.SelectedNode != (null))
                 {
                     statusLabel1.Text = "Press Enter to launch";
-
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
@@ -694,7 +710,6 @@ namespace Test1
                 if (appTree.SelectedNode != (null))
                 {
                     statusLabel1.Text = "Press Enter to launch";
-
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
@@ -858,7 +873,6 @@ namespace Test1
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font)); 
             Font newFont = appTree.Font;
             this.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-
             statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
             appTreeContextMenu.Font = this.Font;
@@ -879,6 +893,18 @@ namespace Test1
          */ 
         private void keyboardShortcutsToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            //set up shortcut keys
+            ArrayList shortcutKeys = new ArrayList();
+            shortcutKeys.Add("CTRL + +, Increase Text Size");
+            shortcutKeys.Add("CTRL + -, Decrease Text Size");
+            shortcutKeys.Add("CTRL + F, Change Font");
+            shortcutKeys.Add("CTRL + D, Set Default Font");
+            shortcutKeys.Add("CTRL + T, Change Text Colour");
+            shortcutKeys.Add("CTRL + B, Change Background Colour");
+            shortcutKeys.Add("CTRL + R, Reverse Colours");
+            shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
+            shortcutKeys.Add("ESC, Reset Colours and Font");
+            shortcutKeys.Add("F1, Launch Help File");
 
             String shortcuts = "";
             Char[] separator = ",".ToCharArray();
@@ -949,7 +975,7 @@ namespace Test1
             String selected = e.ClickedItem.Text; 
             if (!(selected.Equals("Show Menu") || selected.Equals("Exit Menu")))
             {
-                String inputPath = (String)((AppShortcut)menu[selected]).getPath();
+                String inputPath = (String)((AppShortcut)appMenu.getTable()[selected]).getPath();
                 try
                 {
                     System.Diagnostics.Process launched = System.Diagnostics.Process.Start(@inputPath);
@@ -957,6 +983,7 @@ namespace Test1
                 catch (Exception ex)
                 {
                 CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                MenuUpdater mu = new MenuUpdater();
                 mu.remove(selected);
                 this.BringToFront();
                 this.Focus();
@@ -1005,6 +1032,7 @@ namespace Test1
                 }
                 String description = CustomBox.Show(current, "Edit Description - " + selected, this.Font, this.BackColor, this.ForeColor);
 
+                MenuUpdater mu = new MenuUpdater();
                 try
                 {
                     if (description.Equals(""))
@@ -1013,8 +1041,8 @@ namespace Test1
                     }
                     else
                         mu.editExtra(selected, description);
-                    ((AppShortcut)menu[selected]).setExtra(description);
-                    String extra = (String)((AppShortcut)menu[selected]).getExtra();
+                    ((AppShortcut)appMenu.getTable()[selected]).setExtra(description);
+                    String extra = (String)((AppShortcut)appMenu.getTable()[selected]).getExtra();
                     TreeNode toChange = appTree.SelectedNode;
                     appTree.BeginUpdate();
                     if (extra.Equals(""))
@@ -1039,10 +1067,6 @@ namespace Test1
         {
             CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
             appTree.Nodes.Remove(appTree.SelectedNode);
-            
         }
-
-        
-
     }
 }

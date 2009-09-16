@@ -11,10 +11,12 @@ namespace Test1
     {
         static void Main()
         {
-            Menu appMenu = new Menu();
-            MenuUpdater updater = new MenuUpdater();
-            XMLparser x = new XMLparser();
-            String[] menuTags = new String[4];
+            //Menu appMenu = new Menu();
+
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
+            /*String[] menuTags = new String[4];
             menuTags[0] = "name";
             menuTags[1] = "path";
             menuTags[2] = "category";
@@ -31,18 +33,30 @@ namespace Test1
             }
             catch (FileNotFoundException e)
             {
-                System.Windows.Forms.MessageBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!");
+                CustomBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
                 updater.createMenuFile();
-            }
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
+            }*/
             String[] settingsTags = new String[4];
             settingsTags[0] = "bgcolour";
             settingsTags[1] = "textcolour";
             settingsTags[2] = "font";
             settingsTags[3] = "fontsize";
-            Settings s = new Settings(x.readXmlFile("settings.xml", settingsTags));
-            Application.Run(new MenuForm(s, appMenu, updater));            
+            Settings s;
+            try
+            {
+                XMLparser x = new XMLparser();
+                s = new Settings(x.readXmlFile("settings.xml", settingsTags));
+            }
+            catch (FileNotFoundException e)
+            {
+                CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                MenuUpdater updater = new MenuUpdater();
+                updater.createSettingsFile();
+                XMLparser x = new XMLparser();
+                s = new Settings(x.readXmlFile("settings.xml", settingsTags));
+            }
+           
+            Application.Run(new MenuForm(s));            
         }
     }
 }
