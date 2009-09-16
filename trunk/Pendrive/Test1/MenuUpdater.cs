@@ -9,7 +9,7 @@ namespace Test1
 {
     public class MenuUpdater
     {
-        Menu appMenu;
+        //Menu appMenu;
         int oldCount;
         Char[] lastSlash;
         XmlDocument menuDoc;
@@ -27,9 +27,79 @@ namespace Test1
         * to determine the application's category.
         * Returns a bool, telling the XMLparser whether or not it needs to re-parse the menu.xml file.
         */
+        public void update(int oldCount)
+        {
+            this.oldCount = oldCount;
+            int count = 0;
+            String slash = "\\";
+            lastSlash = slash.ToCharArray();
+            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+            System.Collections.ArrayList cats = new System.Collections.ArrayList();
+            foreach (string subdirectory in directories) //counts the directories
+            {
+                if (subdirectory.StartsWith("."))
+                {
+                    //ignore
+                }
+                else if (Directory.Exists(subdirectory))
+                {
+                    count++;
+                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                    if (subdir.Equals("Categories"))
+                    {
+                        String[] catFolders = Directory.GetDirectories(subdirectory);
+                        foreach (string catFolder in catFolders)
+                        {
+                            cats.Add(catFolder);
+                            count++;
+                            String[] futherSubs = Directory.GetDirectories(catFolder);
+                            foreach (string furtherSub in futherSubs)
+                            {
+                                if (Directory.Exists(furtherSub))
+                                {
+                                    count++;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            if (!count.Equals(oldCount)) //if an app has been added or removed, clear the xml file and rebuild it
+            {
+                menuDoc = new XmlDocument();
+                menuDoc.Load("menu.xml");
+                menuDoc.RemoveAll();
+                XmlElement newRoot = menuDoc.CreateElement("menu");
+                menuDoc.AppendChild(newRoot);
+                list = menuDoc.GetElementsByTagName("menu");
+                XmlAttribute countAtt = menuDoc.CreateAttribute("count");
+
+                //Set the count value
+                countAtt.Value = count.ToString();
+                list[0].Attributes.Append(countAtt);
+                menuDoc.Save("menu.xml");
+
+                foreach (string catFolder in cats)
+                {
+                    directories = Directory.GetDirectories(catFolder);
+                    addNodes(directories, true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
+                }
+                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+                addNodes(directories, false, "");
+                try
+                {
+                    menuDoc.Save("menu.xml");
+                }
+                catch (Exception e)
+                {
+
+                }
+            }
+        }
+
+        /*
         public bool update(int oldCount, Menu appMenu)
         {
-            this.appMenu = appMenu;
             this.oldCount = oldCount;
             int count = 0;
             String slash = "\\";
@@ -74,10 +144,10 @@ namespace Test1
                 foreach (string catFolder in cats)
                 {
                     directories = Directory.GetDirectories(catFolder);
-                    checkTable(directories, true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
+                    checkTable(directories, appMenu.getTable(), true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
                 }
                 directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-                checkTable(directories, false, "");
+                checkTable(directories, appMenu.getTable(), false, "");
                 try
                 {
                     menuDoc.Save("menu.xml");
@@ -94,17 +164,16 @@ namespace Test1
             }
             return false;
         }
+        */
 
         /**
-         * Checks the menu table to see if the folders in the directory are listed as applications in the menu already.
-         * If not, it creates the new xml nodes to add so that they can be seen.
-         */ 
-        public void checkTable(String[] directories, bool catFolder, String cat)
+         * Creates new xml nodes for each application
+         */
+        public void addNodes(String[] directories, bool catFolder, String cat)
         {
-         
             foreach (string subdirectory in directories)
             {
-                if ((!appMenu.getTable().ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1))) && !subdirectory.StartsWith("."))
+                if (!subdirectory.StartsWith("."))
                 {
                     if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
                     {
@@ -120,21 +189,6 @@ namespace Test1
                             path = drive + path;
                         }
                         newPath.InnerText = path;
-                        //
-                        /*
-                        try
-                        {
-                            String file;
-                            String temp = System.Diagnostics.FileVersionInfo.GetVersionInfo(path).FileDescription;
-                            if (temp == null)
-                                file = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
-                            else file = temp;
-                            newName.InnerText = file;
-                        }
-                        catch
-                        {
-                        }*/
-                        //
                         XmlElement newCategory = menuDoc.CreateElement("category");
                         if (catFolder)
                         {
@@ -160,6 +214,53 @@ namespace Test1
         }
 
         /*
+        public void checkTable(String[] directories, System.Collections.Hashtable table, bool catFolder, String cat)
+        {
+         
+            foreach (string subdirectory in directories)
+            {
+                if ((!table.ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1))) && !subdirectory.StartsWith("."))
+                {
+                    if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
+                    {
+                        //found new app
+                        XmlElement newNode = menuDoc.CreateElement("app");
+                        XmlElement newName = menuDoc.CreateElement("name");
+                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                        XmlElement newPath = menuDoc.CreateElement("path");
+                        string path = findPath(subdirectory, catFolder);
+                        if (path.Contains("Access Tools")) //This allows paths to be created if Access Tools is running within a folder on a hard drive rather than a USB pendrive.
+                        {
+                            String drive = Directory.GetDirectoryRoot(subdirectory);
+                            path = drive + path;
+                        }
+                        newPath.InnerText = path;
+                        XmlElement newCategory = menuDoc.CreateElement("category");
+                        if (catFolder)
+                        {
+                            newCategory.InnerText = cat;
+                        }
+                        else
+                        {
+                            newCategory.InnerText = checkCategory(path); //attempt to guess the category
+                        }
+                        XmlElement newExtra = menuDoc.CreateElement("extra");
+                        newExtra.InnerText = ".";
+                        if (!(newCategory.InnerText.Equals("User's Folders") && newName.InnerText.Equals("Menu_Data")))
+                        {
+                            newNode.AppendChild(newName);
+                            newNode.AppendChild(newPath);
+                            newNode.AppendChild(newCategory);
+                            newNode.AppendChild(newExtra);
+                            list[0].AppendChild(newNode);
+                        }
+                    }
+                }
+            }
+        }
+        */
+
+        /*
          * Checks that a Directory is not the Category parent folder
          */ 
         public bool isNotCat(String title)
@@ -168,8 +269,6 @@ namespace Test1
                 return true;
             else return false;
         }
-
-
   
         /**
          * Takes in a path to a directory and attempts to locate the actual path wanted.
@@ -200,7 +299,13 @@ namespace Test1
                     String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1) + ".exe";
                     if (filename.Equals(pathname) || filename.Equals(pathname.ToLower()))
                         return file.Substring(sub);
-                   
+                }
+                if (file.EndsWith(".EXE"))
+                {
+                    String filename = file.Substring(file.LastIndexOfAny(lastSlash) + 1);
+                    String pathname = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1) + ".EXE";
+                    if (filename.Equals(pathname) || filename.Equals(pathname.ToLower()))
+                        return file.Substring(sub);
                 }
             }
             return subdirectory.Substring(sub);
@@ -282,12 +387,10 @@ namespace Test1
                 settings[0].InnerText = font;
                 settings = settingsDoc.GetElementsByTagName("fontsize");
                 settings[0].InnerText = fontsize;
-                
                 settingsDoc.Save("settings.xml");
             }
             catch (IOException e)
             {
-
             }
         }
 

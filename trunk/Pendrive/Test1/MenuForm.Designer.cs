@@ -555,7 +555,8 @@
             this.appTree.Name = "appTree";
             this.appTree.Size = new System.Drawing.Size(279, 249);
             this.appTree.TabIndex = 0;
-            this.appTree.DoubleClick += new System.EventHandler(this.appTree_DoubleClick);
+            this.appTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.appTree_NodeMouseDoubleClick);
+            
             this.appTree.Enter += new System.EventHandler(this.appTree_Enter);
             this.appTree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.appTree_NodeMouseClick);
             this.appTree.KeyDown += new System.Windows.Forms.KeyEventHandler(this.appTree_KeyDown);

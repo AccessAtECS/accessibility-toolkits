@@ -79,7 +79,6 @@ namespace Test1
             }
             catch (FileNotFoundException e)
             {
-                //System.Windows.Forms.MessageBox.Show(file + " not found!", "Error!");
                 return values;
             }            
            
@@ -92,6 +91,20 @@ namespace Test1
          */ 
         public int getOldCount()
         {
+            return oldAppCount;
+        }
+
+        public int readFirstElement(String file)
+        {
+            int oldAppCount = 0;
+            reader = new XmlTextReader(file);
+            reader.MoveToContent();
+            if (reader.Name.Equals("menu"))
+            {
+                reader.MoveToFirstAttribute();
+                oldAppCount = int.Parse(reader.Value);
+            }
+            reader.Close();
             return oldAppCount;
         }
           
