@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Collections;
 using System.IO;
+using System.Threading;
 
 namespace Test1
 {
@@ -17,28 +18,37 @@ namespace Test1
         Rectangle maxSize = new Rectangle();
         Rectangle resetSize;
 
+        public delegate void InvokeDelegate();
         /**
          * Create a new MenuForm, and try to load saved settings.
          */
-        public MenuForm(Settings settings)
+        public MenuForm()
         {
             appMenu = new Menu();
             InitializeComponent();
             trayIcon.BalloonTipText = "Access Tools is loading. Please Wait...";
             trayIcon.ShowBalloonTip(150);
 
-            
-            //Set up logo
+            String[] settingsTags = new String[4];
+            settingsTags[0] = "bgcolour";
+            settingsTags[1] = "textcolour";
+            settingsTags[2] = "font";
+            settingsTags[3] = "fontsize";
+            Settings settings;
             try
             {
-                Icon mainIcon = new Icon("Menu_Data\\logo.ico");
-                this.Icon = mainIcon;
-                trayIcon.Icon = mainIcon;
+                XMLparser x = new XMLparser();
+                settings = new Settings(x.readXmlFile("settings.xml", settingsTags));
             }
-            catch
+            catch (FileNotFoundException e)
             {
-                //
+                CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                MenuUpdater updater = new MenuUpdater();
+                updater.createSettingsFile();
+                XMLparser x = new XMLparser();
+                settings = new Settings(x.readXmlFile("settings.xml", settingsTags));
             }
+
             //Set up colours and fonts from settings file
             this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
             try
@@ -58,21 +68,25 @@ namespace Test1
                 menuStrip1.Items.Insert(3, new ToolStripSeparator());
                 appTree.Focus();
             }
-            catch(Exception ex)
+            catch
             {
                 this.BringToFront();
                 this.Focus();
             }
+            //Set up logo
+            try
+            {
+                Icon mainIcon = new Icon("Menu_Data\\logo.ico");
+                this.Icon = mainIcon;
+                trayIcon.Icon = mainIcon;
+            }
+            catch
+            {
+                CustomBox.Show("logo.ico could not be located. The default icon will be used", "Error!", this.Font, this.BackColor, this.ForeColor);
+            }
             checkScreenSize();
             this.BringToFront();
             this.Focus();
-        }
-
-        private void setImageIndex(TreeNode appNode, ToolStripMenuItem appTrayItem, int index)
-        {
-            appNode.ImageIndex = index;
-            appNode.SelectedImageIndex = index;
-            appTrayItem.Image = appTree.ImageList.Images[index]; //add the image to the system tray menu             
         }
 
         /**
@@ -82,6 +96,10 @@ namespace Test1
          */ 
         private void MenuForm_Shown(object sender, EventArgs e)
         {
+            trayIcon.BalloonTipText = "Access Tools is populating your menu. Please Wait...";
+            trayIcon.ShowBalloonTip(50);
+            menuStrip1.BeginInvoke(new InvokeDelegate(createFontMenus));
+            
             //read xml file
             String[] menuTags = new String[4];
             menuTags[0] = "name";
@@ -92,24 +110,17 @@ namespace Test1
             try
             {
                 XMLparser x = new XMLparser();
-                //
                 updater.update(x.readFirstElement("menu.xml"));
                 appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
-                //
-                /*appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
-                if (updater.update(x.getOldCount(), appMenu) == true)
-                {
-                    appMenu.getCategories().Clear();
-                    appMenu.getTable().Clear();
-                    appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags));
-                }*/
             }
             catch (FileNotFoundException ex)
             {
                 CustomBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
                 updater.createMenuFile();
             }
+            
             //Set up menu treeview
+            
             Hashtable menu = appMenu.getTable();
             Hashtable categories = appMenu.getCategories();
             ImageList imgList = new ImageList();
@@ -119,6 +130,7 @@ namespace Test1
             bool wordIcon = false;
             int wordIndex = 0;
             imgList.Images.Add(ic); //adds the Folder icon as a basic icon to be used for categories
+            System.Drawing.Icon appIcon;
             foreach (String cat in categories.Keys)
             {
                 appTree.BeginUpdate();
@@ -144,7 +156,17 @@ namespace Test1
                         }
                         else
                         {
-                            System.Drawing.Icon appIcon = System.Drawing.Icon.ExtractAssociatedIcon(path); //extracts the associated icon for that app
+                            String iconName = "Menu_Data\\appIcons\\" + app + ".ico";
+                            if (File.Exists(iconName))
+                            {
+                                appIcon = System.Drawing.Icon.ExtractAssociatedIcon(iconName);
+                            }
+                            else
+                            {
+                                appIcon = System.Drawing.Icon.ExtractAssociatedIcon(path); //extracts the associated icon for that app
+                                System.IO.FileStream saveStream = new FileStream(iconName, FileMode.Create);
+                                appIcon.Save(saveStream);
+                            }
                             imgList.Images.Add(appIcon);
                             appTree.ImageList = imgList;
                             contextMenuStrip1.ImageList = imgList;
@@ -170,7 +192,9 @@ namespace Test1
                 }
                 categoryNode.SelectedImageIndex = 0;
             }
+            
             //set up font menu
+            /*
             System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
             ArrayList fontList = new ArrayList();
             fontList.AddRange(installedFonts.Families);
@@ -178,16 +202,43 @@ namespace Test1
             {
                 if (f.IsStyleAvailable(FontStyle.Regular))
                 {
-                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font - slow
+                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font
+                }
+            }
+            
+            for (int i = 10; i <= 70; i += 2)
+            {
+                sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
+            }           
+            */
+            appTree.Sort();
+            appTree.EndUpdate();
+            ActiveControl = appTree;
+        }
+
+        public void createFontMenus()
+        {
+            System.Drawing.Text.InstalledFontCollection installedFonts = new System.Drawing.Text.InstalledFontCollection();
+            ArrayList fontList = new ArrayList();
+            fontList.AddRange(installedFonts.Families);
+            foreach (FontFamily f in fontList)
+            {
+                if (f.IsStyleAvailable(FontStyle.Regular))
+                {
+                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font 
                 }
             }
             for (int i = 10; i <= 70; i += 2)
             {
                 sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
-            }
-            appTree.Sort();
-            appTree.EndUpdate();
-            ActiveControl = appTree;
+            }  
+        }
+
+        private void setImageIndex(TreeNode appNode, ToolStripMenuItem appTrayItem, int index)
+        {
+            appNode.ImageIndex = index;
+            appNode.SelectedImageIndex = index;
+            appTrayItem.Image = appTree.ImageList.Images[index]; //add the image to the system tray menu             
         }
 
         /**
@@ -1068,5 +1119,7 @@ namespace Test1
             CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
             appTree.Nodes.Remove(appTree.SelectedNode);
         }
+
+        
     }
 }
