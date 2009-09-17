@@ -67,32 +67,39 @@ namespace Test1
             if (!count.Equals(oldCount)) //if an app has been added or removed, clear the xml file and rebuild it
             {
                 menuDoc = new XmlDocument();
-                menuDoc.Load("menu.xml");
-                menuDoc.RemoveAll();
-                XmlElement newRoot = menuDoc.CreateElement("menu");
-                menuDoc.AppendChild(newRoot);
-                list = menuDoc.GetElementsByTagName("menu");
-                XmlAttribute countAtt = menuDoc.CreateAttribute("count");
-
-                //Set the count value
-                countAtt.Value = count.ToString();
-                list[0].Attributes.Append(countAtt);
-                menuDoc.Save("menu.xml");
-
-                foreach (string catFolder in cats)
+                try
                 {
-                    directories = Directory.GetDirectories(catFolder);
-                    addNodes(directories, true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
+                    menuDoc.Load("menu.xml");
+                    menuDoc.RemoveAll();
+                    XmlElement newRoot = menuDoc.CreateElement("menu");
+                    menuDoc.AppendChild(newRoot);
+                    list = menuDoc.GetElementsByTagName("menu");
+                    XmlAttribute countAtt = menuDoc.CreateAttribute("count");
+
+                    //Set the count value
+                    countAtt.Value = count.ToString();
+                    list[0].Attributes.Append(countAtt);
+                    menuDoc.Save("menu.xml");
+
+                    foreach (string catFolder in cats)
+                    {
+                        directories = Directory.GetDirectories(catFolder);
+                        addNodes(directories, true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
+                    }
+                    directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
+                    addNodes(directories, false, "");
                 }
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-                addNodes(directories, false, "");
+                catch (Exception e)
+                {
+                    System.Windows.Forms.MessageBox.Show("AccessTools has encountered a problem. \nCause: menu.xml has become corrupted", "Error!");
+                }
                 try
                 {
                     menuDoc.Save("menu.xml");
                 }
                 catch (Exception e)
                 {
-
+                    System.Windows.Forms.MessageBox.Show("Could not save menu.xml", "Error!");
                 }
             }
         }
