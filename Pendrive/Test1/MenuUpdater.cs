@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Microsoft.Win32;
+using System.Collections;
 
 namespace Test1
 {
@@ -14,10 +15,11 @@ namespace Test1
         Char[] lastSlash;
         XmlDocument menuDoc;
         XmlNodeList list;
+        Hashtable descriptions;
 
         public MenuUpdater()
         {
-            
+            descriptions = new Hashtable();
         }
             
         /**
@@ -81,6 +83,19 @@ namespace Test1
                     list[0].Attributes.Append(countAtt);
                     menuDoc.Save("menu.xml");
 
+                    String[] descriptionTags = new String[2];
+                    descriptionTags[0] = "appName";
+                    descriptionTags[1] = "description";
+                    try
+                    {
+                        XMLparser x = new XMLparser();
+                        Descriptions d = new Descriptions(x.readXmlFile("Menu_Data\\descriptions.xml", descriptionTags));
+                        descriptions = d.getDescriptions();
+                    }
+                    catch
+                    {//
+                    }
+                    
                     foreach (string catFolder in cats)
                     {
                         directories = Directory.GetDirectories(catFolder);
@@ -104,84 +119,16 @@ namespace Test1
             }
         }
 
-        /*
-        public bool update(int oldCount, Menu appMenu)
-        {
-            this.oldCount = oldCount;
-            int count = 0;
-            String slash = "\\";
-            lastSlash = slash.ToCharArray();
-            String[] directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-            System.Collections.ArrayList cats = new System.Collections.ArrayList();
-            foreach (string subdirectory in directories)
-            {
-                if (subdirectory.StartsWith("."))
-                {
-                    //ignore
-                }
-                else if (Directory.Exists(subdirectory))
-                {
-                    count++;
-                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
-                    if (subdir.Equals("Categories"))
-                    {
-                        String[] catFolders = Directory.GetDirectories(subdirectory);
-                        foreach (string catFolder in catFolders)
-                        {
-                            cats.Add(catFolder);
-                            count++;
-                            String[] futherSubs = Directory.GetDirectories(catFolder);
-                            foreach (string furtherSub in futherSubs)
-                            {
-                                if (Directory.Exists(furtherSub))
-                                {
-                                    count++;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if (count > oldCount)
-            {
-                menuDoc = new XmlDocument();
-                menuDoc.Load("menu.xml");
-                list = menuDoc.GetElementsByTagName("menu");
-                list[0].Attributes[0].Value = count.ToString(); //updates count
-                foreach (string catFolder in cats)
-                {
-                    directories = Directory.GetDirectories(catFolder);
-                    checkTable(directories, appMenu.getTable(), true, catFolder.Substring(catFolder.LastIndexOfAny(lastSlash) + 1));
-                }
-                directories = Directory.GetDirectories(Directory.GetCurrentDirectory());
-                checkTable(directories, appMenu.getTable(), false, "");
-                try
-                {
-                    menuDoc.Save("menu.xml");
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    return false;
-                }
-            }
-            else if (count < oldCount) //something has been deleted
-            {
-
-            }
-            return false;
-        }
-        */
-
         /**
          * Creates new xml nodes for each application
          */
         public void addNodes(String[] directories, bool catFolder, String cat)
         {
-            foreach (string subdirectory in directories)
+           foreach (string subdirectory in directories)
             {
                 if (!subdirectory.StartsWith("."))
                 {
+                    char[] extraSplit = "(".ToCharArray();
                     if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
                     {
                         //found new app
@@ -207,6 +154,16 @@ namespace Test1
                         }
                         XmlElement newExtra = menuDoc.CreateElement("extra");
                         newExtra.InnerText = ".";
+                        try
+                        {
+                            newExtra.InnerText = (String)descriptions[subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)];
+                            if (newExtra.InnerText.Equals(""))
+                                newExtra.InnerText = ".";
+                        }
+                        catch
+                        {
+                            newExtra.InnerText = ".";
+                        }
                         if (!(newCategory.InnerText.Equals("User's Folders") && newName.InnerText.Equals("Menu_Data")))
                         {
                             newNode.AppendChild(newName);
@@ -219,53 +176,6 @@ namespace Test1
                 }
             }
         }
-
-        /*
-        public void checkTable(String[] directories, System.Collections.Hashtable table, bool catFolder, String cat)
-        {
-         
-            foreach (string subdirectory in directories)
-            {
-                if ((!table.ContainsKey(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1))) && !subdirectory.StartsWith("."))
-                {
-                    if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
-                    {
-                        //found new app
-                        XmlElement newNode = menuDoc.CreateElement("app");
-                        XmlElement newName = menuDoc.CreateElement("name");
-                        newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
-                        XmlElement newPath = menuDoc.CreateElement("path");
-                        string path = findPath(subdirectory, catFolder);
-                        if (path.Contains("Access Tools")) //This allows paths to be created if Access Tools is running within a folder on a hard drive rather than a USB pendrive.
-                        {
-                            String drive = Directory.GetDirectoryRoot(subdirectory);
-                            path = drive + path;
-                        }
-                        newPath.InnerText = path;
-                        XmlElement newCategory = menuDoc.CreateElement("category");
-                        if (catFolder)
-                        {
-                            newCategory.InnerText = cat;
-                        }
-                        else
-                        {
-                            newCategory.InnerText = checkCategory(path); //attempt to guess the category
-                        }
-                        XmlElement newExtra = menuDoc.CreateElement("extra");
-                        newExtra.InnerText = ".";
-                        if (!(newCategory.InnerText.Equals("User's Folders") && newName.InnerText.Equals("Menu_Data")))
-                        {
-                            newNode.AppendChild(newName);
-                            newNode.AppendChild(newPath);
-                            newNode.AppendChild(newCategory);
-                            newNode.AppendChild(newExtra);
-                            list[0].AppendChild(newNode);
-                        }
-                    }
-                }
-            }
-        }
-        */
 
         /*
          * Checks that a Directory is not the Category parent folder
@@ -374,7 +284,25 @@ namespace Test1
                 }
             }
             menuDoc.Save("menu.xml");
-
+            XmlDocument descriptionDoc = new XmlDocument();
+            descriptionDoc.Load("Menu_Data\\descriptions.xml");
+            XmlNodeList descriptions = descriptionDoc.GetElementsByTagName("appDescriptions"); //gets all descriptions
+            foreach (XmlElement application in descriptions[0])
+            {
+                if (application.FirstChild.InnerText.Equals(app))
+                {
+                    application.ParentNode.RemoveChild(application);
+                }
+            }
+            XmlElement appName = descriptionDoc.CreateElement("appName");
+            appName.InnerText = app;
+            XmlElement appDescr = descriptionDoc.CreateElement("description");
+            appDescr.InnerText = newExtra;
+            XmlElement appNode = descriptionDoc.CreateElement("app");
+            appNode.AppendChild(appName);
+            appNode.AppendChild(appDescr);
+            descriptions[0].AppendChild(appNode);
+            descriptionDoc.Save("Menu_Data\\descriptions.xml");
         }
 
         /**

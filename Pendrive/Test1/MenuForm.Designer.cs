@@ -30,8 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MenuForm));
-            this.colorOptions = new System.Windows.Forms.ColorDialog();
-            this.fontOptions = new System.Windows.Forms.FontDialog();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -96,11 +94,6 @@
             this.panel1.SuspendLayout();
             this.appTreeContextMenu.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // fontOptions
-            // 
-            this.fontOptions.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.fontOptions.MinSize = 10;
             // 
             // trayIcon
             // 
@@ -514,12 +507,12 @@
             // 
             // statusStrip1
             // 
+            this.statusStrip1.BackColor = System.Drawing.Color.Transparent;
             this.statusStrip1.Dock = System.Windows.Forms.DockStyle.None;
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statusLabel1});
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
             this.statusStrip1.Size = new System.Drawing.Size(279, 24);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
@@ -544,8 +537,7 @@
             // 
             // appTree
             // 
-            this.appTree.AccessibleDescription = "The list of available applications, grouped by category, organised in a tree stru" +
-                "cture";
+            this.appTree.AccessibleDescription = "The list of available applications, grouped by category.";
             this.appTree.AccessibleName = "Application List";
             this.appTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
@@ -568,13 +560,14 @@
             this.descriptionToolStripMenuItem,
             this.hToolStripMenuItem});
             this.appTreeContextMenu.Name = "appTreeContextMenu";
-            this.appTreeContextMenu.Size = new System.Drawing.Size(167, 70);
+            this.appTreeContextMenu.ShowImageMargin = false;
+            this.appTreeContextMenu.Size = new System.Drawing.Size(142, 70);
             // 
             // launchToolStripMenuItem
             // 
             this.launchToolStripMenuItem.AccessibleName = "Launch Application";
             this.launchToolStripMenuItem.Name = "launchToolStripMenuItem";
-            this.launchToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.launchToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.launchToolStripMenuItem.Text = "Launch";
             this.launchToolStripMenuItem.ToolTipText = "Launch this application";
             this.launchToolStripMenuItem.Click += new System.EventHandler(this.launchToolStripMenuItem_Click);
@@ -583,7 +576,7 @@
             // 
             this.descriptionToolStripMenuItem.AccessibleName = "Edit Description...";
             this.descriptionToolStripMenuItem.Name = "descriptionToolStripMenuItem";
-            this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.descriptionToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.descriptionToolStripMenuItem.Text = "Edit Description...";
             this.descriptionToolStripMenuItem.ToolTipText = "Change the description that appears in brackets for this application";
             this.descriptionToolStripMenuItem.Click += new System.EventHandler(this.descriptionToolStripMenuItem_Click);
@@ -592,7 +585,7 @@
             // 
             this.hToolStripMenuItem.AccessibleName = "Hide Application";
             this.hToolStripMenuItem.Name = "hToolStripMenuItem";
-            this.hToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.hToolStripMenuItem.Size = new System.Drawing.Size(141, 22);
             this.hToolStripMenuItem.Text = "Hide Application";
             this.hToolStripMenuItem.ToolTipText = "Hide this application until the menu is re-launched";
             this.hToolStripMenuItem.Click += new System.EventHandler(this.hToolStripMenuItem_Click);
@@ -639,8 +632,6 @@
 
         #endregion
 
-        private System.Windows.Forms.ColorDialog colorOptions;
-        private System.Windows.Forms.FontDialog fontOptions;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

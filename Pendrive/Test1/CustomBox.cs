@@ -18,7 +18,6 @@ namespace Test1
         {
             InitializeComponent();
             toReturn = "";
-
         }
 
         public static string Show(String message, String title, Font font, Color bg, Color fg)
@@ -32,20 +31,17 @@ namespace Test1
             }
             catch
             {
-                //
             }
             if (title.Equals("Access Tools - About"))
             {
                 customBox.pictureBox1.Visible = true;
                 customBox.pictureBox1.Height = 45;
             }
-            
             if (title.StartsWith("Edit Description"))
             {
                 customBox.richTextBox1.ReadOnly = false;
                 toReturn = message;
             }
-
             Rectangle maxSize = new Rectangle();
             maxSize.Height = 600;
             maxSize.Width = 800;
@@ -68,7 +64,6 @@ namespace Test1
 
         private void CustomBox_Load(object sender, EventArgs e)
         {
-
         }
 
         private void richTextBox1_LinkClicked(object sender, LinkClickedEventArgs e)

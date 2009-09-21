@@ -81,8 +81,7 @@ namespace Test1
             {
                 System.Windows.Forms.MessageBox.Show(file + " not found!", "Error!");  
                 return values;
-            }            
-           
+            }      
         }
 
         /**
@@ -116,6 +115,5 @@ namespace Test1
                 return oldAppCount;
             }
         }
-          
     }
 }

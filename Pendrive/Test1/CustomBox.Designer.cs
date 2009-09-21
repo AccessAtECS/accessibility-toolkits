@@ -87,6 +87,7 @@
             // 
             // CustomBox
             // 
+            this.AcceptButton = this.btnOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
@@ -103,6 +104,7 @@
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "CustomBox";
+            this.TopMost = true;
             this.Load += new System.EventHandler(this.CustomBox_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.CustomBox_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
