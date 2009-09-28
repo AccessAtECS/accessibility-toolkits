@@ -14,7 +14,6 @@ namespace Test1
     public partial class MenuForm : Form
     {
         private Menu appMenu;
-        private bool tooLarge;
         Rectangle maxSize = new Rectangle();
         Rectangle resetSize;
 
@@ -38,7 +37,7 @@ namespace Test1
             try
             {
                 XMLparser x = new XMLparser();
-                settings = new Settings(x.readXmlFile("settings.xml", settingsTags));
+                settings = new Settings(x.readXmlFile("Menu_Data\\settings.xml", settingsTags));
             }
             catch (FileNotFoundException e)
             {
@@ -46,7 +45,7 @@ namespace Test1
                 MenuUpdater updater = new MenuUpdater();
                 updater.createSettingsFile();
                 XMLparser x = new XMLparser();
-                settings = new Settings(x.readXmlFile("settings.xml", settingsTags));
+                settings = new Settings(x.readXmlFile("Menu_Data\\settings.xml", settingsTags));
             }
             //Set up colours and fonts from settings file
             this.MaximumSize = Screen.PrimaryScreen.WorkingArea.Size;
@@ -109,10 +108,10 @@ namespace Test1
             try
             {
                 XMLparser x = new XMLparser();
-                updater.update(x.readFirstElement("menu.xml")); //gets the old count of apps and compares this with a folder count. Updates xml if needed
+                updater.update(x.readFirstElement("Menu_Data\\menu.xml")); //gets the old count of apps and compares this with a folder count. Updates xml if needed
                 appMenu.getCategories().Clear();
                 appMenu.getTable().Clear();
-                appMenu.populateMenu(x.readXmlFile("menu.xml", menuTags)); //extracts information from the xml
+                appMenu.populateMenu(x.readXmlFile("Menu_Data\\menu.xml", menuTags)); //extracts information from the xml
             }
             catch (FileNotFoundException ex)
             {
@@ -191,6 +190,10 @@ namespace Test1
                 }
                 categoryNode.SelectedImageIndex = 0;
             }
+            ToolStripMenuItem appTrayShow = new ToolStripMenuItem("Show Menu");
+            ToolStripMenuItem appTrayExit = new ToolStripMenuItem("Exit Menu");
+            contextMenuStrip1.Items.Add(appTrayShow);
+            contextMenuStrip1.Items.Add(appTrayExit);
             appTree.Sort();
             appTree.EndUpdate();
             ActiveControl = appTree;
@@ -598,8 +601,8 @@ namespace Test1
          */ 
         private void checkScreenSize()
         {
-            maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width - 18);
-            maxSize.Height = Screen.PrimaryScreen.WorkingArea.Height - 18;
+            maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width);
+            maxSize.Height = Screen.PrimaryScreen.WorkingArea.Height;
             this.MaximumSize = maxSize.Size;
             appTree.Height = this.Height - menuStrip1.Height - (2 * statusStrip1.Height);
             appTree.Scrollable = true;
@@ -648,7 +651,7 @@ namespace Test1
             if (e.KeyCode == Keys.Alt)
                 menuStrip1.Focus();
             if (e.KeyCode == Keys.F1)
-                System.Diagnostics.Process.Start("Help.txt");
+                System.Diagnostics.Process.Start("Access_Tools_Instructions.pdf");
         }
 
         /**
@@ -667,7 +670,7 @@ namespace Test1
             if (this.WindowState == FormWindowState.Minimized)
             {
                 Hide();
-                trayIcon.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
+                trayIcon.BalloonTipText = "Access Tools is still running and can be accessed through this icon";
                 trayIcon.ShowBalloonTip(200);
             }
         }
@@ -749,8 +752,8 @@ namespace Test1
          */ 
         private void downloadMenuItem_Click(object sender, EventArgs e)
         {
-            CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nPlease visit http://access.ecs.soton.ac.uk to view progress on this feature. \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
-            System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk");
+            CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nPlease visit http://access.ecs.soton.ac.uk to view progress on this feature. \nIn the meantime, links to new applications are available at http://access.ecs.soton.ac.uk/penapps \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
+            System.Diagnostics.Process.Start("http://access.ecs.soton.ac.uk/penapps");
             this.BringToFront();
             this.Focus();       
         }
@@ -944,7 +947,7 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 0.3;
+            double version = 1.0;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
             CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
@@ -992,8 +995,18 @@ namespace Test1
          */ 
         private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            String selected = e.ClickedItem.Text; 
-            if (!(selected.Equals("Show Menu") || selected.Equals("Exit Menu")))
+            String selected = e.ClickedItem.Text;
+            if (selected.Equals("Show Menu"))
+            {
+                Show();
+                this.WindowState = FormWindowState.Normal;
+            }
+            else if (selected.Equals("Exit Menu"))
+            {
+                saveAndClose();
+            }
+            else
+            //if (!(selected.Equals("Show Menu") || selected.Equals("Exit Menu")))
             {
                 String inputPath = (String)((AppShortcut)appMenu.getTable()[selected]).getPath();
                 try

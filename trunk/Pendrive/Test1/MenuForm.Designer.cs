@@ -33,8 +33,6 @@
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.trayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.itemShow = new System.Windows.Forms.ToolStripMenuItem();
-            this.itemExit = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.downloadMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -84,7 +82,7 @@
             this.launchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip1.SuspendLayout();
+            this.helpProvider1 = new System.Windows.Forms.HelpProvider();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -99,7 +97,7 @@
             // 
             this.trayIcon.BalloonTipIcon = System.Windows.Forms.ToolTipIcon.Info;
             this.trayIcon.BalloonTipText = "Your application menu is still running and can be accessed through this icon";
-            this.trayIcon.BalloonTipTitle = "Access Tools - BETA";
+            this.trayIcon.BalloonTipTitle = "Access Tools";
             this.trayIcon.ContextMenuStrip = this.contextMenuStrip1;
             this.trayIcon.Icon = ((System.Drawing.Icon)(resources.GetObject("trayIcon.Icon")));
             this.trayIcon.Text = "Access Tools";
@@ -109,26 +107,9 @@
             // 
             // contextMenuStrip1
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.itemShow,
-            this.itemExit});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(138, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 26);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
-            // 
-            // itemShow
-            // 
-            this.itemShow.Name = "itemShow";
-            this.itemShow.Size = new System.Drawing.Size(137, 22);
-            this.itemShow.Text = "Show Menu";
-            this.itemShow.Click += new System.EventHandler(this.itemShow_Click);
-            // 
-            // itemExit
-            // 
-            this.itemExit.Name = "itemExit";
-            this.itemExit.Size = new System.Drawing.Size(137, 22);
-            this.itemExit.Text = "Exit Menu";
-            this.itemExit.Click += new System.EventHandler(this.itemExit_Click);
             // 
             // menuStrip1
             // 
@@ -607,12 +588,11 @@
             this.MinimumSize = new System.Drawing.Size(295, 335);
             this.Name = "MenuForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-            this.Text = "Access Tools - BETA";
+            this.Text = "Access Tools";
             this.Shown += new System.EventHandler(this.MenuForm_Shown);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MenuForm_FormClosing);
             this.Resize += new System.EventHandler(this.MenuForm_Resize);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MenuForm_KeyDown);
-            this.contextMenuStrip1.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.toolStripContainer1.BottomToolStripPanel.ResumeLayout(false);
@@ -635,8 +615,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.NotifyIcon trayIcon;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem itemShow;
-        private System.Windows.Forms.ToolStripMenuItem itemExit;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fileMenu;
         private System.Windows.Forms.ToolStripMenuItem fileMenuExit;
@@ -686,5 +664,6 @@
         private System.Windows.Forms.ToolStripMenuItem launchToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem descriptionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hToolStripMenuItem;
+        private System.Windows.Forms.HelpProvider helpProvider1;
     }
 }

@@ -39,14 +39,14 @@ namespace Test1
             System.Collections.ArrayList cats = new System.Collections.ArrayList();
             foreach (string subdirectory in directories) //counts the directories
             {
-                if (subdirectory.StartsWith("."))
+                String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
+                if (subdir.StartsWith(".") || subdir.StartsWith("$"))
                 {
                     //ignore
                 }
                 else if (Directory.Exists(subdirectory))
                 {
                     count++;
-                    String subdir = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
                     if (subdir.Equals("Categories"))
                     {
                         String[] catFolders = Directory.GetDirectories(subdirectory);
@@ -71,7 +71,7 @@ namespace Test1
                 menuDoc = new XmlDocument();
                 try
                 {
-                    menuDoc.Load("menu.xml");
+                    menuDoc.Load("Menu_Data\\menu.xml");
                     menuDoc.RemoveAll();
                     XmlElement newRoot = menuDoc.CreateElement("menu");
                     menuDoc.AppendChild(newRoot);
@@ -81,7 +81,7 @@ namespace Test1
                     //Set the count value
                     countAtt.Value = count.ToString();
                     list[0].Attributes.Append(countAtt);
-                    menuDoc.Save("menu.xml");
+                    menuDoc.Save("Menu_Data\\menu.xml");
 
                     String[] descriptionTags = new String[2];
                     descriptionTags[0] = "appName";
@@ -110,7 +110,7 @@ namespace Test1
                 }
                 try
                 {
-                    menuDoc.Save("menu.xml");
+                    menuDoc.Save("Menu_Data\\menu.xml");
                 }
                 catch (Exception e)
                 {
@@ -126,7 +126,7 @@ namespace Test1
         {
            foreach (string subdirectory in directories)
             {
-                if (!subdirectory.StartsWith("."))
+                if (!subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1).StartsWith(".") && !subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1).StartsWith("$"))
                 {
                     char[] extraSplit = "(".ToCharArray();
                     if (isNotCat(subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1)))
@@ -137,7 +137,7 @@ namespace Test1
                         newName.InnerText = subdirectory.Substring(subdirectory.LastIndexOfAny(lastSlash) + 1);
                         XmlElement newPath = menuDoc.CreateElement("path");
                         string path = findPath(subdirectory, catFolder);
-                        if (path.Contains("Access Tools")) //This allows paths to be created if Access Tools is running within a folder on a hard drive rather than a USB pendrive.
+                        if (path.Contains("accessTools")) //This allows paths to be created if Access Tools is running within a folder on a hard drive rather than a USB pendrive.
                         {
                             String drive = Directory.GetDirectoryRoot(subdirectory);
                             path = drive + path;
@@ -230,7 +230,7 @@ namespace Test1
         
         /**
          * Takes in a path and attempts to determine the category of the application.
-         * If it is a .doc file, then it is a guide.
+         * If it is a .doc or .exe file, then it is a guide.
          * If it is a .exe file, it could either be an application, or an accessibility tool.
          * Categorises folders.
          */ 
@@ -238,14 +238,14 @@ namespace Test1
         {
             if (File.Exists(directory)) //if a path to the actual file/exe was found, rather than the folder
             {
-                if (directory.EndsWith(".doc"))
+                if (directory.EndsWith(".doc") || directory.EndsWith(".pdf"))
                     return ("Accessibility Guides");
                 if (directory.EndsWith(".exe"))
                     return ("Applications"); //could be an application e.g. firefox, or an accessibility tool e.g. a screenreader, need to distinguish   
             }
             else if (Directory.Exists(directory))
                     return ("User's Folders");
-            return ("Downloads");
+            return ("Other");
         }
 
         /**
@@ -255,7 +255,7 @@ namespace Test1
         public void remove(string app)
         {
             XmlDocument menuDoc = new XmlDocument();
-            menuDoc.Load("menu.xml");
+            menuDoc.Load("Menu_Data\\menu.xml");
             XmlNodeList list = menuDoc.GetElementsByTagName("app"); //gets all apps
             foreach (XmlElement application in list)
             {
@@ -267,13 +267,13 @@ namespace Test1
                     break;
                 }
             }
-            menuDoc.Save("menu.xml");
+            menuDoc.Save("Menu_Data\\menu.xml");
         }
 
         public void editExtra(string app, string newExtra)
         {
             XmlDocument menuDoc = new XmlDocument();
-            menuDoc.Load("menu.xml");
+            menuDoc.Load("Menu_Data\\menu.xml");
             XmlNodeList list = menuDoc.GetElementsByTagName("app");
             foreach (XmlElement application in list)
             {
@@ -283,7 +283,7 @@ namespace Test1
                     break;
                 }
             }
-            menuDoc.Save("menu.xml");
+            menuDoc.Save("Menu_Data\\menu.xml");
             XmlDocument descriptionDoc = new XmlDocument();
             descriptionDoc.Load("Menu_Data\\descriptions.xml");
             XmlNodeList descriptions = descriptionDoc.GetElementsByTagName("appDescriptions"); //gets all descriptions
@@ -313,7 +313,7 @@ namespace Test1
             try
             {
                 XmlDocument settingsDoc = new XmlDocument();
-                settingsDoc.Load("settings.xml");
+                settingsDoc.Load("Menu_Data\\settings.xml");
                 XmlNodeList settings = settingsDoc.GetElementsByTagName("bgcolour");
                 settings[0].InnerText = bgcolour;
                 settings = settingsDoc.GetElementsByTagName("textcolour");
@@ -322,7 +322,7 @@ namespace Test1
                 settings[0].InnerText = font;
                 settings = settingsDoc.GetElementsByTagName("fontsize");
                 settings[0].InnerText = fontsize;
-                settingsDoc.Save("settings.xml");
+                settingsDoc.Save("Menu_Data\\settings.xml");
             }
             catch (IOException e)
             {
@@ -335,7 +335,7 @@ namespace Test1
         public void createMenuFile()
         {
             XmlDocument newMenu = new XmlDocument();
-            XmlTextWriter newMenuWriter = new XmlTextWriter("menu.xml", System.Text.Encoding.UTF8);
+            XmlTextWriter newMenuWriter = new XmlTextWriter("Menu_Data\\menu.xml", System.Text.Encoding.UTF8);
             newMenuWriter.Formatting = Formatting.Indented;
             
             //Create Starting Element
@@ -344,14 +344,14 @@ namespace Test1
             newMenuWriter.Close();
             
             //Load the newly created file and insert count attribute
-            newMenu.Load("menu.xml");
+            newMenu.Load("Menu_Data\\menu.xml");
             XmlNodeList list = newMenu.GetElementsByTagName("menu");
             XmlAttribute count = newMenu.CreateAttribute("count");
             
             //Set the initial count value to 0
             count.Value = "0";
             list[0].Attributes.Append(count);
-            newMenu.Save("menu.xml");
+            newMenu.Save("Menu_Data\\menu.xml");
         }
 
         /**
@@ -360,7 +360,7 @@ namespace Test1
         public void createSettingsFile()
         {
             XmlDocument newSettings = new XmlDocument();
-            XmlTextWriter newSettingsWriter = new XmlTextWriter("settings.xml", System.Text.Encoding.UTF8);
+            XmlTextWriter newSettingsWriter = new XmlTextWriter("Menu_Data\\settings.xml", System.Text.Encoding.UTF8);
             newSettingsWriter.Formatting = Formatting.Indented;
 
             //Create Starting Element
@@ -369,7 +369,7 @@ namespace Test1
             newSettingsWriter.Close();
 
             //Load file and insert elements
-            newSettings.Load("settings.xml");
+            newSettings.Load("Menu_Data\\settings.xml");
             XmlNodeList list = newSettings.GetElementsByTagName("settings");
             XmlElement settingsBgColour = newSettings.CreateElement("bgcolour");
             list[0].AppendChild(settingsBgColour);
@@ -379,8 +379,8 @@ namespace Test1
             list[0].AppendChild(settingsFont);
             XmlElement settingsFontSize = newSettings.CreateElement("fontsize");
             list[0].AppendChild(settingsFontSize);
-            
-            newSettings.Save("settings.xml");
+
+            newSettings.Save("Menu_Data\\settings.xml");
         }          
     }
 
