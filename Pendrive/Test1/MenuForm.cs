@@ -59,6 +59,8 @@ namespace Test1
                 statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
                 appTreeContextMenu.Font = this.Font;
+                fontToolStripMenuItem.Font = this.Font;
+                sizeToolStripMenuItem.Font = this.Font;
                 resetSize = new Rectangle();
                 resetSize.Width = 295;
                 resetSize.Height = 335;
@@ -212,12 +214,14 @@ namespace Test1
             {
                 if (f.IsStyleAvailable(FontStyle.Regular))
                 {
-                    fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font 
+                    //fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font
+                    fontToolStripMenuItem.Items.Add(f.Name);
                 }
             }
             for (int i = 10; i <= 70; i += 2)
             {
-                sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
+                //sizeToolStripMenuItem.DropDownItems.Add(i.ToString()); //Adds a menu item for each font size 10-70
+                sizeToolStripMenuItem.Items.Add(i.ToString());
             }  
         }
 
@@ -303,6 +307,9 @@ namespace Test1
                 statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
                 appTreeContextMenu.Font = this.Font;
+
+                fontToolStripMenuItem.Font = this.Font;
+                sizeToolStripMenuItem.Font = this.Font;
             }
             statusLabel1.Text = "Text Size: " + this.Font.Size;
             checkScreenSize();
@@ -405,14 +412,16 @@ namespace Test1
                     }
                 }
             }
-            foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
+            /*foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
             {
                 t.ForeColor = fg;
-            }
-            foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
+            }*/
+            fontToolStripMenuItem.ForeColor = fg;
+            /*foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
             {
                 t.ForeColor = fg;
-            }
+            }*/
+            sizeToolStripMenuItem.ForeColor = fg;
         }
 
         /**
@@ -455,14 +464,16 @@ namespace Test1
                     }
                 }
             }
-            foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
+            /*foreach (ToolStripMenuItem t in fontToolStripMenuItem.DropDownItems)
             {
                 t.BackColor = bg;
-            }
-            foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
+            }*/
+            fontToolStripMenuItem.BackColor = bg;
+            /*foreach (ToolStripMenuItem t in sizeToolStripMenuItem.DropDownItems)
             {
                 t.BackColor = bg;
-            }
+            }*/
+            sizeToolStripMenuItem.BackColor = bg;
         }
 
         /**
@@ -589,6 +600,8 @@ namespace Test1
             statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
             appTreeContextMenu.Font = this.Font;
+            fontToolStripMenuItem.Font = this.Font;
+            sizeToolStripMenuItem.Font = this.Font;
             this.Size = resetSize.Size;
             this.MinimumSize = resetSize.Size;
             checkScreenSize();
@@ -877,7 +890,7 @@ namespace Test1
         /**
          * Changes font type to the selected font
          */ 
-        private void fontToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        /*private void fontToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
             String selected = e.ClickedItem.Text;
@@ -885,12 +898,28 @@ namespace Test1
             this.Font = new Font(newFont.FontFamily, this.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             statusStrip1.Font = this.Font;
             menuStrip1.Font = this.Font;
+            fontToolStripMenuItem.Font = this.Font;
+            sizeToolStripMenuItem.Font = this.Font;
+        }*/
+
+        private void fontToolStripMenuItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            String selected = fontToolStripMenuItem.SelectedItem.ToString();
+            Font newFont = (Font)toFont.ConvertFromString(selected);
+            this.Font = new Font(newFont.FontFamily, this.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            statusStrip1.Font = this.Font;
+            menuStrip1.Font = this.Font;
+            fontToolStripMenuItem.Font = this.Font;
+            sizeToolStripMenuItem.Font = this.Font;
+            fontToolStripMenuItem.Text = "Font";
+            fontToolStripMenuItem.Focus();
         }
 
         /**
          * Changes font size to the selected size
          */
-        private void sizeToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        /*private void sizeToolStripMenuItem_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             int selected = int.Parse(e.ClickedItem.Text);
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font)); 
@@ -899,8 +928,27 @@ namespace Test1
             statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
             appTreeContextMenu.Font = this.Font;
+            fontToolStripMenuItem.Font = this.Font;
+            sizeToolStripMenuItem.Font = this.Font;
             statusLabel1.Text = "";
             checkScreenSize();
+        }*/
+
+        private void sizeToolStripMenuItem_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int selected = int.Parse(sizeToolStripMenuItem.SelectedItem.ToString());
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            Font newFont = appTree.Font;
+            this.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            statusLabel1.Font = this.Font;
+            menuStrip1.Font = this.Font;
+            appTreeContextMenu.Font = this.Font;
+            fontToolStripMenuItem.Font = this.Font;
+            sizeToolStripMenuItem.Font = this.Font;
+            statusLabel1.Text = "";
+            checkScreenSize();
+            sizeToolStripMenuItem.Text = "Size";
+            sizeToolStripMenuItem.Focus();
         }
 
         /**
@@ -947,7 +995,7 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 1.0;
+            double version = 1.1;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
             CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
@@ -1096,6 +1144,18 @@ namespace Test1
         {
             CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
             appTree.Nodes.Remove(appTree.SelectedNode);
+        }
+
+        private void fontToolStripMenuItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                settingsFont.HideDropDown();
+        }
+
+        private void sizeToolStripMenuItem_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+                settingsFont.HideDropDown();
         }
     }
 }
