@@ -66,8 +66,8 @@
             this.pinkToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.moreFgMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.settingsFont = new System.Windows.Forms.ToolStripMenuItem();
-            this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fontToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
+            this.sizeToolStripMenuItem = new System.Windows.Forms.ToolStripComboBox();
             this.settingsDefaultFont = new System.Windows.Forms.ToolStripMenuItem();
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.keyboardShortcutsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,7 +108,7 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
             // menuStrip1
@@ -400,6 +400,7 @@
             // 
             // settingsFont
             // 
+            this.settingsFont.AccessibleName = "Size Combo Box";
             this.settingsFont.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fontToolStripMenuItem,
             this.sizeToolStripMenuItem});
@@ -411,17 +412,21 @@
             // 
             // fontToolStripMenuItem
             // 
+            this.fontToolStripMenuItem.AccessibleName = "Font Combo Box";
+            this.fontToolStripMenuItem.DropDownWidth = 352;
             this.fontToolStripMenuItem.Name = "fontToolStripMenuItem";
-            this.fontToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.fontToolStripMenuItem.Size = new System.Drawing.Size(152, 23);
             this.fontToolStripMenuItem.Text = "Font";
-            this.fontToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.fontToolStripMenuItem_DropDownItemClicked);
+            this.fontToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.fontToolStripMenuItem_SelectedIndexChanged);
+            this.fontToolStripMenuItem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.fontToolStripMenuItem_KeyDown);
             // 
             // sizeToolStripMenuItem
             // 
             this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
-            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(98, 22);
+            this.sizeToolStripMenuItem.Size = new System.Drawing.Size(152, 23);
             this.sizeToolStripMenuItem.Text = "Size";
-            this.sizeToolStripMenuItem.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.sizeToolStripMenuItem_DropDownItemClicked);
+            this.sizeToolStripMenuItem.SelectedIndexChanged += new System.EventHandler(this.sizeToolStripMenuItem_SelectedIndexChanged);
+            this.sizeToolStripMenuItem.KeyDown += new System.Windows.Forms.KeyEventHandler(this.sizeToolStripMenuItem_KeyDown);
             // 
             // settingsDefaultFont
             // 
@@ -472,13 +477,13 @@
             // toolStripContainer1.ContentPanel
             // 
             this.toolStripContainer1.ContentPanel.Controls.Add(this.panel1);
-            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(279, 250);
+            this.toolStripContainer1.ContentPanel.Size = new System.Drawing.Size(279, 252);
             this.toolStripContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.toolStripContainer1.LeftToolStripPanelVisible = false;
             this.toolStripContainer1.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainer1.Name = "toolStripContainer1";
             this.toolStripContainer1.RightToolStripPanelVisible = false;
-            this.toolStripContainer1.Size = new System.Drawing.Size(279, 297);
+            this.toolStripContainer1.Size = new System.Drawing.Size(279, 299);
             this.toolStripContainer1.TabIndex = 3;
             this.toolStripContainer1.Text = "toolStripContainer1";
             // 
@@ -513,7 +518,7 @@
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(3, 3, 0, 30);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(279, 250);
+            this.panel1.Size = new System.Drawing.Size(279, 252);
             this.panel1.TabIndex = 1;
             // 
             // appTree
@@ -526,7 +531,7 @@
             this.appTree.Location = new System.Drawing.Point(0, 0);
             this.appTree.Margin = new System.Windows.Forms.Padding(3, 3, 1, 30);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(279, 249);
+            this.appTree.Size = new System.Drawing.Size(279, 251);
             this.appTree.TabIndex = 0;
             this.appTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.appTree_NodeMouseDoubleClick);
             this.appTree.Enter += new System.EventHandler(this.appTree_Enter);
@@ -579,7 +584,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
             this.BackColor = System.Drawing.Color.WhiteSmoke;
-            this.ClientSize = new System.Drawing.Size(279, 297);
+            this.ClientSize = new System.Drawing.Size(279, 299);
             this.Controls.Add(this.toolStripContainer1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -636,8 +641,6 @@
         private System.Windows.Forms.ToolStripMenuItem blackOnCreamToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem blackOnPinkToolStripMenuItem1;
         private System.Windows.Forms.ToolStripContainer toolStripContainer1;
-        private System.Windows.Forms.ToolStripMenuItem fontToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem sizeToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem blackToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem whiteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem yellowToolStripMenuItem;
@@ -665,5 +668,7 @@
         private System.Windows.Forms.ToolStripMenuItem descriptionToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem hToolStripMenuItem;
         private System.Windows.Forms.HelpProvider helpProvider1;
+        private System.Windows.Forms.ToolStripComboBox fontToolStripMenuItem;
+        private System.Windows.Forms.ToolStripComboBox sizeToolStripMenuItem;
     }
 }
