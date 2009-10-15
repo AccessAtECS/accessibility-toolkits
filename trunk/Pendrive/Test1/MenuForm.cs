@@ -56,16 +56,19 @@ namespace Test1
                 TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
                 Font newFont = (Font)toFont.ConvertFromString(settings.getFont());
                 this.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-                statusLabel1.Font = this.Font;
+                //statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
                 appTreeContextMenu.Font = this.Font;
                 fontToolStripMenuItem.Font = this.Font;
                 sizeToolStripMenuItem.Font = this.Font;
+                newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+                statusLabel1.Font = new Font(newFont.FontFamily, float.Parse(settings.getFontSize()), newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
                 resetSize = new Rectangle();
                 resetSize.Width = 295;
                 resetSize.Height = 335;
                 menuStrip1.Items.Insert(1, new ToolStripSeparator());
                 menuStrip1.Items.Insert(3, new ToolStripSeparator());
+                menuStrip1.Items.Insert(5, new ToolStripSeparator());
                 appTree.Focus();
             }
             catch
@@ -214,6 +217,7 @@ namespace Test1
             {
                 if (f.IsStyleAvailable(FontStyle.Regular))
                 {
+                    
                     //fontToolStripMenuItem.DropDownItems.Add(f.Name); //Adds a menu item for each available font
                     fontToolStripMenuItem.Items.Add(f.Name);
                 }
@@ -307,11 +311,14 @@ namespace Test1
                 statusLabel1.Font = this.Font;
                 menuStrip1.Font = this.Font;
                 appTreeContextMenu.Font = this.Font;
-
                 fontToolStripMenuItem.Font = this.Font;
                 sizeToolStripMenuItem.Font = this.Font;
+                TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+                Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+                statusLabel1.Font = new Font(newFont.FontFamily, fontSize, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             }
             statusLabel1.Text = "Text Size: " + this.Font.Size;
+            //defaultMenu.Size = helpMenu.Size;
             checkScreenSize();
         }
 
@@ -572,7 +579,7 @@ namespace Test1
         }
 
         /*
-         * Called when the Escape key is presse, to fix any layout issues, or to revert back to default settings
+         * Called when CTRL + Z is pressed, to fix any layout issues, or to revert back to default settings
          * Calls fontReset to restore the default font.
          * Changes the colour scheme to black on white.
          * Resets the window size and location.
@@ -602,6 +609,7 @@ namespace Test1
             appTreeContextMenu.Font = this.Font;
             fontToolStripMenuItem.Font = this.Font;
             sizeToolStripMenuItem.Font = this.Font;
+
             this.Size = resetSize.Size;
             this.MinimumSize = resetSize.Size;
             checkScreenSize();
@@ -621,7 +629,7 @@ namespace Test1
             appTree.Scrollable = true;
             if (this.Height == this.MaximumSize.Height || this.Width == this.MaximumSize.Width)
             {
-                trayIcon.BalloonTipText = "The menu window is now larger than your screen. Press the Escape key to fix any layout problems.";
+                trayIcon.BalloonTipText = "The menu window is now larger than your screen. Press the CTRL + Z to fix any layout problems.";
                 trayIcon.ShowBalloonTip(250);
             }
         }
@@ -660,6 +668,8 @@ namespace Test1
             if (e.KeyCode == Keys.OemMinus && e.Control)
                 changeFontSize(-2);
             if (e.KeyCode == Keys.Escape)
+                saveAndClose();
+            if (e.KeyCode == Keys.Z && e.Control)
                 resetAll();
             if (e.KeyCode == Keys.Alt)
                 menuStrip1.Focus();
@@ -908,11 +918,16 @@ namespace Test1
             String selected = fontToolStripMenuItem.SelectedItem.ToString();
             Font newFont = (Font)toFont.ConvertFromString(selected);
             this.Font = new Font(newFont.FontFamily, this.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-            statusStrip1.Font = this.Font;
+            //statusStrip1.Font = this.Font;
             menuStrip1.Font = this.Font;
+            newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+            statusLabel1.Font = new Font(newFont.FontFamily, appTree.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
+            statusLabel1.Text = "Press CTRL + Z to reset settings";
             fontToolStripMenuItem.Font = this.Font;
             sizeToolStripMenuItem.Font = this.Font;
             fontToolStripMenuItem.Text = "Font";
+            checkScreenSize();
+            this.MinimumSize = resetSize.Size;
             fontToolStripMenuItem.Focus();
         }
 
@@ -940,11 +955,13 @@ namespace Test1
             TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
             Font newFont = appTree.Font;
             this.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-            statusLabel1.Font = this.Font;
+            //statusLabel1.Font = this.Font;
             menuStrip1.Font = this.Font;
             appTreeContextMenu.Font = this.Font;
             fontToolStripMenuItem.Font = this.Font;
             sizeToolStripMenuItem.Font = this.Font;
+            newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+            statusLabel1.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             statusLabel1.Text = "";
             checkScreenSize();
             sizeToolStripMenuItem.Text = "Size";
@@ -974,7 +991,8 @@ namespace Test1
             shortcutKeys.Add("CTRL + B, Change Background Colour");
             shortcutKeys.Add("CTRL + R, Reverse Colours");
             shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
-            shortcutKeys.Add("ESC, Reset Colours and Font");
+            shortcutKeys.Add("CTRL + Z, Reset Colours and Font");
+            shortcutKeys.Add("ESC, Close AccessTools");
             shortcutKeys.Add("F1, Launch Help File");
 
             String shortcuts = "";
@@ -1150,12 +1168,49 @@ namespace Test1
         {
             if (e.KeyCode == Keys.Enter)
                 settingsFont.HideDropDown();
+            if (e.KeyCode == Keys.Z && e.Control)
+            {
+                settingsFont.HideDropDown();
+                resetAll();
+            }
         }
 
         private void sizeToolStripMenuItem_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
                 settingsFont.HideDropDown();
+        }
+
+        private void defaultMenu_Click(object sender, EventArgs e)
+        {
+            resetAll();
+        }
+
+        private void defaultMenu_MouseEnter(object sender, EventArgs e)
+        {
+            statusLabel1.Text = "Reset all settings";
+        }
+
+        private void defaultMenu_MouseLeave(object sender, EventArgs e)
+        {
+            statusLabel1.Text = " ";
+        }
+
+        private void toolStripDropDownButton1_Click(object sender, EventArgs e)
+        {
+            resetAll();
+        }
+
+        private void settingsFont_DropDownOpening(object sender, EventArgs e)
+        {
+            TypeConverter toFont = TypeDescriptor.GetConverter(typeof(Font));
+            Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
+            defaultFontToolStripMenuItem.Font = new Font(newFont.FontFamily, this.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont); 
+        }
+
+        private void defaultFontToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            fontReset();
         }
     }
 }
