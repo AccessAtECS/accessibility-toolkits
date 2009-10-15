@@ -83,6 +83,7 @@
             this.descriptionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.hToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.helpProvider1 = new System.Windows.Forms.HelpProvider();
+            this.defaultFontToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.toolStripContainer1.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainer1.ContentPanel.SuspendLayout();
@@ -151,6 +152,7 @@
             // fileMenuExit
             // 
             this.fileMenuExit.Name = "fileMenuExit";
+            this.fileMenuExit.ShortcutKeyDisplayString = "Esc";
             this.fileMenuExit.Size = new System.Drawing.Size(224, 22);
             this.fileMenuExit.Text = "Exit";
             this.fileMenuExit.Click += new System.EventHandler(this.fileMenuExit_Click);
@@ -400,19 +402,21 @@
             // 
             // settingsFont
             // 
-            this.settingsFont.AccessibleName = "Size Combo Box";
+            this.settingsFont.AccessibleName = "Font Settings";
             this.settingsFont.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fontToolStripMenuItem,
-            this.sizeToolStripMenuItem});
+            this.sizeToolStripMenuItem,
+            this.defaultFontToolStripMenuItem});
             this.settingsFont.Name = "settingsFont";
             this.settingsFont.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
             this.settingsFont.Size = new System.Drawing.Size(223, 22);
             this.settingsFont.Text = "Change Font";
             this.settingsFont.ToolTipText = "Change the menu font";
+            this.settingsFont.DropDownOpening += new System.EventHandler(this.settingsFont_DropDownOpening);
             // 
             // fontToolStripMenuItem
             // 
-            this.fontToolStripMenuItem.AccessibleName = "Font Combo Box";
+            this.fontToolStripMenuItem.AccessibleName = "Fonts";
             this.fontToolStripMenuItem.DropDownWidth = 352;
             this.fontToolStripMenuItem.Name = "fontToolStripMenuItem";
             this.fontToolStripMenuItem.Size = new System.Drawing.Size(152, 23);
@@ -422,6 +426,7 @@
             // 
             // sizeToolStripMenuItem
             // 
+            this.sizeToolStripMenuItem.AccessibleName = "Sizes";
             this.sizeToolStripMenuItem.Name = "sizeToolStripMenuItem";
             this.sizeToolStripMenuItem.Size = new System.Drawing.Size(152, 23);
             this.sizeToolStripMenuItem.Text = "Size";
@@ -500,7 +505,7 @@
             this.statusStrip1.Location = new System.Drawing.Point(0, 0);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(279, 24);
-            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
             // statusLabel1
@@ -523,7 +528,7 @@
             // 
             // appTree
             // 
-            this.appTree.AccessibleDescription = "The list of available applications, grouped by category.";
+            this.appTree.AccessibleDescription = "grouped by category.";
             this.appTree.AccessibleName = "Application List";
             this.appTree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
                         | System.Windows.Forms.AnchorStyles.Left)
@@ -531,7 +536,7 @@
             this.appTree.Location = new System.Drawing.Point(0, 0);
             this.appTree.Margin = new System.Windows.Forms.Padding(3, 3, 1, 30);
             this.appTree.Name = "appTree";
-            this.appTree.Size = new System.Drawing.Size(279, 251);
+            this.appTree.Size = new System.Drawing.Size(279, 246);
             this.appTree.TabIndex = 0;
             this.appTree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.appTree_NodeMouseDoubleClick);
             this.appTree.Enter += new System.EventHandler(this.appTree_Enter);
@@ -576,10 +581,18 @@
             this.hToolStripMenuItem.ToolTipText = "Hide this application until the menu is re-launched";
             this.hToolStripMenuItem.Click += new System.EventHandler(this.hToolStripMenuItem_Click);
             // 
+            // defaultFontToolStripMenuItem
+            // 
+            this.defaultFontToolStripMenuItem.AccessibleName = "Default Font";
+            this.defaultFontToolStripMenuItem.Name = "defaultFontToolStripMenuItem";
+            this.defaultFontToolStripMenuItem.Size = new System.Drawing.Size(212, 22);
+            this.defaultFontToolStripMenuItem.Text = "Default Font";
+            this.defaultFontToolStripMenuItem.Click += new System.EventHandler(this.defaultFontToolStripMenuItem_Click);
+            // 
             // MenuForm
             // 
-            this.AccessibleDescription = "Application Menu";
-            this.AccessibleName = "Application Menu";
+            this.AccessibleDescription = "";
+            this.AccessibleName = "AccessTools";
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
@@ -670,5 +683,6 @@
         private System.Windows.Forms.HelpProvider helpProvider1;
         private System.Windows.Forms.ToolStripComboBox fontToolStripMenuItem;
         private System.Windows.Forms.ToolStripComboBox sizeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem defaultFontToolStripMenuItem;
     }
 }
