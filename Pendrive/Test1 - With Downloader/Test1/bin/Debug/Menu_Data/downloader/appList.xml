@@ -1,0 +1,38 @@
+<list>
+  <app>
+    <name>On-Screen Keyboard Portable</name>
+<address>http://portableapps.com/apps/accessibility/on-screen_keyboard_portable</address>
+    <category>Accessibility Tools</category>
+    <extra>Virtual Keyboard</extra>
+    <detail>Manual Installation</detail>
+    <foldername>.</foldername>
+    <type>1</type>
+  </app>
+<app>
+    <name>Virtual Magnifying Glass Portable</name>
+<address>http://portableapps.com/apps/accessibility/virtual_magnifying_glass_portable</address>
+    <category>Accessibility Tools</category>
+    <extra>Magnifier</extra>
+    <detail>Manual Installation</detail>
+    <foldername>.</foldername>
+    <type>1</type>
+  </app>
+<app>
+    <name>Mozilla Firefox Portable Edition</name>
+<address>http://portableapps.com/apps/internet/firefox_portable</address>
+    <category>Applications</category>
+    <extra>Web Browser</extra>
+    <detail>Manual Installation</detail>
+    <foldername>.</foldername>
+    <type>1</type>
+  </app>
+<app>
+    <name>PowerTalk</name>
+<address>http://fullmeasure.co.uk/powertalk/PowerTalkPortable-1.2.11.zip</address>
+    <category>Accessibility Tools</category>
+    <extra>PowerPoint reader</extra>
+    <detail>Automatic Installation</detail>
+    <foldername>PowerTalk</foldername>
+    <type>2</type>
+  </app>
+</list>
