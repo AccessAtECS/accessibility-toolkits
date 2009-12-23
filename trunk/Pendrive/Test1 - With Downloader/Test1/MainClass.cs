@@ -9,6 +9,7 @@ namespace Test1
 {
     class MainClass : System.Windows.Forms.Form
     {
+        [STAThread]
         static void Main()
         {
             Application.EnableVisualStyles();

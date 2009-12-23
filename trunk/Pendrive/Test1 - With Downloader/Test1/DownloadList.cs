@@ -22,10 +22,9 @@ namespace Test1
                 String address = items[1];
                 String category = items[2];
                 String extra = items[3];
-                String detail = items[4];
-                String foldername = items[5];
-                String type = items[6];
-                addItem(new DownloadShortcut(name, address, category, extra, detail, foldername, type));
+                String foldername = items[4];
+                String type = items[5];
+                addItem(new DownloadShortcut(name, address, category, extra, foldername, type));
             }
         }
 

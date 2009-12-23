@@ -778,6 +778,7 @@ namespace Test1
         private void downloadMenuItem_Click(object sender, EventArgs e)
         {
             bool notReady = true;
+            notReady = false;
             if (notReady)
             {
                 CustomBox.Show("Coming Soon! \nThis feature will allow new applications to be downloaded and added to the menu automatically. \nPlease visit http://access.ecs.soton.ac.uk to view progress on this feature. \nIn the meantime, links to new applications are available at http://access.ecs.soton.ac.uk/penapps \nThis website will be launched when you close this message.", "Download Information", this.Font, appTree.BackColor, appTree.ForeColor);
@@ -1029,10 +1030,10 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 1.2;
+            double version = 1.3;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
-            CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("DOWNLOADER ALPHA VERSION 0.1 \nMenu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }     

@@ -11,8 +11,8 @@ namespace Test1
 {
     public partial class CustomBox : Form
     {
-        static CustomBox customBox;
-        static string toReturn;
+        protected static CustomBox customBox;
+        protected static string toReturn;
 
         public CustomBox()
         {
