@@ -1,29 +1,26 @@
 <list>
   <app>
     <name>On-Screen Keyboard Portable</name>
-<address>http://portableapps.com/apps/accessibility/on-screen_keyboard_portable</address>
+<address>http://downloads.sourceforge.net/project/portableapps/On-Screen%20Keyboard%20Portable/On-Screen%20Keyboard%20Portable%201.2/On-ScreenKeyboardPortable_1.2.paf.exe?use_mirror=mesh</address>
     <category>Accessibility Tools</category>
     <extra>Virtual Keyboard</extra>
-    <detail>Manual Installation</detail>
-    <foldername>.</foldername>
+    <foldername>On-ScreenKeyboardPortable</foldername>
     <type>1</type>
   </app>
 <app>
     <name>Virtual Magnifying Glass Portable</name>
-<address>http://portableapps.com/apps/accessibility/virtual_magnifying_glass_portable</address>
+<address>http://downloads.sourceforge.net/project/portableapps/Virtual%20Magnifying%20Glass%20Port./Virtual%20Magnifying%20Glass%20Portable%203.3.1/Virtual_Magnifying_Glass_Portable_3.3.1.paf.exe?use_mirror=mesh</address>
     <category>Accessibility Tools</category>
     <extra>Magnifier</extra>
-    <detail>Manual Installation</detail>
-    <foldername>.</foldername>
+    <foldername>VirtualMagnifyingGlassPortable</foldername>
     <type>1</type>
   </app>
 <app>
     <name>Mozilla Firefox Portable Edition</name>
-<address>http://portableapps.com/apps/internet/firefox_portable</address>
+<address>http://downloads.sourceforge.net/project/portableapps/Mozilla%20Firefox%2C%20Portable%20Ed./Mozilla%20Firefox%2C%20Portable%20Edition%203.5.5/FirefoxPortable_3.5.5_English.paf.exe?use_mirror=surfnet</address>
     <category>Applications</category>
     <extra>Web Browser</extra>
-    <detail>Manual Installation</detail>
-    <foldername>.</foldername>
+    <foldername>FirefoxPortable</foldername>
     <type>1</type>
   </app>
 <app>
@@ -31,8 +28,79 @@
 <address>http://fullmeasure.co.uk/powertalk/PowerTalkPortable-1.2.11.zip</address>
     <category>Accessibility Tools</category>
     <extra>PowerPoint reader</extra>
-    <detail>Automatic Installation</detail>
     <foldername>PowerTalk</foldername>
     <type>2</type>
   </app>
+<app>
+    <name>FreeMind</name>
+    <address>http://downloads.sourceforge.net/project/freemind/freemind/0.8.1/FreeMind-Windows-Installer-0.8.1-max.exe?use_mirror=mesh</address>
+    <category>Applications</category>
+    <extra>Mind Mapping</extra>
+    <foldername>FreeMind</foldername>
+    <type>1</type>
+</app>
+<app>
+	<name>WebbIE Browser</name>
+	<address>http://www.webbie.org.uk/download/WebbIE-USB.zip</address>
+	<category>Accessibility Tools</category>
+	<extra>Text based Browser</extra>
+	<foldername>WEBBIE3</foldername>
+	<type>2</type>
+</app>
+<app>
+	<name>DSpeech</name>
+	<address>http://dimio.altervista.org/stats/download.php?id=5</address>
+	<category>Accessibility Tools</category>
+	<extra>Text to Speech</extra>
+	<foldername>DSpeech</foldername>
+	<type>3</type>
+</app>
+<app>
+	<name>NVDA</name>
+	<address>http://www.nvda-project.org/download/releases/nvda_2009.1_portable.exe</address>
+	<category>Accessibility Tools</category>
+	<extra>Screen Reader</extra>
+	<foldername>NVDA</foldername>
+	<type>1</type>
+</app>
+<app>
+	<name>Click-N-Type</name>
+	<address>http://www.lakefolks.org/cnt/CNTPortable.exe</address>
+	<category>Accessibility Tools</category>
+	<extra>On Screen Keyboard</extra>
+	<foldername>.</foldername>
+	<type>1</type>
+</app>
+<app>
+	<name>Audacity Portable</name>
+	<address>http://downloads.sourceforge.net/project/portableapps/Audacity%20Portable/Audacity%20Portable%201.2.6%20Revision%203/Audacity_Portable_1.2.6_Rev_3.paf.exe?use_mirror=sunet</address>
+	<category>Applications</category>
+	<extra>Audio Editor</extra>
+	<foldername>AudacityPortable</foldername>
+	<type>1</type>
+</app>
+<app>
+	<name>Notepad++ Portable</name>
+	<address>http://downloads.sourceforge.net/project/portableapps/Mozilla%20Firefox%2C%20Portable%20Ed./Mozilla%20Firefox%2C%20Portable%20Edition%203.5.5/FirefoxPortable_3.5.5_English.paf.exe?use_mirror=switch</address>
+	<category>Applications</category>
+	<extra>Text Editor</extra>
+	<foldername>Notepad++Portable</foldername>
+	<type>1</type>
+</app>
+<app>
+	<name>Sunbird Portable</name>
+	<address>http://downloads.sourceforge.net/project/portableapps/Mozilla%20Sunbird%2C%20Portable%20Ed./Mozilla%20Sunbird%2C%20Portable%20Edition%200.9%20Rev%202/SunbirdPortable_0.9_Rev_2_English.paf.exe?use_mirror=switch</address>
+	<category>Applications</category>
+	<extra>Calendar</extra>
+	<foldername>SunbirdPortable</foldername>
+	<type>1</type>
+</app>
+<app>
+	<name>VLC Portable</name>
+	<address>http://downloads.sourceforge.net/project/portableapps/VLC%20Media%20Player%20Portable/VLC%20Media%20Player%20Portable%201.0.3/VLCPortable_1.0.3.paf.exe?use_mirror=switch</address>
+	<category>Applications</category>
+	<extra>Media Player</extra>
+	<foldername>VLCPortable</foldername>
+	<type>1</type>
+</app>
 </list>

@@ -10,17 +10,15 @@ namespace Test1
         String address;
         String category;
         String extra;
-        String detail;
         String foldername;
         String type;
 
-        public DownloadShortcut(String name, String address, String cat, String extra, String detail, String foldername, String type)
+        public DownloadShortcut(String name, String address, String cat, String extra, String foldername, String type)
         {
             this.name = name;
             this.address = address;
             this.category = cat;
             this.extra = extra;
-            this.detail = detail;
             this.foldername = foldername;
             this.type = type;
         }
@@ -43,11 +41,6 @@ namespace Test1
         public String getExtra()
         {
             return extra;
-        }
-
-        public String getDetail()
-        {
-            return detail;
         }
 
         public String getFolderName()
