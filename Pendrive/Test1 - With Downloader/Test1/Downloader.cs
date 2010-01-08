@@ -46,31 +46,17 @@ namespace Test1
             
             if (!System.IO.Directory.Exists("Menu_Data\\downloader"))
             {
-                //NEEDS TESTING
-                toolStripStatusLabel1.Text = "Configuring Access Tools Downloader -- Please Wait";
-                WizardBox.Show("Please wait while Access Tools configures the downloader for first time use.", "Access Tools", this.Font, this.BackColor, this.ForeColor);
-                toolStripStatusLabel1.Text = "Creating Access Tools Downloader directory -- Please Wait";
-                System.IO.Directory.CreateDirectory("Menu_Data\\downloader");
-                ArrayList fileAddresses = new ArrayList();
-                //add each file that needs to be downloaded to set up downloader
-                fileAddresses.Add("http://access.ecs.soton.ac.uk/portableappshelp.pdf");
-                WebClient setupDownloader = new WebClient();
-                setupDownloader.DownloadProgressChanged += new DownloadProgressChangedEventHandler(appDownloader_DownloadProgressChanged);
-                setupDownloader.DownloadFileCompleted += new AsyncCompletedEventHandler(appDownloader_DownloadFileCompleted);
-                foreach (Object requiredAddress in fileAddresses)
-                {                    
-                    String temp = (String)requiredAddress;
-                    String tempName = temp.Substring(temp.LastIndexOfAny("/".ToCharArray()) + 1);
-                    toolStripStatusLabel1.Text = "Downloading " + temp + " -- Please Wait";
-                    setupDownloader.DownloadFile(temp, tempName);
-                }
+                createDirectory();                
             }
             toolStripStatusLabel1.Text = "Checking for appList update -- Please Wait";
-            address = "http://access.ecs.soton.ac.uk/appList.xml";
+            //address = "http://access.ecs.soton.ac.uk/appList.xml";   Change this back to correct location once file is hosted!
+            address = "http://users.ecs.soton.ac.uk/cjp106/appList.xml";
             fileName = "Menu_Data\\downloader\\appList.xml";
+            WebClient listDownloader = new WebClient();
+            
             if (!(System.IO.File.Exists(fileName)))
             {
-                //downloadFile();
+                listDownloader.DownloadFile(address, fileName);
             }
             else
             {
@@ -78,7 +64,7 @@ namespace Test1
                 DateTime today = DateTime.Today;
                 if (!(lastDownload.Equals(today)))
                 {
-                    //downloadFile();
+                    listDownloader.DownloadFile(address, fileName);
                 }
             }
             toolStripStatusLabel1.Text = "Ready";
@@ -135,6 +121,31 @@ namespace Test1
                 WizardBox.Show("Could not process application list", "Error", this.Font, this.BackColor, this.ForeColor);
                 this.Dispose();
             }
+        }
+
+        /*
+         * Creates the required directory on the pendrive if this doesn't already exist
+         */ 
+        public void createDirectory()
+        {
+            //NEEDS TESTING
+            toolStripStatusLabel1.Text = "Configuring Access Tools Downloader -- Please Wait";
+            WizardBox.Show("Please wait while Access Tools configures the downloader for first time use.", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+            toolStripStatusLabel1.Text = "Creating Access Tools Downloader directory -- Please Wait";
+            System.IO.Directory.CreateDirectory("Menu_Data\\downloader");
+            /*ArrayList fileAddresses = new ArrayList();
+            //add each file that needs to be downloaded to set up downloader
+            fileAddresses.Add("http://access.ecs.soton.ac.uk/portableappshelp.pdf");
+            WebClient setupDownloader = new WebClient();
+            setupDownloader.DownloadProgressChanged += new DownloadProgressChangedEventHandler(appDownloader_DownloadProgressChanged);
+            setupDownloader.DownloadFileCompleted += new AsyncCompletedEventHandler(appDownloader_DownloadFileCompleted);
+            foreach (Object requiredAddress in fileAddresses)
+            {
+                String temp = (String)requiredAddress;
+                String tempName = temp.Substring(temp.LastIndexOfAny("/".ToCharArray()) + 1);
+                toolStripStatusLabel1.Text = "Downloading " + temp + " -- Please Wait";
+                setupDownloader.DownloadFile(temp, tempName);
+            }*/
         }
 
         /*
@@ -386,6 +397,7 @@ namespace Test1
                 {
                     WizardBox.Show("Could not move downloaded zip file to safe location", "Warning", this.Font, this.BackColor, this.ForeColor);
                 }
+                informToUpdate();
             }
             else
             {
@@ -435,6 +447,7 @@ namespace Test1
                     {
                         MessageBox.Show("Couldn't delete installer");
                     }
+                    informToUpdate();
                 }
                 else
                 {
@@ -466,6 +479,12 @@ namespace Test1
             WizardBox.Show("Your web browser will begin downloading the file. Select 'Run' in the box that appears to begin the download.", "Access Tools Installation Wizard Step 1/3", this.Font, this.BackColor, this.ForeColor);
             WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \n\nWhen the download has completed you may receive a security warning. Allow the file to install.\n\n Close this message when the installer begins.", "Access Tools Installation Wizard Step 2/3", this.Font, this.BackColor, this.ForeColor);
             WizardBox.Show("Follow the steps in the installer until you reach the 'Choose Install Location' box. \n\nThe installation path will have been copied automatically to your clipboard - Paste this into the Install Location box and then Select Install.", "Access Tools Installation Wizard Step 3/3", this.Font, this.BackColor, this.ForeColor);
+            informToUpdate();
+        }
+
+        public void informToUpdate()
+        {
+            WizardBox.Show("Access Tools recommends that you check for the latest updates for new software. \nThis can usually be done by selecting the 'Help' menu and choosing an option such as 'Check for Updates'. \nRegular updates will ensure that your software receives any required security and bug fixes.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
         }
     }
 }
