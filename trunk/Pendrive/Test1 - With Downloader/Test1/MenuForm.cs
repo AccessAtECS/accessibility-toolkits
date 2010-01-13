@@ -1030,10 +1030,10 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 1.3;
+            double version = 1.4;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
-            CustomBox.Show("DOWNLOADER ALPHA VERSION 0.1.1 \nMenu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("DOWNLOADER BETA VERSION \nMenu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }     

@@ -49,14 +49,21 @@ namespace Test1
                 createDirectory();                
             }
             toolStripStatusLabel1.Text = "Checking for appList update -- Please Wait";
-            //address = "http://access.ecs.soton.ac.uk/appList.xml";   Change this back to correct location once file is hosted!
-            address = "http://users.ecs.soton.ac.uk/cjp106/appList.xml";
+            address = "http://access.ecs.soton.ac.uk/accessTools/appList.xml";
             fileName = "Menu_Data\\downloader\\appList.xml";
             WebClient listDownloader = new WebClient();
             
             if (!(System.IO.File.Exists(fileName)))
             {
-                listDownloader.DownloadFile(address, fileName);
+                try
+                {
+                    listDownloader.DownloadFile(address, fileName);
+                }
+                catch
+                {
+                    CustomBox.Show("Please ensure you are connected to the Internet", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                    this.Close();
+                }
             }
             else
             {
@@ -91,7 +98,7 @@ namespace Test1
                     String extra = temp1.getExtra();
                     String cat = temp1.getCategory();
                    
-                    newButton.Text = dApp + ": \n" + extra + "\n" + cat;
+                    newButton.Text = dApp + ": \n" + extra;
                     newButton.Click += new EventHandler(newButton_Click);
                     if (cat.Equals("Accessibility Tools"))
                     {
