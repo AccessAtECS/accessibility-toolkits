@@ -1000,15 +1000,15 @@ namespace Test1
         {
             //set up shortcut keys
             ArrayList shortcutKeys = new ArrayList();
-            shortcutKeys.Add("CTRL + +, Increase Text Size");
-            shortcutKeys.Add("CTRL + -, Decrease Text Size");
-            shortcutKeys.Add("CTRL + F, Change Font");
-            shortcutKeys.Add("CTRL + D, Set Default Font");
-            shortcutKeys.Add("CTRL + T, Change Text Colour");
-            shortcutKeys.Add("CTRL + B, Change Background Colour");
-            shortcutKeys.Add("CTRL + R, Reverse Colours");
-            shortcutKeys.Add("CTRL + [numbers], Change Colour Combinations");
-            shortcutKeys.Add("CTRL + Z, Reset Colours and Font");
+            shortcutKeys.Add("CTRL++, Increase Text Size");
+            shortcutKeys.Add("CTRL+-, Decrease Text Size");
+            shortcutKeys.Add("CTRL+F, Change Font");
+            shortcutKeys.Add("CTRL+D, Set Default Font");
+            shortcutKeys.Add("CTRL+T, Change Text Colour");
+            shortcutKeys.Add("CTRL+B, Change Background Colour");
+            shortcutKeys.Add("CTRL+R, Reverse Colours");
+            shortcutKeys.Add("CTRL+[numbers], Change Colour Combinations");
+            shortcutKeys.Add("CTRL+Z, Reset Colours and Font");
             shortcutKeys.Add("ESC, Close AccessTools");
             shortcutKeys.Add("F1, Launch Help File");
 
@@ -1030,7 +1030,7 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 1.4;
+            double version = 1.5;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
             CustomBox.Show("DOWNLOADER BETA VERSION \nMenu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
