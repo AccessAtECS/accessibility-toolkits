@@ -643,6 +643,8 @@ namespace Test1
         {
             if (e.KeyCode == Keys.F && e.Control)
                 settingsFont.ShowDropDown();
+            if (e.KeyCode == Keys.N && e.Control)
+                this.BeginInvoke(new InvokeDelegate(startDownloader));
             if (e.KeyCode == Keys.B && e.Control)
                 settingsBg.ShowDropDown();
             if (e.KeyCode == Keys.T && e.Control)
@@ -1009,6 +1011,7 @@ namespace Test1
             shortcutKeys.Add("CTRL+R, Reverse Colours");
             shortcutKeys.Add("CTRL+[numbers], Change Colour Combinations");
             shortcutKeys.Add("CTRL+Z, Reset Colours and Font");
+            shortcutKeys.Add("CTRL+N, Download New Applications");
             shortcutKeys.Add("ESC, Close AccessTools");
             shortcutKeys.Add("F1, Launch Help File");
 
@@ -1030,10 +1033,10 @@ namespace Test1
          */ 
         private void aboutToolStripMenuItem1_Click(object sender, EventArgs e)
         {
-            double version = 1.5;
+            double version = 1.6;
             String versionCreatedBy = "Chris Phethean";
             String versionContactAddress = "http://users.ecs.soton.ac.uk/cjp106";
-            CustomBox.Show("DOWNLOADER BETA VERSION \nMenu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show("Menu \nVersion " + version + "\nVersion created by: " + versionCreatedBy + "\n" + versionContactAddress + " \n\nhttp://access.ecs.soton.ac.uk/#0 \nECS Accessibility Projects, \nLearning Societies Lab, \nSchool of Electronics and Computer Science, \nUniversity of Southampton. \nFunded by LATEU. \nContact: Dr Mike Wald: http://www.ecs.soton.ac.uk/people/mw ", "Access Tools - About", this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }     
