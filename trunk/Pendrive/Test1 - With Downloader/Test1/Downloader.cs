@@ -37,20 +37,25 @@ namespace Test1
         {
             InitializeComponent();
             this.Font = font;
+            statusStrip1.Font = font;
+            toolStrip1.Font = font;
             this.BackColor = bg;
             this.ForeColor = fg;
-            appPanel.ForeColor = fg;
+            toolStrip1.BackColor = bg;
+            //appPanel.ForeColor = fg;
 
             Rectangle maxSize = new Rectangle();
-            maxSize.Height = Screen.PrimaryScreen.WorkingArea.Height;
-            maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width / 4) * 3;
+            maxSize.Height = (Screen.PrimaryScreen.WorkingArea.Height / 3) * 2;
+            maxSize.Width = (Screen.PrimaryScreen.WorkingArea.Width / 2);
             this.Size = maxSize.Size;
             //this.MaximumSize = maxSize.Size;
             //this.Location = new System.Drawing.Point(Screen.PrimaryScreen.WorkingArea.Width / 4, 0);
-            this.Left = Screen.PrimaryScreen.WorkingArea.Width / 4;
-            this.Top = 0;
-            
-            if (!System.IO.Directory.Exists("Menu_Data\\downloader"))
+            //this.Left = Screen.PrimaryScreen.WorkingArea.Width / 4;
+            //this.Top = 0;
+
+            prepare();
+
+            /*if (!System.IO.Directory.Exists("Menu_Data\\downloader"))
             {
                 createDirectory();                
             }
@@ -79,9 +84,11 @@ namespace Test1
                 {
                     listDownloader.DownloadFile(address, fileName);
                 }
-            }
+            }*/
+
             toolStripStatusLabel1.Text = "Ready";
-            String[] appTags = new String[6];
+            parseList();
+            /*String[] appTags = new String[6];
             appTags[0] = "name";
             appTags[1] = "address";
             appTags[2] = "category";
@@ -133,6 +140,44 @@ namespace Test1
             {
                 WizardBox.Show("Could not process application list", "Error", this.Font, this.BackColor, this.ForeColor);
                 this.Dispose();
+            }*/
+        }
+
+        /*
+         * Checks downloader directory exists
+         * Updates appList.xml file for most recent apps
+         */ 
+        public void prepare()
+        {
+            if (!System.IO.Directory.Exists("Menu_Data\\downloader"))
+            {
+                createDirectory();                
+            }
+            toolStripStatusLabel1.Text = "Checking for appList update -- Please Wait";
+            address = "http://access.ecs.soton.ac.uk/accessTools/appList.xml";
+            fileName = "Menu_Data\\downloader\\appList.xml";
+            WebClient listDownloader = new WebClient();
+            
+            if (!(System.IO.File.Exists(fileName)))
+            {
+                try
+                {
+                    listDownloader.DownloadFile(address, fileName);
+                }
+                catch
+                {
+                    CustomBox.Show("Please ensure you are connected to the Internet", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                    this.Close();
+                }
+            }
+            else
+            {
+                DateTime lastDownload = new System.IO.DirectoryInfo(fileName).CreationTime.Date;
+                DateTime today = DateTime.Today;
+                if (!(lastDownload.Equals(today)))
+                {
+                    listDownloader.DownloadFile(address, fileName);
+                }
             }
         }
 
@@ -146,6 +191,89 @@ namespace Test1
             toolStripStatusLabel1.Text = "Creating Access Tools Downloader directory -- Please Wait";
             System.IO.Directory.CreateDirectory("Menu_Data\\downloader");
 		}
+
+        /*
+         * Parses appList.xml to retrieve details about available apps
+         * Adds a button to the form for each app
+         */ 
+        public void parseList()
+        {
+            String[] appTags = new String[6];
+            appTags[0] = "name";
+            appTags[1] = "address";
+            appTags[2] = "category";
+            appTags[3] = "extra";
+            appTags[4] = "foldername";
+            appTags[5] = "type";
+            try
+            {
+                dList = new DownloadList();
+                XMLparser x = new XMLparser();
+                dList.populateTable(x.readXmlFile("Menu_Data\\downloader\\appList.xml", appTags));
+                dApps = dList.getTable();
+                ArrayList accessbilityTools = new ArrayList();
+                ArrayList applications = new ArrayList();
+                foreach (String dApp in dApps.Keys)
+                {
+                    Button newButton = new Button();
+                    newButton.TextAlign = ContentAlignment.MiddleLeft;
+                    Rectangle size = new Rectangle();
+                    size.Height = 6 * Int32.Parse(this.Font.Size.ToString());
+                    size.Width = this.Width - 40;
+                    newButton.Size = size.Size;
+                    //newButton.AutoSize = true;
+                    DownloadShortcut temp1 = (DownloadShortcut)dApps[dApp];
+                    String extra = temp1.getExtra();
+                    String cat = temp1.getCategory();
+
+                    /*
+                    ListViewItem newListViewItem = new ListViewItem();
+                    newListViewItem.Text = dApp;
+                    newListViewItem.SubItems.Add(extra);
+                    listView1.Items.Add(newListViewItem);
+                    */
+
+                    newButton.Text = dApp + ": \n" + extra;
+                    newButton.Click += new EventHandler(newButton_Click);
+                    if (cat.Equals("Accessibility Tools"))
+                    {
+                        accessbilityTools.Add(newButton);
+                    }
+                    else if (cat.Equals("Applications"))
+                    {
+                        applications.Add(newButton);
+                    }
+                    else
+                    {
+                        appContentPanel.Controls.Add(newButton);
+                    }
+                }
+                //bool first = false;
+                //Rectangle size = new Rectangle();
+                foreach (Button newButton in accessbilityTools)
+                {
+                    /*if (!first)
+                    {
+                        first = !first;
+                        size.Size = newButton.Size;
+                    }
+                    newButton.Size = size.Size;*/
+                    appContentPanel.Controls.Add(newButton);
+                    //listView1.Controls.Add(newButton);
+                }
+                foreach (Button newButton in applications)
+                {
+                    appContentPanel.Controls.Add(newButton);                    
+                }
+                WizardBox.Show("Welcome to the Access Tools Downloader. \n\nPlease ensure you read any messages that appear throughout the process of adding new applications, and do not close them until instructed to do so. \n\nThis will ensure that the downloader works effectively, and will provide you with the necessary information to make using Access Tools the best possible experience. \n\nBy using the Access Tools Downloader you accept that Access Tools holds no responsibility for any damages or loss caused during the installation of new applications.", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
+            }
+            catch
+            {
+                WizardBox.Show("Could not process application list", "Error", this.Font, this.BackColor, this.ForeColor);
+                this.Dispose();
+            }
+        }
+
 
         /*
          * Creates a generic event handler for each button created. 
@@ -168,8 +296,7 @@ namespace Test1
             }
 			categoryFolder = currLocation + "Categories\\" + ds.getCategory(); 
 			downloadFolder = categoryFolder + "\\" + ds.getFolderName();
-            //if (System.IO.Directory.Exists(System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory() + "\\" + ds.getFolderName()))
-			if (System.IO.Directory.Exists(downloadFolder))
+            if (System.IO.Directory.Exists(downloadFolder))
             {
                 CustomBox.Show("You already have this application!", "Access Tools", this.Font, this.BackColor, this.ForeColor);
             }
@@ -193,7 +320,6 @@ namespace Test1
                 }
                 else if (type.Equals("4")) //if target is directly to an exe
                 {
-                    //fileName = address.Remove(address.LastIndexOf(".exe") + 4);
                     fileName = address.Substring(address.LastIndexOfAny("/".ToCharArray()) + 1);
                     prepareDownload(name);
                 }
@@ -281,9 +407,6 @@ namespace Test1
         {
             WizardBox.Show("Welcome to the Access Tools Download Wizard. \nPlease follow the instructions provided to ensure your new application is downloaded correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
             String folder = categoryFolder;
-			//String folder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory();  //the category folder
-            //String downloadFolder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory() + "\\" + ds.getFolderName();
-            //fileName = "Categories\\" + ds.getCategory() + "\\" + ds.getFolderName() + ".zip";
 			fileName = downloadFolder + ".zip";
             int directoryCount = System.IO.Directory.GetFiles(folder).Length; //count the subdirectories
             try
@@ -298,7 +421,6 @@ namespace Test1
             }
             System.Diagnostics.Process.Start(address); //launches page in browser, so download begins
             WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \nYour web browser will begin downloading the file. Select 'Save' in the box that appears to begin the download. \n\nThe destination has been automatically copied for you, paste this into the text box that asks for the target file name, and the zip file will then download. \n\nOnly close this message when the download has finished.", "Access Tools Installation Wizard Step 1/1", this.Font, this.BackColor, this.ForeColor);
-            //MessageBox.Show(downloadFolder);
             if ((directoryCount + 1) == System.IO.Directory.GetFiles(folder).Length)
             {
                 unzip();
@@ -321,13 +443,9 @@ namespace Test1
         {
             bool unzipdone = false;
             WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
-            //String currLocation = System.IO.Directory.GetCurrentDirectory();
-            //String unzipFolder = currLocation + "Categories\\" + ds.getCategory() + "\\" + ds.getFolderName();   //the correct path that should be achieved on completion
             String unzipFolder = downloadFolder;
 			String folder = categoryFolder;
-			//String folder = currLocation + "Categories\\" + ds.getCategory();  //the category folder
-            //Delete target directory if it already exists but is empty - e.g. from a failed install
-            if (System.IO.Directory.Exists(unzipFolder) && System.IO.Directory.GetDirectories(unzipFolder).Length == 0)
+			if (System.IO.Directory.Exists(unzipFolder) && System.IO.Directory.GetDirectories(unzipFolder).Length == 0)
             {
                 System.IO.Directory.Delete(unzipFolder);
             }
@@ -361,7 +479,6 @@ namespace Test1
                 if (System.IO.Directory.GetDirectories(newestFolder).Length == 1)
                 {
                     //if only 1 subdirectory - zip was created correctly then need to remove one level of directory from its path
-                    //MessageBox.Show("1 Subdirectory, beginning move");
                     String requiredFolder = System.IO.Directory.GetDirectories(newestFolder)[0];
                     System.IO.Directory.Move(requiredFolder, folder + "\\temp");
                     System.IO.Directory.Delete(newestFolder);
@@ -381,15 +498,12 @@ namespace Test1
                     String otherFolder = currLocation + "\\Menu_Data\\downloader\\" + fName;
                     try
                     {
-                       // MessageBox.Show("trying to delete zip file");
                         System.IO.File.Delete(fileName);
-                       // MessageBox.Show("success");
                     }
                     catch
                     {
                         MessageBox.Show("Couldn't delete zip file");
-                    }
-                    //System.IO.Directory.Move(fileName, otherFolder);
+                    }                    
                 }
                 catch
                 {
@@ -411,11 +525,9 @@ namespace Test1
          */ 
         public void runinstaller()
         {
-            //String folder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory();  //the category folder
-			String folder = categoryFolder;
+            String folder = categoryFolder;
             String foldername = ds.getFolderName();
 			String installFolder = downloadFolder;
-            //String installFolder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory() + "\\" + foldername;
             int directoryCount = System.IO.Directory.GetDirectories(folder).Length; //count the subdirectories
             try
             {
@@ -463,12 +575,10 @@ namespace Test1
         public void install()
         {
             WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
-            //String catFolder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory();
-			String catFolder = categoryFolder;
+            String catFolder = categoryFolder;
             String foldername = ds.getFolderName();
             String installFolder = downloadFolder;
-			//String installFolder = System.IO.Directory.GetCurrentDirectory() + "Categories\\" + ds.getCategory() + "\\" + foldername;
-            try
+			try
             {
                 System.Windows.Forms.Clipboard.Clear();
                 System.Windows.Forms.Clipboard.SetText(installFolder, TextDataFormat.UnicodeText);
