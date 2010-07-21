@@ -1,6 +1,6 @@
 ﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
-    <PublishUrlHistory>C:\Users\Chris\Documents\publish\|publish\</PublishUrlHistory>
+    <PublishUrlHistory>C:\Users\Public\Documents\publish\|C:\Users\Chris\Documents\publish\|publish\</PublishUrlHistory>
     <InstallUrlHistory>
     </InstallUrlHistory>
     <SupportUrlHistory>
@@ -13,5 +13,8 @@
     </ErrorReportUrlHistory>
     <FallbackCulture>en-US</FallbackCulture>
     <VerifyUploadedFiles>false</VerifyUploadedFiles>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <StartWorkingDirectory>C:\Users\Chris\Documents\Visual Studio 2008\Projects\Test1\Test1\bin\Debug\</StartWorkingDirectory>
   </PropertyGroup>
 </Project>

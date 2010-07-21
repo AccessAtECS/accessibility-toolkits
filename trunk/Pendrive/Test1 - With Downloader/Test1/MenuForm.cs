@@ -8,14 +8,26 @@ using System.Windows.Forms;
 using System.Collections;
 using System.IO;
 using System.Threading;
+using System.Resources;
+using System.Globalization;
 
 namespace Test1
 {
     public partial class MenuForm : Form
     {
+        private ResourceManager m_ResourceManager = new ResourceManager("Test1.UI_Strings", System.Reflection.Assembly.GetExecutingAssembly());
+        private CultureInfo m_EnglishCulture = new CultureInfo("en-US");
+        private CultureInfo m_SpanishCulture = new CultureInfo("es-ES");
+        private CultureInfo m_TaiwanCulture = new CultureInfo("zh-TW");
+        private CultureInfo m_MalayCulture = new CultureInfo("ms-MY");
+        private CultureInfo m_ChineseCulture = new CultureInfo("zh-CHS");
+        private CultureInfo m_HindiCulture = new CultureInfo("hi-IN");
+
         private Menu appMenu;
         Rectangle maxSize = new Rectangle();
         Rectangle resetSize;
+        ToolStripMenuItem appTrayShow;
+        ToolStripMenuItem appTrayExit;
 
         public delegate void InvokeDelegate();
         /**
@@ -25,7 +37,9 @@ namespace Test1
         {
             appMenu = new Menu();
             InitializeComponent();
-            trayIcon.BalloonTipText = "Access Tools is loading. Please Wait...";
+            UpdateStrings();
+            //trayIcon.BalloonTipText = "Access Tools is loading. Please Wait...";
+            trayIcon.BalloonTipText = m_ResourceManager.GetString("trayIconLoading");
             trayIcon.ShowBalloonTip(150);
 
             String[] settingsTags = new String[4];
@@ -41,7 +55,8 @@ namespace Test1
             }
             catch (FileNotFoundException e)
             {
-                CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                //CustomBox.Show("There was a problem restoring your settings. The default settings will be used, and a new settings file will be created.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                CustomBox.Show(m_ResourceManager.GetString("restoreSettingsError"), "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
                 MenuUpdater updater = new MenuUpdater();
                 updater.createSettingsFile();
                 XMLparser x = new XMLparser();
@@ -92,6 +107,56 @@ namespace Test1
             this.Focus();
         }
 
+        private void UpdateStrings()
+        {
+            //Strings for File Menu
+            fileMenu.Text = m_ResourceManager.GetString("FileMenu");
+            downloadMenuItem.Text = m_ResourceManager.GetString("FileDownload");
+            fileMenuExit.Text = m_ResourceManager.GetString("FileExit");
+            //Strings for Settings Menu
+            settingsMenu.Text = m_ResourceManager.GetString("SettingsMenu");
+            settingsColourScheme.Text = m_ResourceManager.GetString("SettingsColourScheme");
+                blackOnWhiteToolStripMenuItem1.Text = m_ResourceManager.GetString("ColourSchemeBonW");
+                whiteOnBlackToolStripMenuItem1.Text = m_ResourceManager.GetString("ColourSchemeWonB");
+                yellowOnBlueToolStripMenuItem.Text = m_ResourceManager.GetString("ColourSchemeYonB");
+                blackOnYellowToolStripMenuItem1.Text = m_ResourceManager.GetString("ColourSchemeBonY");
+                blaToolStripMenuItem.Text = m_ResourceManager.GetString("ColourSchemeBonPB");
+                blackOnCreamToolStripMenuItem1.Text = m_ResourceManager.GetString("ColourSchemeBonC");
+                blackOnPinkToolStripMenuItem1.Text = m_ResourceManager.GetString("ColourSchemeBonP");
+            settingsBg.Text = m_ResourceManager.GetString("SettingsChangeBg");
+                blackToolStripMenuItem.Text = m_ResourceManager.GetString("Black");
+                whiteToolStripMenuItem.Text = m_ResourceManager.GetString("White");
+                yellowToolStripMenuItem.Text = m_ResourceManager.GetString("Yellow");
+                blueToolStripMenuItem.Text = m_ResourceManager.GetString("Blue");
+                paleBlueToolStripMenuItem.Text = m_ResourceManager.GetString("PaleBlue");
+                creamToolStripMenuItem.Text = m_ResourceManager.GetString("Cream");
+                pinkToolStripMenuItem.Text = m_ResourceManager.GetString("Pink");
+            settingsFg.Text = m_ResourceManager.GetString("SettingsChangeFg");
+                blackToolStripMenuItem1.Text = m_ResourceManager.GetString("Black");
+                whiteToolStripMenuItem1.Text = m_ResourceManager.GetString("White");
+                yellowToolStripMenuItem1.Text = m_ResourceManager.GetString("Yellow");
+                blueToolStripMenuItem1.Text = m_ResourceManager.GetString("Blue");
+                paleBlueToolStripMenuItem1.Text = m_ResourceManager.GetString("PaleBlue");
+                creamToolStripMenuItem1.Text = m_ResourceManager.GetString("Cream");
+                pinkToolStripMenuItem1.Text = m_ResourceManager.GetString("Pink");
+            settingsFont.Text = m_ResourceManager.GetString("SettingsChangeFont");
+                fontToolStripMenuItem.Text = m_ResourceManager.GetString("Font");
+                sizeToolStripMenuItem.Text = m_ResourceManager.GetString("Size");
+                defaultFontToolStripMenuItem.Text = m_ResourceManager.GetString("DefaultFont");
+            settingsDefaultFont.Text = m_ResourceManager.GetString("DefaultFont");
+            languageToolStripMenuItem.Text = m_ResourceManager.GetString("Language");
+                englishToolStripMenuItem.Text = m_ResourceManager.GetString("English");
+                spanishToolStripMenuItem.Text = m_ResourceManager.GetString("Spanish");
+            //Strings for help menu
+            helpMenu.Text = m_ResourceManager.GetString("Help");
+            helpToolStripMenuItem.Text = m_ResourceManager.GetString("Help");
+            keyboardShortcutsToolStripMenuItem.Text = m_ResourceManager.GetString("KeyboardShortcuts");
+            aboutToolStripMenuItem1.Text = m_ResourceManager.GetString("About");
+            //
+            statusLabel1.Text = m_ResourceManager.GetString("StatusReady");
+
+        }
+
         /**
          * Set up font menu
          * Read menu.xml to obtain app list
@@ -99,7 +164,8 @@ namespace Test1
          */ 
         private void MenuForm_Shown(object sender, EventArgs e)
         {
-            trayIcon.BalloonTipText = "Access Tools is populating your menu. Please Wait...";
+            //trayIcon.BalloonTipText = "Access Tools is populating your menu. Please Wait...";
+            trayIcon.BalloonTipText = m_ResourceManager.GetString("trayIconPopulating");
             trayIcon.ShowBalloonTip(50);
             menuStrip1.BeginInvoke(new InvokeDelegate(createFontMenus)); //make font menu in separate thread
             
@@ -120,7 +186,8 @@ namespace Test1
             }
             catch (FileNotFoundException ex)
             {
-                CustomBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                //CustomBox.Show("Could not create menu - menu.xml not found! \nTry restarting the menu to resolve this problem.", "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
+                CustomBox.Show(m_ResourceManager.GetString("createMenuError"), "Error!", DefaultFont, System.Drawing.Color.White, System.Drawing.Color.Black);
                 updater.createMenuFile();
             }
             
@@ -136,8 +203,18 @@ namespace Test1
             System.Drawing.Icon appIcon;
             foreach (String cat in categories.Keys)
             {
+                String catID = "";
+                if (cat.Equals("Accessibility Tools"))
+                    catID = "AccessibilityTools";
+                if (cat.Equals("Accessibility Guides"))
+                    catID = "AccessibilityGuides";
+                if (cat.Equals("Applications"))
+                    catID = "Applications";
+                if (cat.Equals("User's Folders"))
+                    catID = "UsersFolders";
                 appTree.BeginUpdate();
-                TreeNode categoryNode = new TreeNode(cat);
+                //TreeNode categoryNode = new TreeNode(cat);
+                TreeNode categoryNode = new TreeNode(m_ResourceManager.GetString(catID));
                 categoryNode.ImageIndex = 0;
                 appTree.Nodes.Add(categoryNode);
                 foreach (String app in ((ArrayList)categories[cat])) //gets the ArrayList for each category and iterates through its contained applications
@@ -195,8 +272,10 @@ namespace Test1
                 }
                 categoryNode.SelectedImageIndex = 0;
             }
-            ToolStripMenuItem appTrayShow = new ToolStripMenuItem("Show Menu");
-            ToolStripMenuItem appTrayExit = new ToolStripMenuItem("Exit Menu");
+            //ToolStripMenuItem appTrayShow = new ToolStripMenuItem("Show Menu");
+            //ToolStripMenuItem appTrayExit = new ToolStripMenuItem("Exit Menu");
+            appTrayShow = new ToolStripMenuItem(m_ResourceManager.GetString("toolStripShow"));
+            appTrayExit = new ToolStripMenuItem(m_ResourceManager.GetString("toolStripExit"));
             contextMenuStrip1.Items.Add(appTrayShow);
             contextMenuStrip1.Items.Add(appTrayExit);
             appTree.Sort();
@@ -276,7 +355,7 @@ namespace Test1
                 }
                 if (!appMenu.getCategories().ContainsKey(selected)) //check the selected item is not a category heading
                 {
-                    statusLabel1.Text = "Launching"; 
+                    statusLabel1.Text = m_ResourceManager.GetString("Launching"); 
                     this.Refresh();
                     try
                     {
@@ -285,14 +364,15 @@ namespace Test1
                     }
                     catch (Exception e)
                     {
-                        CustomBox.Show("Application not found! \nThis application will no longer be shown in the menu.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                        //CustomBox.Show("Application not found! \nThis application will no longer be shown in the menu.", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                        CustomBox.Show(m_ResourceManager.GetString("AppNotFound"), "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                         MenuUpdater mu = new MenuUpdater();
                         mu.remove(selected); //removes the app from the xml file
                         appTree.Nodes.Remove(appTree.SelectedNode); //removes the app from the menu
                         this.BringToFront();
                         this.Focus();
                     }
-                    statusLabel1.Text = "Ready";
+                    statusLabel1.Text = m_ResourceManager.GetString("StatusReady");
                 }
             }
         }
@@ -317,7 +397,9 @@ namespace Test1
                 Font newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
                 statusLabel1.Font = new Font(newFont.FontFamily, fontSize, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             }
-            statusLabel1.Text = "Text Size: " + this.Font.Size;
+            //statusLabel1.Text = "Text Size: " + this.Font.Size;
+            statusLabel1.Text = m_ResourceManager.GetString("TextSize") + ": " + this.Font.Size;
+
             //defaultMenu.Size = helpMenu.Size;
             checkScreenSize();
         }
@@ -402,9 +484,15 @@ namespace Test1
             sizeToolStripMenuItem.ForeColor = fg;
             moreBgMenuItem.ForeColor = fg;
             moreFgMenuItem.ForeColor = fg;
-            foreach (ToolStripMenuItem t in settingsBg.DropDownItems)
+            languageToolStripMenuItem.ForeColor = fg;
+            foreach (ToolStripMenuItem languageItem in languageToolStripMenuItem.DropDownItems)
             {
-                if (!t.Text.Equals("Custom..."))
+                languageItem.ForeColor = fg;
+            }
+            foreach (ToolStripMenuItem t in settingsBg.DropDownItems)
+            { 
+                //if (!t.Text.Equals("Custom..."))
+                if (!t.Equals(moreBgMenuItem))
                 {
                     t.ForeColor = fg;
                     Color temp = checkClash(t.BackColor, false, false);
@@ -455,9 +543,15 @@ namespace Test1
             sizeToolStripMenuItem.BackColor = bg;
             moreFgMenuItem.BackColor = bg;
             moreBgMenuItem.BackColor = bg;
+            languageToolStripMenuItem.BackColor =bg;
+            foreach (ToolStripMenuItem languageItem in languageToolStripMenuItem.DropDownItems)
+            {
+                languageItem.BackColor = bg;
+            }
             foreach (ToolStripMenuItem t in settingsFg.DropDownItems)
             {
-                if (!t.Text.Equals("Custom..."))
+                //if (!t.Text.Equals("Custom..."))
+                if (!t.Equals(moreFgMenuItem))
                 {
                     t.BackColor = bg;
                     Color temp = checkClash(t.ForeColor, true, false);
@@ -495,7 +589,8 @@ namespace Test1
                 if (newColor.Equals(appTree.BackColor))
                 {
                     if (userCaused)
-                        CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        //CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        CustomBox.Show(m_ResourceManager.GetString("SameColourWarning"), m_ResourceManager.GetString("Warning"), this.Font, this.BackColor, this.ForeColor);
                     return appTree.ForeColor;
                 }
                 else
@@ -505,7 +600,8 @@ namespace Test1
                     else
                     {
                         if (userCaused)
-                            CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                            //CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                            CustomBox.Show(m_ResourceManager.GetString("ContrastWarning"), m_ResourceManager.GetString("Warning"), this.Font, this.BackColor, this.ForeColor);
                         return appTree.ForeColor;
                     }
                 }
@@ -515,7 +611,8 @@ namespace Test1
                 if (newColor.Equals(appTree.ForeColor))
                 {
                     if (userCaused)
-                        CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        //CustomBox.Show("You have attempted to change the colour so that the background would be the same as the text. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                        CustomBox.Show(m_ResourceManager.GetString("SameColourWarning"), m_ResourceManager.GetString("Warning"), this.Font, this.BackColor, this.ForeColor);
                     return appTree.BackColor;
                 }
                 else
@@ -525,7 +622,8 @@ namespace Test1
                     else
                     {
                         if (userCaused)
-                            CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                            //CustomBox.Show("Changing to this colour would give a poor luminosity ratio and would therefore be difficult to read. \nThis has been cancelled to avoid problems.", "Warning!", this.Font, this.BackColor, this.ForeColor);
+                            CustomBox.Show(m_ResourceManager.GetString("ContrastWarning"), m_ResourceManager.GetString("Warning"), this.Font, this.BackColor, this.ForeColor);
                         return appTree.BackColor;
                     }
                 }
@@ -594,7 +692,7 @@ namespace Test1
             this.Size = resetSize.Size;
             this.MinimumSize = resetSize.Size;
             this.Location = new Point(0, 0);
-            statusLabel1.Text = "Text Size: " + this.Font.Size;
+            statusLabel1.Text = m_ResourceManager.GetString("TextSize") + ": " + this.Font.Size;
             checkScreenSize();
         }
 
@@ -631,7 +729,8 @@ namespace Test1
             appTree.Scrollable = true;
             if (this.Height == this.MaximumSize.Height || this.Width == this.MaximumSize.Width)
             {
-                trayIcon.BalloonTipText = "The menu window is now larger than your screen. Press the CTRL + Z to fix any layout problems.";
+                //trayIcon.BalloonTipText = "The menu window is now larger than your screen. Press the CTRL + Z to fix any layout problems.";
+                trayIcon.BalloonTipText = m_ResourceManager.GetString("WindowSizeWarning");
                 trayIcon.ShowBalloonTip(250);
             }
         }
@@ -697,7 +796,8 @@ namespace Test1
             if (this.WindowState == FormWindowState.Minimized)
             {
                 Hide();
-                trayIcon.BalloonTipText = "Access Tools is still running and can be accessed through this icon";
+                //trayIcon.BalloonTipText = "Access Tools is still running and can be accessed through this icon";
+                trayIcon.BalloonTipText = m_ResourceManager.GetString("StillRunning");
                 trayIcon.ShowBalloonTip(200);
             }
         }
@@ -724,7 +824,8 @@ namespace Test1
         {
             if (appTree.SelectedNode != (null))
             {
-                statusLabel1.Text = "Double click an app to launch";
+                //statusLabel1.Text = "Double click an app to launch";
+                statusLabel1.Text = m_ResourceManager.GetString("statusDoubleClick");
             }
         }         
 
@@ -751,7 +852,8 @@ namespace Test1
             {
                 if (appTree.SelectedNode != (null))
                 {
-                    statusLabel1.Text = "Press Enter to launch";
+                    //statusLabel1.Text = "Press Enter to launch";
+                    statusLabel1.Text = m_ResourceManager.GetString("statusToLaunch");
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
@@ -759,7 +861,8 @@ namespace Test1
             {
                 if (appTree.SelectedNode != (null))
                 {
-                    statusLabel1.Text = "Press Enter to launch";
+                    //statusLabel1.Text = "Press Enter to launch";
+                    statusLabel1.Text = m_ResourceManager.GetString("statusToLaunch");
                     appTree.SelectedNode.EnsureVisible();
                 }
             }
@@ -796,7 +899,8 @@ namespace Test1
 
         public void startDownloader()
         {
-            Downloader dl = new Downloader(this.Font, appTree.BackColor, appTree.ForeColor);
+
+            Downloader dl = new Downloader(this.Font, appTree.BackColor, appTree.ForeColor, Thread.CurrentThread.CurrentUICulture);
             dl.Show();
         }
 
@@ -869,7 +973,7 @@ namespace Test1
          */ 
         private void settingsBg_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (!e.ClickedItem.Text.Equals("Custom..."))
+            if (!e.ClickedItem.Equals(moreBgMenuItem))
             {
                 Color bg = appTree.BackColor;
                 bg = checkClash(e.ClickedItem.BackColor, false, false);
@@ -882,7 +986,7 @@ namespace Test1
          */
         private void settingsFg_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
-            if (!e.ClickedItem.Text.Equals("Custom..."))
+            if (!e.ClickedItem.Equals(moreFgMenuItem))
             {
                 Color fg = appTree.ForeColor;
                 fg = checkClash(e.ClickedItem.ForeColor, true, false);
@@ -941,10 +1045,11 @@ namespace Test1
             menuStrip1.Font = this.Font;
             newFont = (Font)toFont.ConvertFromString("Microsoft Sans Serif");
             statusLabel1.Font = new Font(newFont.FontFamily, appTree.Font.Size, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
-            statusLabel1.Text = "Press CTRL + Z to reset settings";
+            //statusLabel1.Text = "Press CTRL + Z to reset settings";
+            statusLabel1.Text = m_ResourceManager.GetString("statusResetSettings");
             fontToolStripMenuItem.Font = this.Font;
             sizeToolStripMenuItem.Font = this.Font;
-            fontToolStripMenuItem.Text = "Font";
+            fontToolStripMenuItem.Text = m_ResourceManager.GetString("Font");
             checkScreenSize();
             this.MinimumSize = resetSize.Size;
             fontToolStripMenuItem.Focus();
@@ -983,7 +1088,7 @@ namespace Test1
             statusLabel1.Font = new Font(newFont.FontFamily, selected, newFont.Style, newFont.Unit, newFont.GdiCharSet, newFont.GdiVerticalFont);
             statusLabel1.Text = "";
             checkScreenSize();
-            sizeToolStripMenuItem.Text = "Size";
+            sizeToolStripMenuItem.Text = m_ResourceManager.GetString("Size");
             sizeToolStripMenuItem.Focus();
         }
 
@@ -1002,18 +1107,18 @@ namespace Test1
         {
             //set up shortcut keys
             ArrayList shortcutKeys = new ArrayList();
-            shortcutKeys.Add("CTRL++, Increase Text Size");
-            shortcutKeys.Add("CTRL+-, Decrease Text Size");
-            shortcutKeys.Add("CTRL+F, Change Font");
-            shortcutKeys.Add("CTRL+D, Set Default Font");
-            shortcutKeys.Add("CTRL+T, Change Text Colour");
-            shortcutKeys.Add("CTRL+B, Change Background Colour");
-            shortcutKeys.Add("CTRL+R, Reverse Colours");
-            shortcutKeys.Add("CTRL+[numbers], Change Colour Combinations");
-            shortcutKeys.Add("CTRL+Z, Reset Colours and Font");
-            shortcutKeys.Add("CTRL+N, Download New Applications");
-            shortcutKeys.Add("ESC, Close AccessTools");
-            shortcutKeys.Add("F1, Launch Help File");
+            shortcutKeys.Add("CTRL++, " + m_ResourceManager.GetString("kbIncreaseText"));
+            shortcutKeys.Add("CTRL+-, " + m_ResourceManager.GetString("kbDecreaseText"));
+            shortcutKeys.Add("CTRL+F, " + m_ResourceManager.GetString("kbChangeFont"));
+            shortcutKeys.Add("CTRL+D, " + m_ResourceManager.GetString("kbDefaultFont"));
+            shortcutKeys.Add("CTRL+T, " + m_ResourceManager.GetString("kbTextColour"));
+            shortcutKeys.Add("CTRL+B, " + m_ResourceManager.GetString("kbBackColour"));
+            shortcutKeys.Add("CTRL+R, " + m_ResourceManager.GetString("kbReverseColours"));
+            shortcutKeys.Add("CTRL+[numbers], " + m_ResourceManager.GetString("kbColourCombo"));
+            shortcutKeys.Add("CTRL+Z, " + m_ResourceManager.GetString("kbReset"));
+            shortcutKeys.Add("CTRL+N, " + m_ResourceManager.GetString("kbDownload"));
+            shortcutKeys.Add("ESC, " + m_ResourceManager.GetString("kbClose"));
+            shortcutKeys.Add("F1, " + m_ResourceManager.GetString("kbHelp"));
 
             String shortcuts = "";
             Char[] separator = ",".ToCharArray();
@@ -1022,7 +1127,7 @@ namespace Test1
                 String[] subs = shortcut.Split(separator);
                 shortcuts += subs[0] + " : " + subs[1] + ". \n";
             }
-            CustomBox.Show(shortcuts, "Keyboard Shortcuts", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show(shortcuts, m_ResourceManager.GetString("KeyboardShortcuts"), this.Font, appTree.BackColor, appTree.ForeColor);
             this.BringToFront();
             this.Focus();
         }
@@ -1082,12 +1187,14 @@ namespace Test1
         private void contextMenuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
             String selected = e.ClickedItem.Text;
-            if (selected.Equals("Show Menu"))
+            //if (selected.Equals("Show Menu"))
+            if (e.ClickedItem.Equals(appTrayShow))
             {
                 Show();
                 this.WindowState = FormWindowState.Normal;
             }
-            else if (selected.Equals("Exit Menu"))
+            //else if (selected.Equals("Exit Menu"))
+            else if (e.ClickedItem.Equals(appTrayExit))
             {
                 saveAndClose();
             }
@@ -1101,7 +1208,8 @@ namespace Test1
                 }
                 catch (Exception ex)
                 {
-                CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                //CustomBox.Show("Application not found! \nThis application will not be shown when the menu is next loaded", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                    CustomBox.Show(m_ResourceManager.GetString("AppNotFoundError"), "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
                 MenuUpdater mu = new MenuUpdater();
                 mu.remove(selected);
                 this.BringToFront();
@@ -1146,7 +1254,8 @@ namespace Test1
                 {
                     current = current.Substring(0, current.Length - 1);
                 }
-                String description = CustomBox.Show(current, "Edit Description - " + selected, this.Font, this.BackColor, this.ForeColor);
+                //String description = CustomBox.Show(current, "Edit Description - " + selected, this.Font, this.BackColor, this.ForeColor);
+                String description = CustomBox.Show(current, m_ResourceManager.GetString("EditDescription") + " - " + selected, this.Font, this.BackColor, this.ForeColor);
                 MenuUpdater mu = new MenuUpdater();
                 try
                 {
@@ -1173,14 +1282,16 @@ namespace Test1
                 }
                 catch
                 {
-                    CustomBox.Show("Could not update description", "Error", this.Font, this.BackColor, this.ForeColor);
+                    //CustomBox.Show("Could not update description", "Error", this.Font, this.BackColor, this.ForeColor);
+                    CustomBox.Show(m_ResourceManager.GetString("ErrorUpdateDescription"), "Error", this.Font, this.BackColor, this.ForeColor);
                 }
             }
         }
 
         private void hToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
+            //CustomBox.Show("This applicaiton will not be shown on the menu until it is reloaded. \n(This application has not been removed from your pendrive.)", "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
+            CustomBox.Show(m_ResourceManager.GetString("appHidden"), "Access Tools", this.Font, appTree.BackColor, appTree.ForeColor);
             appTree.Nodes.Remove(appTree.SelectedNode);
         }
 
@@ -1208,7 +1319,8 @@ namespace Test1
 
         private void defaultMenu_MouseEnter(object sender, EventArgs e)
         {
-            statusLabel1.Text = "Reset all settings";
+            //statusLabel1.Text = "Reset all settings";
+            statusLabel1.Text = m_ResourceManager.GetString("ResetAll");
         }
 
         private void defaultMenu_MouseLeave(object sender, EventArgs e)
@@ -1241,8 +1353,46 @@ namespace Test1
             }
             catch
             {
-                CustomBox.Show("Could not locate help file", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                //CustomBox.Show("Could not locate help file", "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
+                CustomBox.Show(m_ResourceManager.GetString("errorHelpFile"), "Error!", this.Font, appTree.BackColor, appTree.ForeColor);
             }
+        }
+
+        private void englishToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_EnglishCulture;
+            UpdateStrings();
+        }
+
+        private void spanishToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_SpanishCulture;
+            UpdateStrings();
+            
+        }
+
+        private void taiwanToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_TaiwanCulture;
+            UpdateStrings();
+        }
+
+        private void malayToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_MalayCulture;
+            UpdateStrings();
+        }
+
+        private void chineseToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_ChineseCulture;
+            UpdateStrings();
+        }
+
+        private void hindiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Thread.CurrentThread.CurrentUICulture = m_HindiCulture;
+            UpdateStrings();
         }
     }
 }

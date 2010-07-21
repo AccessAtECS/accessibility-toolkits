@@ -8,11 +8,21 @@ using System.Windows.Forms;
 using System.Net;
 using System.Collections;
 using System.Threading;
+using System.Globalization;
+using System.Resources;
 
 namespace Test1
 {
     public partial class Downloader : Form
     {
+        private ResourceManager m_ResourceManager = new ResourceManager("Test1.UI_Strings", System.Reflection.Assembly.GetExecutingAssembly());
+        private CultureInfo m_EnglishCulture = new CultureInfo("en-US");
+        private CultureInfo m_SpanishCulture = new CultureInfo("es-ES");
+        private CultureInfo m_TaiwanCulture = new CultureInfo("zh-TW");
+        private CultureInfo m_MalayCulture = new CultureInfo("ms-MY");
+        private CultureInfo m_ChineseCulture = new CultureInfo("zh-CHS");
+        private CultureInfo m_IndianCulture = new CultureInfo("hi-IN");
+
         DownloadList dList;
         Hashtable dApps;
         String fileName; //the string that holds the target file name of the item to be downloaded
@@ -33,9 +43,11 @@ namespace Test1
          * Checks the appList.xml file which contains the available download information, downloads new copy if needed
          * Prepares for xml parsing, then parses appList.xml to extract information about available downloads, creates a button on the gui for each
          */ 
-        public Downloader(Font font, Color bg, Color fg)
+        public Downloader(Font font, Color bg, Color fg, CultureInfo culture)
         {
             InitializeComponent();
+            Thread.CurrentThread.CurrentUICulture = culture;
+            UpdateStrings();
             this.Font = font;
             statusStrip1.Font = font;
             toolStrip1.Font = font;
@@ -86,7 +98,7 @@ namespace Test1
                 }
             }*/
 
-            toolStripStatusLabel1.Text = "Ready";
+            toolStripStatusLabel1.Text = m_ResourceManager.GetString("StatusReady");
             parseList();
             /*String[] appTags = new String[6];
             appTags[0] = "name";
@@ -143,6 +155,12 @@ namespace Test1
             }*/
         }
 
+        private void UpdateStrings()
+        {
+            toolStripLabel1.Text = m_ResourceManager.GetString("DownloaderLabel");
+            toolStripStatusLabel1.Text = m_ResourceManager.GetString("StatusReady");
+        }
+
         /*
          * Checks downloader directory exists
          * Updates appList.xml file for most recent apps
@@ -153,7 +171,7 @@ namespace Test1
             {
                 createDirectory();                
             }
-            toolStripStatusLabel1.Text = "Checking for appList update -- Please Wait";
+            //toolStripStatusLabel1.Text = "Checking for appList update -- Please Wait";
             address = "http://access.ecs.soton.ac.uk/accessTools/appList.xml";
             fileName = "Menu_Data\\downloader\\appList.xml";
             WebClient listDownloader = new WebClient();
@@ -166,7 +184,8 @@ namespace Test1
                 }
                 catch
                 {
-                    CustomBox.Show("Please ensure you are connected to the Internet", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                    //CustomBox.Show("Please ensure you are connected to the Internet", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                    CustomBox.Show(m_ResourceManager.GetString("ensureInternet"), "Access Tools", this.Font, this.BackColor, this.ForeColor);
                     this.Close();
                 }
             }
@@ -186,9 +205,9 @@ namespace Test1
          */ 
         public void createDirectory()
         {
-            toolStripStatusLabel1.Text = "Configuring Access Tools Downloader -- Please Wait";
-            WizardBox.Show("Please wait while Access Tools configures the downloader for first time use.", "Access Tools", this.Font, this.BackColor, this.ForeColor);
-            toolStripStatusLabel1.Text = "Creating Access Tools Downloader directory -- Please Wait";
+            //toolStripStatusLabel1.Text = "Configuring Access Tools Downloader -- Please Wait";
+            //WizardBox.Show("Please wait while Access Tools configures the downloader for first time use.", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+            //toolStripStatusLabel1.Text = "Creating Access Tools Downloader directory -- Please Wait";
             System.IO.Directory.CreateDirectory("Menu_Data\\downloader");
 		}
 
@@ -226,13 +245,6 @@ namespace Test1
                     String extra = temp1.getExtra();
                     String cat = temp1.getCategory();
 
-                    /*
-                    ListViewItem newListViewItem = new ListViewItem();
-                    newListViewItem.Text = dApp;
-                    newListViewItem.SubItems.Add(extra);
-                    listView1.Items.Add(newListViewItem);
-                    */
-
                     newButton.Text = dApp + ": \n" + extra;
                     newButton.Click += new EventHandler(newButton_Click);
                     if (cat.Equals("Accessibility Tools"))
@@ -265,11 +277,13 @@ namespace Test1
                 {
                     appContentPanel.Controls.Add(newButton);                    
                 }
-                WizardBox.Show("Welcome to the Access Tools Downloader. \n\nPlease ensure you read any messages that appear throughout the process of adding new applications, and do not close them until instructed to do so. \n\nThis will ensure that the downloader works effectively, and will provide you with the necessary information to make using Access Tools the best possible experience. \n\nBy using the Access Tools Downloader you accept that Access Tools holds no responsibility for any damages or loss caused during the installation of new applications.", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("Welcome to the Access Tools Downloader. \n\nPlease ensure you read any messages that appear throughout the process of adding new applications, and do not close them until instructed to do so. \n\nThis will ensure that the downloader works effectively, and will provide you with the necessary information to make using Access Tools the best possible experience. \n\nBy using the Access Tools Downloader you accept that Access Tools holds no responsibility for any damages or loss caused during the installation of new applications.", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("DownloaderWelcome"), "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
             }
             catch
             {
-                WizardBox.Show("Could not process application list", "Error", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("Could not process application list", "Error", this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("errorDownloader"), "Error", this.Font, this.BackColor, this.ForeColor);
                 this.Dispose();
             }
         }
@@ -298,7 +312,8 @@ namespace Test1
 			downloadFolder = categoryFolder + "\\" + ds.getFolderName();
             if (System.IO.Directory.Exists(downloadFolder))
             {
-                CustomBox.Show("You already have this application!", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                //CustomBox.Show("You already have this application!", "Access Tools", this.Font, this.BackColor, this.ForeColor);
+                CustomBox.Show(m_ResourceManager.GetString("AppAlreadyInstalled"), "Access Tools", this.Font, this.BackColor, this.ForeColor);
             }
             else
             {
@@ -325,7 +340,7 @@ namespace Test1
                 }
                 else
                 {
-                    MessageBox.Show("Download Error!");
+                    MessageBox.Show(m_ResourceManager.GetString("DownloadError"));
                 }
                 
             }
@@ -339,7 +354,7 @@ namespace Test1
         {
             String category = ds.getCategory();
             fileName = "Categories\\" + category + "\\" + fileName;
-            toolStripStatusLabel1.Text = "Downloading " + name;
+            toolStripStatusLabel1.Text = m_ResourceManager.GetString("Downloading") + " " + name;
             this.Refresh();
             this.BeginInvoke(new InvokeDelegate(downloadFile));
         }
@@ -357,7 +372,8 @@ namespace Test1
             try
             {
                 Uri webAddress = new Uri(address);
-                CustomBox.Show("Beginning Download", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
+                //CustomBox.Show("You already have this application!", "Access Tools", this.Font, this.BackColor, this.ForeColor);CustomBox.Show("Beginning Download", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
+                //CustomBox.Show(m_ResourceManager.GetString("AppAlreadyInstalled"), "Access Tools", this.Font, this.BackColor, this.ForeColor); CustomBox.Show("Beginning Download", "Access Tools Downloader", this.Font, this.BackColor, this.ForeColor);
                 appDownloader.DownloadFileAsync(webAddress, fileName);
             }
             catch
@@ -369,7 +385,8 @@ namespace Test1
                 }
                 else
                 {
-                    WizardBox.Show("Could not complete the required download. Please ensure that you are connected to the Internet", "Error!", this.Font, this.BackColor, this.ForeColor);
+                    //WizardBox.Show("Could not complete the required download. Please ensure that you are connected to the Internet", "Error!", this.Font, this.BackColor, this.ForeColor);
+                    WizardBox.Show(m_ResourceManager.GetString("errorDownloading"), "Error!", this.Font, this.BackColor, this.ForeColor);
                 }
             }
         }
@@ -381,8 +398,8 @@ namespace Test1
          */ 
         void appDownloader_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            toolStripStatusLabel1.Text = fileName + " downloaded";
-			
+            //toolStripStatusLabel1.Text = fileName + " downloaded";
+            toolStripStatusLabel1.Text = fileName + " " + m_ResourceManager.GetString("downloaded");
             if (type.Equals("1") || type.Equals("4"))
                 runinstaller();
             else if (type.Equals("2"))
@@ -405,7 +422,8 @@ namespace Test1
          */ 
         public void getZip()
         {
-            WizardBox.Show("Welcome to the Access Tools Download Wizard. \nPlease follow the instructions provided to ensure your new application is downloaded correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Welcome to the Access Tools Download Wizard. \nPlease follow the instructions provided to ensure your new application is downloaded correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadWizardIntro"), m_ResourceManager.GetString("Download Wizard"), this.Font, this.BackColor, this.ForeColor);
             String folder = categoryFolder;
 			fileName = downloadFolder + ".zip";
             int directoryCount = System.IO.Directory.GetFiles(folder).Length; //count the subdirectories
@@ -420,14 +438,16 @@ namespace Test1
                 MessageBox.Show(e.ToString());
             }
             System.Diagnostics.Process.Start(address); //launches page in browser, so download begins
-            WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \nYour web browser will begin downloading the file. Select 'Save' in the box that appears to begin the download. \n\nThe destination has been automatically copied for you, paste this into the text box that asks for the target file name, and the zip file will then download. \n\nOnly close this message when the download has finished.", "Access Tools Installation Wizard Step 1/1", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \nYour web browser will begin downloading the file. Select 'Save' in the box that appears to begin the download. \n\nThe destination has been automatically copied for you, paste this into the text box that asks for the target file name, and the zip file will then download. \n\nOnly close this message when the download has finished.", "Access Tools Installation Wizard Step 1/1", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadZipInstructions"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
             if ((directoryCount + 1) == System.IO.Directory.GetFiles(folder).Length)
             {
                 unzip();
             }
             else
             {
-                CustomBox.Show("Download Failed", "Error!", this.Font, this.BackColor, this.ForeColor);
+                //CustomBox.Show("Download Failed", "Error!", this.Font, this.BackColor, this.ForeColor);
+                CustomBox.Show(m_ResourceManager.GetString("errorDownloading"), "Error!", this.Font, this.BackColor, this.ForeColor);
             }
         }
 
@@ -442,7 +462,8 @@ namespace Test1
         public void unzip()
         {
             bool unzipdone = false;
-            WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadWizardIntro"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
             String unzipFolder = downloadFolder;
 			String folder = categoryFolder;
 			if (System.IO.Directory.Exists(unzipFolder) && System.IO.Directory.GetDirectories(unzipFolder).Length == 0)
@@ -462,7 +483,8 @@ namespace Test1
             {
                 MessageBox.Show(e.ToString());
             }
-            WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \nAccessTools could not unzip the downloaded file automatically. \n\nA window should have loaded showing a list of folders. Right-click (or use the alternatve keyboard command) on the downloaded zip file (" + fileName + ") and choose to extract the files. \n\nYou will then be asked to select the Destination Folder - this will have been automatically copied for you, you just need to paste it into text box shown. (In rare cases, the copy may not have worked - copy this path: " + unzipFolder + " into the text box.) \n\nWhen the unzip has completed, close this message. ", "Access Tools Installation Wizard Step 1/2", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \nAccessTools could not unzip the downloaded file automatically. \n\nA window should have loaded showing a list of folders. Right-click (or use the alternatve keyboard command) on the downloaded zip file (" + fileName + ") and choose to extract the files. \n\nYou will then be asked to select the Destination Folder - this will have been automatically copied for you, you just need to paste it into text box shown. (In rare cases, the copy may not have worked - copy this path: " + unzipFolder + " into the text box.) \n\nWhen the unzip has completed, close this message. ", "Access Tools Installation Wizard Step 1/2", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("InstallZipInstruction1") + " " + unzipFolder + " " + m_ResourceManager.GetString("InstallZipInstruction2"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
             
             //checks a new folder has been created, and then orders the folders and finds the new folder
             if ((directoryCount + 1) == System.IO.Directory.GetDirectories(folder).Length)
@@ -491,7 +513,8 @@ namespace Test1
             
             if (unzipdone)
             {
-                WizardBox.Show("Application successfully downloaded and prepared for use. Please restart AccessTools to see it in your menu.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("Application successfully downloaded and prepared for use. Please restart AccessTools to see it in your menu.", m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("WizardInstallComplete"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
                 try
                 {
                     String fName = ds.getAddress().Substring(ds.getAddress().LastIndexOfAny("/".ToCharArray()) + 1);
@@ -502,18 +525,19 @@ namespace Test1
                     }
                     catch
                     {
-                        MessageBox.Show("Couldn't delete zip file");
+                        //MessageBox.Show("Couldn't delete zip file");
+                        MessageBox.Show(m_ResourceManager.GetString("errorDeleting"));
                     }                    
                 }
                 catch
                 {
-                    WizardBox.Show("Could not move downloaded zip file to safe location", "Warning", this.Font, this.BackColor, this.ForeColor);
+                    WizardBox.Show("Could not move downloaded zip file to safe location", "Error", this.Font, this.BackColor, this.ForeColor);
                 }
                 informToUpdate();
             }
             else
             {
-                WizardBox.Show("Could not add new application", "Error!", this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("errorInstalling"), "Error!", this.Font, this.BackColor, this.ForeColor);
             }
         }        
 
@@ -545,10 +569,13 @@ namespace Test1
             }
             else
             {
-                WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("DownloadWizardIntro"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
                 System.Diagnostics.Process.Start(fileName);
-                WizardBox.Show("The Application Installer should have loaded. Follow the steps in the installer until you reach the 'Choose Install Location' box. \n\nThe installation path will have been copied automatically to your clipboard - Paste this into the Install Location box and then Select Install.", "Access Tools Installation Wizard Step 1/1", this.Font, this.BackColor, this.ForeColor);
-                WizardBox.Show("IMPORTANT \nOnly close this message when the installation process has finished completely!", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("The Application Installer should have loaded. Follow the steps in the installer until you reach the 'Choose Install Location' box. \n\nThe installation path will have been copied automatically to your clipboard - Paste this into the Install Location box and then Select Install.", "Access Tools Installation Wizard Step 1/1", this.Font, this.BackColor, this.ForeColor);
+                //WizardBox.Show("IMPORTANT \nOnly close this message when the installation process has finished completely!", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("Install1"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
+                WizardBox.Show(m_ResourceManager.GetString("Install2"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
                 if ((directoryCount + 1) == System.IO.Directory.GetDirectories(folder).Length) //if new folder has been created for the new app, delete the installer file
                 {
                     try
@@ -563,7 +590,7 @@ namespace Test1
                 }
                 else
                 {
-                    MessageBox.Show("Installation Error");
+                    MessageBox.Show(m_ResourceManager.GetString("errorInstalling"));
                 }
             }
         }
@@ -574,7 +601,8 @@ namespace Test1
          */ 
         public void install()
         {
-            WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Welcome to the Access Tools Installation Wizard. \nPlease follow the instructions provided to ensure your new application is added correctly. Select OK to begin.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadWizardIntro"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
             String catFolder = categoryFolder;
             String foldername = ds.getFolderName();
             String installFolder = downloadFolder;
@@ -588,15 +616,19 @@ namespace Test1
                 MessageBox.Show(e.ToString());
             }
             System.Diagnostics.Process.Start(address);
-            WizardBox.Show("Your web browser will begin downloading the file. Select 'Run' in the box that appears to begin the download.", "Access Tools Installation Wizard Step 1/3", this.Font, this.BackColor, this.ForeColor);
-            WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \n\nWhen the download has completed you may receive a security warning. Allow the file to install.\n\n Close this message when the installer begins.", "Access Tools Installation Wizard Step 2/3", this.Font, this.BackColor, this.ForeColor);
-            WizardBox.Show("Follow the steps in the installer until you reach the 'Choose Install Location' box. \n\nThe installation path will have been copied automatically to your clipboard - Paste this into the Install Location box and then Select Install.", "Access Tools Installation Wizard Step 3/3", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Your web browser will begin downloading the file. Select 'Run' in the box that appears to begin the download.", "Access Tools Installation Wizard Step 1/3", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("IMPORTANT - DO NOT CLOSE THIS BOX \n\nWhen the download has completed you may receive a security warning. Allow the file to install.\n\n Close this message when the installer begins.", "Access Tools Installation Wizard Step 2/3", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Follow the steps in the installer until you reach the 'Choose Install Location' box. \n\nThe installation path will have been copied automatically to your clipboard - Paste this into the Install Location box and then Select Install.", "Access Tools Installation Wizard Step 3/3", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadInstallerInstruction1"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("DownloadInstallerInstruction2"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("Install1"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
             informToUpdate();
         }
 
         public void informToUpdate()
         {
-            WizardBox.Show("Access Tools recommends that you check for the latest updates for new software. \nThis can usually be done by selecting the 'Help' menu and choosing an option such as 'Check for Updates'. \nRegular updates will ensure that your software receives any required security and bug fixes.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            //WizardBox.Show("Access Tools recommends that you check for the latest updates for new software. \nThis can usually be done by selecting the 'Help' menu and choosing an option such as 'Check for Updates'. \nRegular updates will ensure that your software receives any required security and bug fixes.", "Access Tools Installation Wizard", this.Font, this.BackColor, this.ForeColor);
+            WizardBox.Show(m_ResourceManager.GetString("InformToUpdate"), m_ResourceManager.GetString("DownloadWizard"), this.Font, this.BackColor, this.ForeColor);
         }
     }
 }
